@@ -1,0 +1,23 @@
+# 后端忽略规则
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+uploads/
+app/models/best.pt
+*.db
+*.sqlite3
+forest_fire.db
+*.log
+.uv/
+uv.lock

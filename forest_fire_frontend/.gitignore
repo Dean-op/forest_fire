@@ -1,0 +1,12 @@
+# 前端忽略规则
+node_modules/
+dist/
+dist-ssr/
+*.local
+.npm/
+.yarn/
+.pnp.*
+.eslintcache
+.stylelintcache
+coverage/
+*.log
