@@ -94,12 +94,16 @@ def create_seed_data():
         existing_configs = session.exec(select(SystemConfig)).all()
         if not existing_configs:
             configs = [
-                ("yolo_confidence", "0.6", "YOLO 检测置信度阈值", "ai"),
+                ("yolo_confidence", "0.6", "YOLO 检测置信度阈值（旧，已被分级阈值替代）", "ai"),
                 ("yolo_model_path", "best.pt", "YOLO 模型文件路径", "ai"),
                 ("capture_interval", "5", "默认抓拍间隔 (秒)", "ai"),
-                ("llm_api_url", "https://dashscope.aliyuncs.com", "大模型 API 地址", "llm"),
+                ("yolo_interval", "3", "YOLO 检测间隔 (秒)，非检测帧直接跳过推理", "ai"),
+                ("yolo_high_threshold", "0.8", "高置信度阈值，≥此值直接判定火灾", "ai"),
+                ("yolo_low_threshold", "0.5", "低置信度阈值，低于此值忽略", "ai"),
+                ("alert_cooldown", "10", "告警冷却时间 (秒)，期间不再重复检测", "ai"),
+                ("llm_api_url", "https://api.siliconflow.cn/v1/chat/completions", "大模型 API 地址 (硅基流动)", "llm"),
                 ("llm_api_key", "sk-xxxxx", "大模型 API Key", "llm"),
-                ("llm_model", "qwen-vl-max", "大模型名称", "llm"),
+                ("llm_model", "Pro/Qwen/Qwen2.5-VL-7B-Instruct", "大模型名称", "llm"),
                 ("system_name", "森林火灾预警系统", "系统名称", "general"),
                 ("alert_sound", "true", "告警声音提醒", "general"),
             ]
