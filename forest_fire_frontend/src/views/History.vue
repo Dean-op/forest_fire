@@ -3,13 +3,15 @@
     <el-card shadow="hover">
       <template #header>
         <div class="card-header">
-          <h2>📖 历史事件回溯</h2>
+          <h2>📖 历史事件与处置回溯</h2>
           <div class="header-actions">
-            <el-select v-model="filterStatus" placeholder="筛选状态" clearable style="width: 140px; margin-right: 10px;">
+            <el-select v-model="filterStatus" placeholder="筛选状态" clearable style="width: 170px; margin-right: 10px;">
               <el-option label="全部" value="" />
-              <el-option label="待处理" value="pending" />
-              <el-option label="真实火灾" value="confirmed" />
-              <el-option label="误报" value="false_alarm" />
+              <el-option label="待核实" value="pending_verify" />
+              <el-option label="已核实真实火灾" value="verified_true" />
+              <el-option label="已核实误报" value="verified_false" />
+              <el-option label="已联动消防" value="dispatched" />
+              <el-option label="已完成上报" value="resolved" />
             </el-select>
             <el-button type="danger" :disabled="selectedIds.length === 0" @click="batchDelete" style="margin-right: 10px;">
               <el-icon><Delete /></el-icon> 批量删除 ({{ selectedIds.length }})
@@ -34,7 +36,7 @@
             {{ (row.yolo_confidence * 100).toFixed(1) }}%
           </template>
         </el-table-column>
-        <el-table-column prop="llm_result" label="大模型判定" min-width="200" show-overflow-tooltip />
+        <el-table-column prop="llm_result" label="AI 建议" min-width="200" show-overflow-tooltip />
         <el-table-column prop="status" label="状态" width="120">
           <template #default="{ row }">
             <el-tag :type="statusType(row.status)">{{ statusLabel(row.status) }}</el-tag>
@@ -109,8 +111,27 @@ const formatTime = (t) => {
   return new Date(t).toLocaleString('zh-CN')
 }
 
-const statusLabel = (s) => ({ 'pending': '待处理', 'confirmed': '真实火灾', 'false_alarm': '误报' }[s] || s)
-const statusType = (s) => ({ 'pending': 'warning', 'confirmed': 'danger', 'false_alarm': 'info' }[s] || '')
+const statusLabel = (s) => ({
+  pending: '待核实',
+  pending_verify: '待核实',
+  confirmed: '已核实真实火灾',
+  verified_true: '已核实真实火灾',
+  false_alarm: '已核实误报',
+  verified_false: '已核实误报',
+  dispatched: '已联动消防',
+  resolved: '已完成上报'
+}[s] || s)
+
+const statusType = (s) => ({
+  pending: 'warning',
+  pending_verify: 'warning',
+  confirmed: 'danger',
+  verified_true: 'danger',
+  dispatched: 'danger',
+  resolved: 'success',
+  false_alarm: 'info',
+  verified_false: 'info'
+}[s] || '')
 
 const fetchAlerts = async () => {
   loading.value = true

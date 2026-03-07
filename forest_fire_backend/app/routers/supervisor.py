@@ -18,10 +18,20 @@ router = APIRouter(prefix="/api/supervisor", tags=["supervisor"])
 @router.get("/stats")
 def get_stats(session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
     all_alerts = session.exec(select(Alert)).all()
+
+    def is_true_fire(status: str) -> bool:
+        return status in {"confirmed", "verified_true", "dispatched", "resolved"}
+
+    def is_false_alarm(status: str) -> bool:
+        return status in {"false_alarm", "verified_false"}
+
+    def is_pending(status: str) -> bool:
+        return status in {"pending", "pending_verify"}
+
     total = len(all_alerts)
-    confirmed = len([a for a in all_alerts if a.status == "confirmed"])
-    false_alarm = len([a for a in all_alerts if a.status == "false_alarm"])
-    pending = len([a for a in all_alerts if a.status == "pending"])
+    confirmed = len([a for a in all_alerts if is_true_fire(a.status)])
+    false_alarm = len([a for a in all_alerts if is_false_alarm(a.status)])
+    pending = len([a for a in all_alerts if is_pending(a.status)])
 
     cameras = session.exec(select(Camera)).all()
     total_cameras = len(cameras)
@@ -38,8 +48,8 @@ def get_stats(session: Session = Depends(get_session), current_user: User = Depe
         trend.append({
             "date": day.strftime("%m-%d"),
             "total": len(day_alerts),
-            "confirmed": len([a for a in day_alerts if a.status == "confirmed"]),
-            "false_alarm": len([a for a in day_alerts if a.status == "false_alarm"]),
+            "confirmed": len([a for a in day_alerts if is_true_fire(a.status)]),
+            "false_alarm": len([a for a in day_alerts if is_false_alarm(a.status)]),
         })
 
     # 24 小时分布热力

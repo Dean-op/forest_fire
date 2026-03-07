@@ -88,8 +88,8 @@
             </el-table-column>
             <el-table-column prop="status" label="状态" width="100">
               <template #default="{ row }">
-                <el-tag :type="{pending:'warning',confirmed:'danger',false_alarm:'info'}[row.status]" size="small">
-                  {{ {pending:'待处理',confirmed:'真实',false_alarm:'误报'}[row.status] }}
+                <el-tag :type="statusTagType(row.status)" size="small">
+                  {{ statusTagLabel(row.status) }}
                 </el-tag>
               </template>
             </el-table-column>
@@ -127,10 +127,32 @@ const kpiList = computed(() => [
   { icon: '🔥', value: stats.value.total_alerts, label: '总告警次数', bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
   { icon: '🚨', value: stats.value.confirmed, label: '确认火灾', bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
   { icon: '✅', value: stats.value.false_alarm, label: '误报次数', bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
-  { icon: '⏳', value: stats.value.pending, label: '待处理', bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
+  { icon: '⏳', value: stats.value.pending, label: '待核实/处置', bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
   { icon: '🎯', value: stats.value.avg_confidence, label: '平均置信度', bg: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)' },
   { icon: '📊', value: stats.value.accuracy, unit: '%', label: '检测精准率', bg: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)' },
 ])
+
+const statusTagLabel = (status) => ({
+  pending: '待核实',
+  pending_verify: '待核实',
+  confirmed: '真火',
+  verified_true: '真火',
+  dispatched: '已联动',
+  resolved: '已完成',
+  false_alarm: '误报',
+  verified_false: '误报'
+}[status] || status)
+
+const statusTagType = (status) => ({
+  pending: 'warning',
+  pending_verify: 'warning',
+  confirmed: 'danger',
+  verified_true: 'danger',
+  dispatched: 'danger',
+  resolved: 'success',
+  false_alarm: 'info',
+  verified_false: 'info'
+}[status] || 'info')
 
 const fetchStats = async () => {
   loading.value = true

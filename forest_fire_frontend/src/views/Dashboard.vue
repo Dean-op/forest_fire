@@ -93,12 +93,33 @@
     <!-- 动态瀑布流视频墙 -->
     <div class="video-grid" :class="{'many-cams': cameras.length > 4}" v-loading="loading">
       <template v-if="cameras.length > 0">
-        <div class="video-cell" v-for="cam in cameras" :key="cam.id" :class="{ 'offline': cam.status !== 'online' }">
+        <div
+          class="video-cell"
+          v-for="cam in cameras"
+          :key="cam.id"
+          :ref="el => setCellRef(cam.id, el)"
+          :class="{ 'offline': cam.status !== 'online' }"
+        >
           <div class="cell-title">
-            <el-icon><VideoCamera /></el-icon> {{ cam.name }}
-            <el-tag size="small" :type="cam.status==='online'?'success':'info'" style="float:right;">
-              {{ cam.status==='online'?'在线':'离线' }}
-            </el-tag>
+            <div class="cell-meta">
+              <div class="cell-name">
+                <el-icon><VideoCamera /></el-icon> {{ cam.name }}
+              </div>
+              <div class="cell-time">{{ displayTime }}</div>
+            </div>
+            <div class="cell-actions">
+              <el-tag size="small" :type="cam.status==='online'?'success':'info'">
+                {{ cam.status==='online'?'在线':'离线' }}
+              </el-tag>
+              <el-button
+                text
+                class="fullscreen-btn"
+                @click.stop="toggleFullscreen(cam.id)"
+                title="全屏/退出全屏"
+              >
+                <el-icon><FullScreen /></el-icon>
+              </el-button>
+            </div>
           </div>
           <!-- 在线设备请求后端真实的带 YOLO 的视频流 -->
           <img v-if="cam.status === 'online'" :src="streamUrl(cam.id)" class="stream-img" :alt="cam.name" />
@@ -115,9 +136,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { VideoCamera, VideoPause, Warning } from '@element-plus/icons-vue'
+import { VideoCamera, VideoPause, Warning, FullScreen } from '@element-plus/icons-vue'
 import api from '../api'
 
 const wsConnected = ref(false)
@@ -144,25 +165,69 @@ const seenAlertMap = new Map() // key -> first seen time
 let reconnectTimer = null
 let burstBannerTimer = null
 let fireFlashTimer = null
+let clockTimer = null
 let isComponentAlive = false
 let isManualClosing = false
 
 const cameras = ref([])
 const loading = ref(false)
+const nowTick = ref(Date.now())
+const cellRefs = new Map()
 
 const statusLabel = (status) => {
-  if (status === 'confirmed') return '真实火灾'
-  if (status === 'false_alarm') return '误报'
-  return '待确认'
+  const map = {
+    pending: '待核实',
+    pending_verify: '待核实',
+    confirmed: '已核实真实火灾',
+    verified_true: '已核实真实火灾',
+    false_alarm: '已核实误报',
+    verified_false: '已核实误报',
+    dispatched: '已联动消防',
+    resolved: '处置已完成'
+  }
+  return map[status] || status || '待核实'
 }
 
 const statusType = (status) => {
-  if (status === 'confirmed') return 'danger'
-  if (status === 'false_alarm') return 'info'
+  if (['confirmed', 'verified_true', 'dispatched', 'resolved'].includes(status)) return 'danger'
+  if (['false_alarm', 'verified_false'].includes(status)) return 'info'
   return 'warning'
 }
 
+const displayTime = computed(() => (
+  new Date(nowTick.value).toLocaleString('zh-CN', { hour12: false })
+))
+
 const streamUrl = (cameraId) => `/api/stream/video/${cameraId}`
+
+const setCellRef = (cameraId, el) => {
+  if (el) {
+    cellRefs.set(cameraId, el)
+  } else {
+    cellRefs.delete(cameraId)
+  }
+}
+
+const toggleFullscreen = async (cameraId) => {
+  const cell = cellRefs.get(cameraId)
+  if (!cell || !cell.requestFullscreen) {
+    ElMessage.warning('当前浏览器不支持全屏')
+    return
+  }
+
+  try {
+    if (document.fullscreenElement === cell) {
+      await document.exitFullscreen()
+      return
+    }
+    if (document.fullscreenElement) {
+      await document.exitFullscreen()
+    }
+    await cell.requestFullscreen()
+  } catch {
+    ElMessage.warning('全屏切换失败，请检查浏览器权限')
+  }
+}
 
 const openAlertCenter = () => {
   showAlertDrawer.value = true
@@ -197,7 +262,7 @@ const touchBurstBanner = (alert) => {
   burstBanner.value.count += 1
   burstBanner.value.lastCamera = alert.camera_name || '未知设备'
   burstBanner.value.lastAt = alert.timestamp || ''
-  burstBanner.value.level = alert.status === 'confirmed' ? 'error' : 'warning'
+  burstBanner.value.level = (alert.status === 'pending_verify' && String(alert.llm_result || '').includes('高危')) ? 'error' : 'warning'
 
   if (burstBannerTimer) {
     clearTimeout(burstBannerTimer)
@@ -209,7 +274,9 @@ const touchBurstBanner = (alert) => {
 }
 
 const triggerFireFlash = (alert) => {
-  if (alert.status !== 'confirmed') return
+  const isHighRiskAi = alert.status === 'pending_verify' && String(alert.llm_result || '').includes('高危')
+  const isTrueFireWorkflow = ['confirmed', 'verified_true', 'dispatched', 'resolved'].includes(alert.status)
+  if (!isHighRiskAi && !isTrueFireWorkflow) return
   fireFlashActive.value = true
   if (fireFlashTimer) {
     clearTimeout(fireFlashTimer)
@@ -329,6 +396,9 @@ const initWebSocket = () => {
 
 onMounted(() => {
   isComponentAlive = true
+  clockTimer = setInterval(() => {
+    nowTick.value = Date.now()
+  }, 1000)
   fetchCameras()
   initWebSocket()
 })
@@ -351,6 +421,11 @@ onUnmounted(() => {
     clearTimeout(fireFlashTimer)
     fireFlashTimer = null
   }
+  if (clockTimer) {
+    clearInterval(clockTimer)
+    clockTimer = null
+  }
+  cellRefs.clear()
 })
 </script>
 
@@ -446,14 +521,56 @@ onUnmounted(() => {
   font-size: 14px;
   z-index: 10;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cell-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cell-name {
+  display: flex;
   align-items: center;
   gap: 6px;
+  font-weight: 600;
+}
+
+.cell-time {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.cell-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fullscreen-btn {
+  color: #fff;
+  padding: 4px;
+}
+
+.fullscreen-btn:hover {
+  color: #409EFF;
 }
 
 .stream-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.video-cell:fullscreen {
+  border-radius: 0;
+}
+
+.video-cell:fullscreen .stream-img {
+  object-fit: contain;
 }
 
 .offline-placeholder {
