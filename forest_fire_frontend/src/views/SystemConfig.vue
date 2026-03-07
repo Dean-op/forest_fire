@@ -98,8 +98,11 @@ const fetchConfigs = async () => {
   try {
     configs.value = await api.get('/admin/configs')
     // Set first tab as active automatically if current is empty or invalid
-    if (Object.keys(groupedConfigs.value).length > 0 && !groupedConfigs.value[activeTab.value]) {
-      activeTab.value = Object.keys(groupedConfigs.value)[0]
+    if (Object.keys(groupedConfigs.value).length > 0 && (!activeTab.value || !groupedConfigs.value[activeTab.value])) {
+      activeTab.value = 'general' // 强制默认显示通用配置
+      if (!groupedConfigs.value['general']) {
+         activeTab.value = Object.keys(groupedConfigs.value)[0]
+      }
     }
   } catch {
     ElMessage.error('获取配置失败')
@@ -158,15 +161,17 @@ onMounted(fetchConfigs)
 }
 .config-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 18px;
 }
 .config-card {
   border: 1px solid #ebeef5;
+  display: flex;
+  flex-direction: column;
 }
 .config-head {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* 顶部对齐，防止换行后 tag 错位 */
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 12px;
@@ -175,9 +180,9 @@ onMounted(fetchConfigs)
   font-size: 14px;
   color: #303133;
   font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.4;
+  word-break: break-all;
+  white-space: normal; /* 允许换行，不截断 */
 }
 .config-input {
   margin-bottom: 12px;

@@ -22,6 +22,17 @@
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column label="AI 检测" width="110">
+          <template #default="{ row }">
+            <el-switch
+              v-model="row.enable_ai"
+              inline-prompt
+              active-text="开"
+              inactive-text="关"
+              @change="toggleAI(row)"
+            />
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="290" fixed="right">
           <template #default="{ row }">
             <div style="display: flex; gap: 5px; flex-wrap: nowrap;">
@@ -122,6 +133,17 @@ const toggleStatus = async (row) => {
     ElMessage.success(`设备 ${row.name} 已切换为${nextStatus === 'online' ? '在线' : '离线'}`)
   } catch {
     ElMessage.error('状态切换失败')
+  }
+}
+
+const toggleAI = async (row) => {
+  const nextEnable = !!row.enable_ai
+  try {
+    await api.put(`/supervisor/cameras/${row.id}`, { enable_ai: nextEnable })
+    ElMessage.success(`设备 ${row.name} AI检测已${nextEnable ? '开启' : '关闭'}`)
+  } catch {
+    row.enable_ai = !nextEnable
+    ElMessage.error('AI 检测切换失败')
   }
 }
 
