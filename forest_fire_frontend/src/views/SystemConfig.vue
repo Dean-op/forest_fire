@@ -82,10 +82,28 @@ const groupedConfigs = computed(() => {
     if (!groups[c.group]) groups[c.group] = []
     groups[c.group].push(c)
   })
-  Object.keys(groups).forEach(group => {
-    groups[group].sort((a, b) => (a.label || a.key).localeCompare((b.label || b.key), 'zh-CN'))
+  
+  // 确保标签页的顺序: general -> ai -> llm
+  const orderedGroups = {}
+  const predefinedOrder = ['general', 'ai', 'llm']
+  
+  // 先按照预定顺序塞入已有数据的组
+  predefinedOrder.forEach(key => {
+    if (groups[key]) {
+      groups[key].sort((a, b) => (a.label || a.key).localeCompare((b.label || b.key), 'zh-CN'))
+      orderedGroups[key] = groups[key]
+    }
   })
-  return groups
+  
+  // 补上其他未知的组
+  Object.keys(groups).forEach(key => {
+    if (!orderedGroups[key]) {
+      groups[key].sort((a, b) => (a.label || a.key).localeCompare((b.label || b.key), 'zh-CN'))
+      orderedGroups[key] = groups[key]
+    }
+  })
+  
+  return orderedGroups
 })
 
 const isSensitive = (key) => {
@@ -160,9 +178,10 @@ onMounted(fetchConfigs)
   color: #606266;
 }
 .config-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 600px;
 }
 .config-card {
   border: 1px solid #ebeef5;
