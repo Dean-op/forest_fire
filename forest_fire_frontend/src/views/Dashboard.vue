@@ -2,8 +2,13 @@
   <div class="dashboard-container">
     <div class="header-tools">
       <h2>🔥 智能监控大屏 (双核预警)</h2>
-      <el-tag type="success" v-if="wsConnected">实时告警连接正常</el-tag>
-      <el-tag type="danger" v-else>告警连接断开</el-tag>
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <el-button v-if="latestAlert" type="danger" @click="showAlertDrawer = true" class="pulse-btn">
+          <el-icon><Warning /></el-icon> 查看最新告警
+        </el-button>
+        <el-tag type="success" v-if="wsConnected">实时告警连接正常</el-tag>
+        <el-tag type="danger" v-else>告警连接断开</el-tag>
+      </div>
     </div>
 
     <!-- 告警弹出抽屉 -->
@@ -56,13 +61,14 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
-import { VideoCamera, VideoPause } from '@element-plus/icons-vue'
+import { VideoCamera, VideoPause, Warning } from '@element-plus/icons-vue'
 import api from '../api'
 
 const wsConnected = ref(false)
 const ws = ref(null)
 const showAlertDrawer = ref(false)
 const latestAlert = ref(null)
+let notifyInstance = null // 保存单例通知，防止弹窗风暴
 
 const cameras = ref([])
 const loading = ref(false)
@@ -92,14 +98,25 @@ const initWebSocket = () => {
       const data = JSON.parse(event.data)
       latestAlert.value = data
       
-      ElNotification({
-        title: `🔥 火灾告警: ${data.camera_name || '设备'}`,
-        message: `在 ${data.timestamp} 检测到异常，模型判定：${data.llm_result || '待研判'}`,
+      // 关闭上一个通知，保证屏幕上只有一个通知（消除弹窗风暴）
+      if (notifyInstance) {
+        notifyInstance.close()
+      }
+      
+      notifyInstance = ElNotification({
+        title: `🚨 最新警报: ${data.camera_name || '设备'}`,
+        message: `在 ${data.timestamp} 检测到异常。\n点击此处查看抓拍详情`,
         type: 'error',
-        duration: 8000
+        duration: 8000,
+        position: 'top-right',
+        onClick: () => {
+          showAlertDrawer.value = true
+          if (notifyInstance) notifyInstance.close()
+        }
       })
       
-      showAlertDrawer.value = true
+      // 牺牲强制提醒：不再自动弹出侧边抽屉打断用户看监控
+      // showAlertDrawer.value = true
     } catch (e) {
       console.error("解析 WebSocket 数据失败:", e)
     }
@@ -211,5 +228,15 @@ onUnmounted(() => {
   width: 100%;
   border-radius: 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.pulse-btn {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 108, 108, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(245, 108, 108, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 108, 108, 0); }
 }
 </style>

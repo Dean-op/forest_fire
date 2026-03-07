@@ -33,15 +33,17 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="220" fixed="right">
           <template #default="{ row }">
-            <el-button text type="primary" @click="openEdit(row)">编辑</el-button>
-            <el-button text type="info" @click="viewLogs(row)">日志</el-button>
-            <el-popconfirm title="确认删除此设备?" @confirm="handleDelete(row.id)">
-              <template #reference>
-                <el-button text type="danger">删除</el-button>
-              </template>
-            </el-popconfirm>
+            <div style="display: flex; gap: 5px; flex-wrap: nowrap;">
+              <el-button size="small" type="primary" @click="openEdit(row)">编辑</el-button>
+              <el-button size="small" type="info" @click="viewLogs(row)">日志</el-button>
+              <el-popconfirm title="确认删除此设备?" @confirm="handleDelete(row.id)">
+                <template #reference>
+                  <el-button size="small" type="danger">删除</el-button>
+                </template>
+              </el-popconfirm>
+            </div>
           </template>
         </el-table-column>
       </el-table>

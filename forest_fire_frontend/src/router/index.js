@@ -16,6 +16,10 @@ const routes = [
         children: [
             {
                 path: '',
+                redirect: '/stats'
+            },
+            {
+                path: 'dashboard',
                 name: 'Dashboard',
                 component: () => import('../views/Dashboard.vue')
             },
@@ -105,11 +109,11 @@ router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth !== false && !userStore.isLoggedIn) {
         next({ name: 'Login' })
     } else if (to.name === 'Login' && userStore.isLoggedIn) {
-        next({ name: 'Dashboard' })
+        next({ name: 'Stats' })
     } else {
         // Basic role guard
         if (to.meta.roles && !to.meta.roles.includes(userStore.role)) {
-            next({ name: 'Dashboard' }) // Redirect unauthorized
+            next({ name: 'Stats' }) // Redirect unauthorized
         } else {
             next()
         }
