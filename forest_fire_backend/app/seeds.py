@@ -94,9 +94,7 @@ def create_seed_data():
         existing_configs = session.exec(select(SystemConfig)).all()
         if not existing_configs:
             configs = [
-                ("yolo_confidence", "0.6", "YOLO 检测置信度阈值（旧，已被分级阈值替代）", "ai"),
                 ("yolo_model_path", "best.pt", "YOLO 模型文件路径", "ai"),
-                ("capture_interval", "5", "默认抓拍间隔 (秒)", "ai"),
                 ("yolo_interval", "3", "YOLO 检测间隔 (秒)，非检测帧直接跳过推理", "ai"),
                 ("yolo_high_threshold", "0.8", "高置信度阈值，≥此值直接判定火灾", "ai"),
                 ("yolo_low_threshold", "0.5", "低置信度阈值，低于此值忽略", "ai"),
