@@ -3,7 +3,7 @@
     <el-aside :width="isCollapse ? '64px' : '220px'" class="aside">
       <div class="logo">
         <el-icon :size="24" color="#fff"><Monitor /></el-icon>
-        <span v-show="!isCollapse" class="title">防火预警系统</span>
+        <span v-show="!isCollapse" class="title">{{ systemName }}</span>
       </div>
       
       <el-menu
@@ -15,6 +15,11 @@
         active-text-color="#409EFF"
         router
       >
+        <el-menu-item index="/stats">
+          <el-icon><DataLine /></el-icon>
+          <template #title>统计看板</template>
+        </el-menu-item>
+
         <el-menu-item index="/dashboard">
           <el-icon><DataBoard /></el-icon>
           <template #title>监控大屏</template>
@@ -28,11 +33,6 @@
         <el-menu-item index="/history" v-if="hasRole(['operator', 'admin'])">
           <el-icon><List /></el-icon>
           <template #title>历史回溯</template>
-        </el-menu-item>
-        
-        <el-menu-item index="/stats" v-if="hasRole(['supervisor', 'admin'])">
-          <el-icon><DataLine /></el-icon>
-          <template #title>统计看板</template>
         </el-menu-item>
         
         <el-menu-item index="/cameras" v-if="hasRole(['supervisor', 'admin'])">
@@ -102,10 +102,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import { ElMessage } from 'element-plus'
+import api from '../api'
 import { 
   Monitor, DataBoard, Bell, List, DataLine, 
   Camera, Fold, Expand, ArrowDown, UserFilled, Notebook,
@@ -116,7 +117,11 @@ const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 
+const SYSTEM_NAME_STORAGE_KEY = 'system_name'
+const DEFAULT_SYSTEM_NAME = '防火预警系统'
+
 const isCollapse = ref(false)
+const systemName = ref(localStorage.getItem(SYSTEM_NAME_STORAGE_KEY) || DEFAULT_SYSTEM_NAME)
 const activeMenu = computed(() => route.path)
 
 const roleMap = {
@@ -129,6 +134,27 @@ const roleName = computed(() => roleMap[userStore.role] || '用户')
 
 const hasRole = (roles) => roles.includes(userStore.role)
 
+const syncSystemNameFromStorage = (event) => {
+  const eventName = event?.detail?.name
+  const localName = localStorage.getItem(SYSTEM_NAME_STORAGE_KEY)
+  const nextName = (eventName || localName || '').trim()
+  systemName.value = nextName || DEFAULT_SYSTEM_NAME
+}
+
+const fetchSystemName = async () => {
+  try {
+    const configs = await api.get('/admin/configs')
+    const target = configs.find(item => item.key === 'system_name')
+    const name = (target?.value || '').trim()
+    if (name) {
+      systemName.value = name
+      localStorage.setItem(SYSTEM_NAME_STORAGE_KEY, name)
+    }
+  } catch {
+    // Ignore fetch failures and keep local fallback.
+  }
+}
+
 const handleCommand = (command) => {
   if (command === 'logout') {
     userStore.logout()
@@ -138,6 +164,15 @@ const handleCommand = (command) => {
     router.push('/profile')
   }
 }
+
+onMounted(() => {
+  window.addEventListener('system-name-updated', syncSystemNameFromStorage)
+  fetchSystemName()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('system-name-updated', syncSystemNameFromStorage)
+})
 </script>
 
 <style scoped>

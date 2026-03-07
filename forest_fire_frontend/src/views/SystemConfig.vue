@@ -14,21 +14,37 @@
           :label="groupLabels[groupName] || groupName"
           :name="groupName"
         >
-          <div class="form-wrapper">
-            <el-form label-width="220px" label-position="right" size="large">
-              <el-form-item
-                v-for="cfg in group"
-                :key="cfg.key"
-                :label="cfg.label"
-              >
-                <div class="input-row">
-                  <el-input v-model="cfg.value" class="config-input" />
-                  <el-button type="primary" @click="saveConfig(cfg.key, cfg.value)">
-                    <el-icon><Check /></el-icon> 保存
-                  </el-button>
-                </div>
-              </el-form-item>
-            </el-form>
+          <div class="group-hint">{{ groupHints[groupName] || '参数修改后立即生效' }}</div>
+          <div class="config-grid">
+            <el-card
+              v-for="cfg in group"
+              :key="cfg.key"
+              class="config-card"
+              shadow="never"
+            >
+              <div class="config-head">
+                <div class="config-title" :title="cfg.label || cfg.key">{{ cfg.label || cfg.key }}</div>
+                <el-tag size="small" type="info">{{ cfg.key }}</el-tag>
+              </div>
+
+              <el-input
+                v-model="cfg.value"
+                :type="isSensitive(cfg.key) ? 'password' : 'text'"
+                :show-password="isSensitive(cfg.key)"
+                clearable
+                class="config-input"
+              />
+
+              <div class="config-foot">
+                <el-button
+                  type="primary"
+                  :loading="!!savingMap[cfg.key]"
+                  @click="saveConfig(cfg.key, cfg.value)"
+                >
+                  <el-icon><Check /></el-icon> 保存
+                </el-button>
+              </div>
+            </el-card>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -45,11 +61,19 @@ import { Check } from '@element-plus/icons-vue'
 const configs = ref([])
 const loading = ref(false)
 const activeTab = ref('general')
+const savingMap = ref({})
+const SYSTEM_NAME_STORAGE_KEY = 'system_name'
 
 const groupLabels = {
   general: '⚙️ 通用基础配置',
   ai: '🧠 YOLO 算法参数',
   llm: '🤖 大语言模型 (LLM) 配置'
+}
+
+const groupHints = {
+  general: '系统通用行为和展示文案',
+  ai: '本地视觉识别与阈值参数',
+  llm: '云端模型服务地址、秘钥与模型名'
 }
 
 const groupedConfigs = computed(() => {
@@ -58,8 +82,16 @@ const groupedConfigs = computed(() => {
     if (!groups[c.group]) groups[c.group] = []
     groups[c.group].push(c)
   })
+  Object.keys(groups).forEach(group => {
+    groups[group].sort((a, b) => (a.label || a.key).localeCompare((b.label || b.key), 'zh-CN'))
+  })
   return groups
 })
+
+const isSensitive = (key) => {
+  const text = (key || '').toLowerCase()
+  return text.includes('key') || text.includes('secret') || text.includes('token')
+}
 
 const fetchConfigs = async () => {
   loading.value = true
@@ -77,11 +109,21 @@ const fetchConfigs = async () => {
 }
 
 const saveConfig = async (key, value) => {
+  savingMap.value[key] = true
   try {
     await api.put(`/admin/configs/${key}`, { value })
+    if (key === 'system_name') {
+      const name = (value || '').trim()
+      if (name) {
+        localStorage.setItem(SYSTEM_NAME_STORAGE_KEY, name)
+        window.dispatchEvent(new CustomEvent('system-name-updated', { detail: { name } }))
+      }
+    }
     ElMessage.success('已保存修改')
   } catch {
     ElMessage.error('保存失败')
+  } finally {
+    savingMap.value[key] = false
   }
 }
 
@@ -92,24 +134,56 @@ onMounted(fetchConfigs)
 .sys-config-container {
   padding: 20px;
 }
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
 .card-header h2 {
   margin: 0;
   color: #303133;
 }
+.header-tip {
+  color: #909399;
+  font-size: 12px;
+}
 .config-tabs {
   margin-top: 10px;
 }
-.form-wrapper {
-  padding: 30px 20px;
-  max-width: 800px;
+.group-hint {
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: #606266;
 }
-.input-row {
+.config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 14px;
+}
+.config-card {
+  border: 1px solid #ebeef5;
+}
+.config-head {
   display: flex;
   align-items: center;
-  gap: 15px;
-  width: 100%;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.config-title {
+  font-size: 14px;
+  color: #303133;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .config-input {
-  width: 400px;
+  margin-bottom: 12px;
+}
+.config-foot {
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

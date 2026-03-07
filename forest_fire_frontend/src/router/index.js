@@ -38,8 +38,7 @@ const routes = [
             {
                 path: 'stats',
                 name: 'Stats',
-                component: () => import('../views/Stats.vue'),
-                meta: { roles: ['supervisor', 'admin'] }
+                component: () => import('../views/Stats.vue')
             },
             {
                 path: 'cameras',

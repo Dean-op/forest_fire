@@ -301,10 +301,6 @@ async def generate_frames(camera_id: int):
 
         if should_detect:
             last_detect_time = now
-            # Double check cooldown exactly before executing heavy inference
-            if time.time() < camera_cooldowns.get(camera_id, 0):
-                continue
-
             results = model(frame, verbose=False)
             result = results[0]
             annotated_frame = result.plot()
@@ -319,7 +315,7 @@ async def generate_frames(camera_id: int):
 
                 if highest_conf >= high_th:
                     # ========== 高置信度：直接判定火灾 ==========
-                    camera_cooldowns[camera_id] = time.time() + cooldown_sec
+                    camera_cooldowns[camera_id] = now + cooldown_sec
                     img_url = save_snapshot(frame, camera_id)
                     alert_id = create_alert(
                         img_url, highest_conf, camera_name,
@@ -340,7 +336,7 @@ async def generate_frames(camera_id: int):
 
                 elif highest_conf >= low_th:
                     # ========== 中置信度：存 pending + 异步 LLM 复核 ==========
-                    camera_cooldowns[camera_id] = time.time() + cooldown_sec
+                    camera_cooldowns[camera_id] = now + cooldown_sec
                     img_url = save_snapshot(frame, camera_id)
                     alert_id = create_alert(
                         img_url, highest_conf, camera_name,

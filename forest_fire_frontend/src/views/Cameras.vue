@@ -22,20 +22,16 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="AI 检测" width="100">
-          <template #default="{ row }">
-            <el-switch 
-              v-model="row.enable_ai" 
-              @change="toggleAI(row)" 
-              inline-prompt 
-              active-text="开" 
-              inactive-text="关" 
-            />
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="220" fixed="right">
+        <el-table-column label="操作" width="290" fixed="right">
           <template #default="{ row }">
             <div style="display: flex; gap: 5px; flex-wrap: nowrap;">
+              <el-button
+                size="small"
+                :type="row.status === 'online' ? 'warning' : 'success'"
+                @click="toggleStatus(row)"
+              >
+                {{ row.status === 'online' ? '置为离线' : '置为在线' }}
+              </el-button>
               <el-button size="small" type="primary" @click="openEdit(row)">编辑</el-button>
               <el-button size="small" type="info" @click="viewLogs(row)">日志</el-button>
               <el-popconfirm title="确认删除此设备?" @confirm="handleDelete(row.id)">
@@ -55,16 +51,6 @@
         <el-form-item label="设备名称"><el-input v-model="form.name" /></el-form-item>
         <el-form-item label="RTSP 地址"><el-input v-model="form.rtsp_url" placeholder="rtsp://..." /></el-form-item>
         <el-form-item label="安装位置"><el-input v-model="form.location" /></el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="form.status">
-            <el-option label="在线" value="online" />
-            <el-option label="离线" value="offline" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="AI 检测">
-          <el-switch v-model="form.enable_ai" inline-prompt active-text="开启" inactive-text="关闭" />
-          <span style="font-size: 12px; color: #909399; margin-left: 10px;">开启后该大屏画面将进行实时火灾识别</span>
-        </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="formVisible = false">取消</el-button>
@@ -106,7 +92,7 @@ const logVisible = ref(false)
 const logCameraName = ref('')
 const cameraLogs = ref([])
 
-const form = reactive({ name: '', rtsp_url: '', location: '', status: 'online', enable_ai: true })
+const form = reactive({ name: '', rtsp_url: '', location: '' })
 
 const fetchCameras = async () => {
   loading.value = true
@@ -118,23 +104,24 @@ const fetchCameras = async () => {
 
 const openAdd = () => {
   isEdit.value = false; editId.value = null
-  Object.assign(form, { name: '', rtsp_url: '', location: '', status: 'online', enable_ai: true })
+  Object.assign(form, { name: '', rtsp_url: '', location: '' })
   formVisible.value = true
 }
 
 const openEdit = (row) => {
   isEdit.value = true; editId.value = row.id
-  Object.assign(form, { name: row.name, rtsp_url: row.rtsp_url, location: row.location, status: row.status, enable_ai: row.enable_ai })
+  Object.assign(form, { name: row.name, rtsp_url: row.rtsp_url, location: row.location })
   formVisible.value = true
 }
 
-const toggleAI = async (row) => {
+const toggleStatus = async (row) => {
+  const nextStatus = row.status === 'online' ? 'offline' : 'online'
   try {
-    await api.put(`/supervisor/cameras/${row.id}`, { enable_ai: row.enable_ai })
-    ElMessage.success(`设备 ${row.name} AI检测已${row.enable_ai ? '开启' : '关闭'}`)
+    await api.put(`/supervisor/cameras/${row.id}`, { status: nextStatus })
+    row.status = nextStatus
+    ElMessage.success(`设备 ${row.name} 已切换为${nextStatus === 'online' ? '在线' : '离线'}`)
   } catch {
-    row.enable_ai = !row.enable_ai // 回滚状态
-    ElMessage.error('快速更新失败')
+    ElMessage.error('状态切换失败')
   }
 }
 
