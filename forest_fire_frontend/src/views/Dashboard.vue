@@ -96,24 +96,27 @@ const initWebSocket = () => {
   ws.value.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data)
+      const isNewAlert = !latestAlert.value || latestAlert.value.id !== data.id
       latestAlert.value = data
       
-      // 关闭上一个通知，保证屏幕上只有一个通知（消除弹窗风暴）
-      if (notifyInstance) {
-        notifyInstance.close()
-      }
-      
-      notifyInstance = ElNotification({
-        title: `🚨 最新警报: ${data.camera_name || '设备'}`,
-        message: `在 ${data.timestamp} 检测到异常。\n点击此处查看抓拍详情`,
-        type: 'error',
-        duration: 8000,
-        position: 'top-right',
-        onClick: () => {
-          showAlertDrawer.value = true
-          if (notifyInstance) notifyInstance.close()
+      if (isNewAlert) {
+        // 关闭上一个通知，保证屏幕上只有一个通知（消除弹窗风暴）
+        if (notifyInstance) {
+          notifyInstance.close()
         }
-      })
+        
+        notifyInstance = ElNotification({
+          title: `🚨 最新警报: ${data.camera_name || '设备'}`,
+          message: `在 ${data.timestamp} 检测到异常。\n点击此处查看抓拍详情`,
+          type: 'error',
+          duration: 8000,
+          position: 'top-right',
+          onClick: () => {
+            showAlertDrawer.value = true
+            if (notifyInstance) notifyInstance.close()
+          }
+        })
+      }
       
       // 牺牲强制提醒：不再自动弹出侧边抽屉打断用户看监控
       // showAlertDrawer.value = true
