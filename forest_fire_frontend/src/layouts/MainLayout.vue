@@ -30,7 +30,7 @@
           <template #title>我的任务</template>
         </el-menu-item>
         
-        <el-menu-item index="/history" v-if="hasRole(['operator', 'admin'])">
+        <el-menu-item index="/history" v-if="hasRole(['operator', 'supervisor', 'admin'])">
           <el-icon><List /></el-icon>
           <template #title>历史回溯</template>
         </el-menu-item>
@@ -143,9 +143,8 @@ const syncSystemNameFromStorage = (event) => {
 
 const fetchSystemName = async () => {
   try {
-    const configs = await api.get('/admin/configs')
-    const target = configs.find(item => item.key === 'system_name')
-    const name = (target?.value || '').trim()
+    const data = await api.get('/admin/public/system-name')
+    const name = (data?.system_name || '').trim()
     if (name) {
       systemName.value = name
       localStorage.setItem(SYSTEM_NAME_STORAGE_KEY, name)

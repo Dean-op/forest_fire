@@ -68,6 +68,17 @@ def get_user_me(current_user: User = Depends(get_current_user)):
     return UserResponse(id=current_user.id, username=current_user.username, role=current_user.role)
 
 
+def require_roles(*allowed_roles: str):
+    allowed = set(allowed_roles)
+
+    def _checker(current_user: User = Depends(get_current_user)) -> User:
+        if current_user.role not in allowed:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")
+        return current_user
+
+    return _checker
+
+
 @router.put("/password")
 def update_password(pw_data: PasswordUpdate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     if not verify_password(pw_data.old_password, current_user.hashed_password):

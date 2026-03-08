@@ -7,7 +7,7 @@ from datetime import datetime
 from app.database import get_session
 from app.models.alert import Alert
 from app.models.supervisor import Camera, CameraLog, CaptureConfig, ShiftLog
-from app.routers.auth import get_current_user
+from app.routers.auth import get_current_user, require_roles
 from app.models.user import User
 
 router = APIRouter(prefix="/api/supervisor", tags=["supervisor"])
@@ -23,10 +23,10 @@ def get_stats(session: Session = Depends(get_session), current_user: User = Depe
         return status in {"confirmed", "verified_true", "dispatched", "resolved"}
 
     def is_false_alarm(status: str) -> bool:
-        return status in {"false_alarm", "verified_false"}
+        return status in {"false_alarm", "verified_false", "archived_low"}
 
     def is_pending(status: str) -> bool:
-        return status in {"pending", "pending_verify"}
+        return status in {"pending", "pending_verify", "reviewing_llm"}
 
     total = len(all_alerts)
     confirmed = len([a for a in all_alerts if is_true_fire(a.status)])
@@ -122,7 +122,7 @@ def list_cameras(session: Session = Depends(get_session), current_user: User = D
 
 
 @router.post("/cameras")
-def create_camera(data: CameraCreate, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+def create_camera(data: CameraCreate, session: Session = Depends(get_session), current_user: User = Depends(require_roles("supervisor", "admin"))):
     camera = Camera(**data.dict())
     session.add(camera)
     session.commit()
@@ -131,7 +131,7 @@ def create_camera(data: CameraCreate, session: Session = Depends(get_session), c
 
 
 @router.put("/cameras/{camera_id}")
-def update_camera(camera_id: int, data: CameraUpdate, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+def update_camera(camera_id: int, data: CameraUpdate, session: Session = Depends(get_session), current_user: User = Depends(require_roles("supervisor", "admin"))):
     camera = session.get(Camera, camera_id)
     if not camera:
         raise HTTPException(status_code=404, detail="Camera not found")
@@ -144,7 +144,7 @@ def update_camera(camera_id: int, data: CameraUpdate, session: Session = Depends
 
 
 @router.delete("/cameras/{camera_id}")
-def delete_camera(camera_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+def delete_camera(camera_id: int, session: Session = Depends(get_session), current_user: User = Depends(require_roles("supervisor", "admin"))):
     camera = session.get(Camera, camera_id)
     if not camera:
         raise HTTPException(status_code=404, detail="Camera not found")
@@ -156,7 +156,7 @@ def delete_camera(camera_id: int, session: Session = Depends(get_session), curre
 # ===================== 设备日志 =====================
 
 @router.get("/cameras/{camera_id}/logs")
-def get_camera_logs(camera_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+def get_camera_logs(camera_id: int, session: Session = Depends(get_session), current_user: User = Depends(require_roles("supervisor", "admin"))):
     logs = session.exec(select(CameraLog).where(CameraLog.camera_id == camera_id).order_by(desc(CameraLog.timestamp))).all()
     return logs
 
@@ -169,13 +169,13 @@ class CaptureConfigUpdate(BaseModel):
     save_original: Optional[bool] = None
 
 @router.get("/capture-config")
-def get_capture_config(session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+def get_capture_config(session: Session = Depends(get_session), current_user: User = Depends(require_roles("supervisor", "admin"))):
     configs = session.exec(select(CaptureConfig)).all()
     return configs
 
 
 @router.put("/capture-config/{config_id}")
-def update_capture_config(config_id: int, data: CaptureConfigUpdate, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+def update_capture_config(config_id: int, data: CaptureConfigUpdate, session: Session = Depends(get_session), current_user: User = Depends(require_roles("supervisor", "admin"))):
     config = session.get(CaptureConfig, config_id)
     if not config:
         raise HTTPException(status_code=404, detail="Config not found")
@@ -196,13 +196,13 @@ class ShiftLogCreate(BaseModel):
     content: str
 
 @router.get("/shift-logs")
-def list_shift_logs(session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+def list_shift_logs(session: Session = Depends(get_session), current_user: User = Depends(require_roles("supervisor", "admin"))):
     logs = session.exec(select(ShiftLog).order_by(desc(ShiftLog.created_at))).all()
     return logs
 
 
 @router.post("/shift-logs")
-def create_shift_log(data: ShiftLogCreate, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+def create_shift_log(data: ShiftLogCreate, session: Session = Depends(get_session), current_user: User = Depends(require_roles("supervisor", "admin"))):
     log = ShiftLog(**data.dict())
     session.add(log)
     session.commit()
@@ -211,7 +211,7 @@ def create_shift_log(data: ShiftLogCreate, session: Session = Depends(get_sessio
 
 
 @router.delete("/shift-logs/{log_id}")
-def delete_shift_log(log_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+def delete_shift_log(log_id: int, session: Session = Depends(get_session), current_user: User = Depends(require_roles("supervisor", "admin"))):
     log = session.get(ShiftLog, log_id)
     if not log:
         raise HTTPException(status_code=404, detail="Shift log not found")

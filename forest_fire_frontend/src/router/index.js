@@ -33,7 +33,7 @@ const routes = [
                 path: 'history',
                 name: 'History',
                 component: () => import('../views/History.vue'),
-                meta: { roles: ['operator', 'admin'] }
+                meta: { roles: ['operator', 'supervisor', 'admin'] }
             },
             {
                 path: 'stats',

@@ -1,25 +1,22 @@
 <template>
   <div class="dashboard-container">
     <div v-if="fireFlashActive" class="fire-flash-overlay"></div>
+
     <div class="header-tools">
-      <h2>🔥 智能监控大屏 (双核预警)</h2>
-      <div style="display: flex; gap: 15px; align-items: center;">
+      <h2>智能监控大屏（双核预警）</h2>
+      <div class="header-right">
         <el-button v-if="latestAlert" type="danger" @click="openAlertCenter" class="pulse-btn">
-          <el-icon><Warning /></el-icon> 告警中心
-          <el-tag
-            v-if="unreadCount > 0"
-            size="small"
-            type="warning"
-            effect="dark"
-            class="unread-tag"
-          >
+          <el-icon><Warning /></el-icon>
+          告警中心
+          <el-tag v-if="unreadCount > 0" size="small" type="warning" effect="dark" class="unread-tag">
             {{ unreadCount }}
           </el-tag>
         </el-button>
-        <el-tag type="success" v-if="wsConnected">实时告警连接正常</el-tag>
-        <el-tag type="danger" v-else>告警连接断开</el-tag>
+        <el-tag type="success" v-if="wsConnected">告警连接正常</el-tag>
+        <el-tag type="danger" v-else>告警连接中断</el-tag>
       </div>
     </div>
+
     <transition name="banner-fade">
       <el-alert
         v-if="burstBanner.visible && !showAlertDrawer"
@@ -29,16 +26,13 @@
         class="burst-banner"
       >
         <template #title>
-          近12秒新增 {{ burstBanner.count }} 条告警，最新来自 {{ burstBanner.lastCamera }}
+          最近 12 秒新增 {{ burstBanner.count }} 条告警，最新来自 {{ burstBanner.lastCamera }}
           <span v-if="burstBanner.lastAt" class="banner-time">（{{ burstBanner.lastAt }}）</span>
         </template>
-        <template #default>
-          已聚合到告警中心，点击右上角“告警中心”查看详情。
-        </template>
+        <template #default>告警已聚合到告警中心，请点击右上角“告警中心”查看详情。</template>
       </el-alert>
     </transition>
 
-    <!-- 告警中心抽屉 -->
     <el-drawer
       v-model="showAlertDrawer"
       :title="`告警中心（最近 ${alertFeed.length} 条）`"
@@ -46,21 +40,19 @@
       size="40%"
     >
       <div v-if="latestAlert" class="alert-detail">
-        <el-alert title="检测到疑似火灾！" type="error" show-icon :closable="false" style="margin-bottom: 15px;" />
-        <img :src="latestAlert.image_path" class="alert-image" />
-        <el-descriptions :column="1" border style="margin-top: 15px;">
+        <el-alert title="检测到疑似火情" type="error" show-icon :closable="false" style="margin-bottom: 15px" />
+        <img :src="latestAlert.image_path" class="alert-image" alt="告警截图" />
+        <el-descriptions :column="1" border style="margin-top: 15px">
           <el-descriptions-item label="报警设备">{{ latestAlert.camera_name || '未知设备' }}</el-descriptions-item>
           <el-descriptions-item label="发生时间">{{ latestAlert.timestamp }}</el-descriptions-item>
-          <el-descriptions-item label="YOLO 置信度">{{ (latestAlert.yolo_confidence * 100).toFixed(1) }}%</el-descriptions-item>
+          <el-descriptions-item label="YOLO 置信度">
+            {{ ((latestAlert.yolo_confidence || 0) * 100).toFixed(1) }}%
+          </el-descriptions-item>
           <el-descriptions-item label="大模型复核">
-            <el-tag :type="statusType(latestAlert.status)">
-              {{ latestAlert.llm_result || '正在分析中...' }}
-            </el-tag>
+            <el-tag :type="statusTypeSafe(latestAlert.status)">{{ latestAlert.llm_result || '正在分析中...' }}</el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="当前状态">
-            <el-tag :type="statusType(latestAlert.status)">
-              {{ statusLabel(latestAlert.status) }}
-            </el-tag>
+            <el-tag :type="statusTypeSafe(latestAlert.status)">{{ statusLabelSafe(latestAlert.status) }}</el-tag>
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -80,9 +72,7 @@
             <div class="feed-time">{{ item.timestamp }}</div>
           </div>
           <div class="feed-right">
-            <el-tag size="small" :type="statusType(item.status)">
-              {{ statusLabel(item.status) }}
-            </el-tag>
+            <el-tag size="small" :type="statusTypeSafe(item.status)">{{ statusLabelSafe(item.status) }}</el-tag>
             <span class="feed-conf">{{ Math.round((item.yolo_confidence || 0) * 100) }}%</span>
           </div>
         </div>
@@ -90,55 +80,49 @@
       <el-empty v-else description="暂无时间线数据" />
     </el-drawer>
 
-    <!-- 动态瀑布流视频墙 -->
-    <div class="video-grid" :class="{'many-cams': cameras.length > 4}" v-loading="loading">
+    <div class="video-grid" :class="{ 'many-cams': cameras.length > 4 }" v-loading="loading">
       <template v-if="cameras.length > 0">
         <div
-          class="video-cell"
           v-for="cam in cameras"
           :key="cam.id"
           :ref="el => setCellRef(cam.id, el)"
-          :class="{ 'offline': cam.status !== 'online' }"
+          class="video-cell"
+          :class="{ offline: cam.status !== 'online' }"
         >
           <div class="cell-title">
             <div class="cell-meta">
               <div class="cell-name">
-                <el-icon><VideoCamera /></el-icon> {{ cam.name }}
+                <el-icon><VideoCamera /></el-icon>
+                {{ cam.name }}
               </div>
               <div class="cell-time">{{ displayTime }}</div>
             </div>
             <div class="cell-actions">
-              <el-tag size="small" :type="cam.status==='online'?'success':'info'">
-                {{ cam.status==='online'?'在线':'离线' }}
+              <el-tag size="small" :type="cam.status === 'online' ? 'success' : 'info'">
+                {{ cam.status === 'online' ? '在线' : '离线' }}
               </el-tag>
-              <el-button
-                text
-                class="fullscreen-btn"
-                @click.stop="toggleFullscreen(cam.id)"
-                title="全屏/退出全屏"
-              >
+              <el-button text class="fullscreen-btn" @click.stop="toggleFullscreen(cam.id)" title="全屏/退出全屏">
                 <el-icon><FullScreen /></el-icon>
               </el-button>
             </div>
           </div>
-          <!-- 在线设备请求后端真实的带 YOLO 的视频流 -->
+
           <img v-if="cam.status === 'online'" :src="streamUrl(cam.id)" class="stream-img" :alt="cam.name" />
-          <!-- 离线设备显示占位 -->
           <div v-else class="offline-placeholder">
             <el-icon size="48" color="#909399"><VideoPause /></el-icon>
             <p>设备已离线</p>
           </div>
         </div>
       </template>
-      <el-empty v-else description="暂无设备接入，请先在终端添加设备" />
+      <el-empty v-else description="暂无设备接入，请先在设备管理中添加视频源" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { VideoCamera, VideoPause, Warning, FullScreen } from '@element-plus/icons-vue'
+import { FullScreen, VideoCamera, VideoPause, Warning } from '@element-plus/icons-vue'
 import api from '../api'
 
 const wsConnected = ref(false)
@@ -153,7 +137,7 @@ const burstBanner = ref({
   count: 0,
   lastCamera: '',
   lastAt: '',
-  level: 'warning',
+  level: 'warning'
 })
 
 const ALERT_FEED_LIMIT = 30
@@ -161,7 +145,7 @@ const ALERT_SEEN_TTL_MS = 30 * 60 * 1000
 const GLOBAL_SEEN_TTL_MS = 5 * 60 * 1000
 const BURST_BANNER_HIDE_MS = 12000
 
-const seenAlertMap = new Map() // key -> first seen time
+const seenAlertMap = new Map()
 let reconnectTimer = null
 let burstBannerTimer = null
 let fireFlashTimer = null
@@ -174,6 +158,10 @@ const loading = ref(false)
 const nowTick = ref(Date.now())
 const cellRefs = new Map()
 
+const alertSoundEnabled = ref(true)
+const alarmAudioUrl = ref('/api/admin/public/alarm-audio')
+let alarmAudio = null
+
 const statusLabel = (status) => {
   const map = {
     pending: '待核实',
@@ -183,28 +171,72 @@ const statusLabel = (status) => {
     false_alarm: '已核实误报',
     verified_false: '已核实误报',
     dispatched: '已联动消防',
-    resolved: '处置已完成'
+    resolved: '已处理'
   }
   return map[status] || status || '待核实'
 }
 
 const statusType = (status) => {
   if (['confirmed', 'verified_true', 'dispatched', 'resolved'].includes(status)) return 'danger'
-  if (['false_alarm', 'verified_false'].includes(status)) return 'info'
+  if (['false_alarm', 'verified_false', 'archived_low'].includes(status)) return 'info'
   return 'warning'
 }
 
-const displayTime = computed(() => (
-  new Date(nowTick.value).toLocaleString('zh-CN', { hour12: false })
-))
+const statusLabelSafe = (status) => {
+  if (status === 'reviewing_llm') return 'LLM复核中'
+  if (status === 'archived_low') return '低风险归档'
+  return statusLabel(status)
+}
+
+const statusTypeSafe = (status) => statusType(status)
+
+const displayTime = computed(() => new Date(nowTick.value).toLocaleString('zh-CN', { hour12: false }))
 
 const streamUrl = (cameraId) => `/api/stream/video/${cameraId}`
 
 const setCellRef = (cameraId, el) => {
-  if (el) {
-    cellRefs.set(cameraId, el)
-  } else {
-    cellRefs.delete(cameraId)
+  if (el) cellRefs.set(cameraId, el)
+  else cellRefs.delete(cameraId)
+}
+
+const toBool = (value, fallback = true) => {
+  if (typeof value === 'boolean') return value
+  const text = String(value ?? '').toLowerCase()
+  if (['true', '1', 'yes', 'on'].includes(text)) return true
+  if (['false', '0', 'no', 'off'].includes(text)) return false
+  return fallback
+}
+
+const initAlarmAudio = () => {
+  if (typeof Audio === 'undefined') return
+  alarmAudio = new Audio(alarmAudioUrl.value)
+  alarmAudio.preload = 'auto'
+}
+
+const playAlarmSound = () => {
+  if (!alertSoundEnabled.value || !alarmAudio) return
+  try {
+    alarmAudio.currentTime = 0
+    const promise = alarmAudio.play()
+    if (promise && typeof promise.catch === 'function') {
+      promise.catch(() => {})
+    }
+  } catch {
+    // Browser auto-play policies can block this; ignore silently.
+  }
+}
+
+const fetchRuntimeConfig = async () => {
+  try {
+    const cfg = await api.get('/admin/public/system-name')
+    alertSoundEnabled.value = toBool(cfg?.alert_sound, true)
+    if (cfg?.alarm_audio_url) {
+      alarmAudioUrl.value = cfg.alarm_audio_url
+    }
+  } catch {
+    alertSoundEnabled.value = true
+  } finally {
+    initAlarmAudio()
   }
 }
 
@@ -248,13 +280,45 @@ const shouldAcceptAlertGlobal = (key) => {
   if (!window.__ff_seen_alert_map) {
     window.__ff_seen_alert_map = {}
   }
-  const globalMap = window.__ff_seen_alert_map
-  const seenTs = globalMap[key]
-  if (seenTs && (nowTs - seenTs) < GLOBAL_SEEN_TTL_MS) {
+  const seenTs = window.__ff_seen_alert_map[key]
+  if (seenTs && nowTs - seenTs < GLOBAL_SEEN_TTL_MS) {
     return false
   }
-  globalMap[key] = nowTs
+  window.__ff_seen_alert_map[key] = nowTs
   return true
+}
+
+const cleanupSeenAlerts = (nowTs) => {
+  for (const [key, ts] of seenAlertMap.entries()) {
+    if (nowTs - ts > ALERT_SEEN_TTL_MS) {
+      seenAlertMap.delete(key)
+    }
+  }
+
+  if (!window.__ff_seen_alert_map) return
+  Object.keys(window.__ff_seen_alert_map).forEach((key) => {
+    if (nowTs - window.__ff_seen_alert_map[key] > GLOBAL_SEEN_TTL_MS) {
+      delete window.__ff_seen_alert_map[key]
+    }
+  })
+}
+
+const upsertAlertFeed = (alert, key) => {
+  const idx = alertFeed.value.findIndex((item) => item._key === key)
+  const merged = { ...(idx >= 0 ? alertFeed.value[idx] : {}), ...alert, _key: key }
+
+  if (idx >= 0) {
+    alertFeed.value[idx] = merged
+    // Move updated alert to top for timeline readability.
+    alertFeed.value.unshift(alertFeed.value.splice(idx, 1)[0])
+  } else {
+    alertFeed.value.unshift(merged)
+    if (alertFeed.value.length > ALERT_FEED_LIMIT) {
+      alertFeed.value.length = ALERT_FEED_LIMIT
+    }
+  }
+
+  latestAlert.value = merged
 }
 
 const touchBurstBanner = (alert) => {
@@ -262,7 +326,7 @@ const touchBurstBanner = (alert) => {
   burstBanner.value.count += 1
   burstBanner.value.lastCamera = alert.camera_name || '未知设备'
   burstBanner.value.lastAt = alert.timestamp || ''
-  burstBanner.value.level = (alert.status === 'pending_verify' && String(alert.llm_result || '').includes('高危')) ? 'error' : 'warning'
+  burstBanner.value.level = ['confirmed', 'verified_true', 'dispatched', 'resolved'].includes(alert.status) ? 'error' : 'warning'
 
   if (burstBannerTimer) {
     clearTimeout(burstBannerTimer)
@@ -274,9 +338,8 @@ const touchBurstBanner = (alert) => {
 }
 
 const triggerFireFlash = (alert) => {
-  const isHighRiskAi = alert.status === 'pending_verify' && String(alert.llm_result || '').includes('高危')
-  const isTrueFireWorkflow = ['confirmed', 'verified_true', 'dispatched', 'resolved'].includes(alert.status)
-  if (!isHighRiskAi && !isTrueFireWorkflow) return
+  const highRiskStatuses = ['pending_verify', 'confirmed', 'verified_true', 'dispatched', 'resolved']
+  if (!highRiskStatuses.includes(alert.status)) return
   fireFlashActive.value = true
   if (fireFlashTimer) {
     clearTimeout(fireFlashTimer)
@@ -293,48 +356,12 @@ const clearReconnectTimer = () => {
   }
 }
 
-const cleanupSeenAlerts = (nowTs) => {
-  for (const [key, seenTs] of seenAlertMap.entries()) {
-    if (nowTs - seenTs > ALERT_SEEN_TTL_MS) {
-      seenAlertMap.delete(key)
-    }
-  }
-
-  if (window.__ff_seen_alert_map) {
-    for (const key in window.__ff_seen_alert_map) {
-      if ((nowTs - window.__ff_seen_alert_map[key]) > GLOBAL_SEEN_TTL_MS) {
-        delete window.__ff_seen_alert_map[key]
-      }
-    }
-  }
-}
-
-const upsertAlertFeed = (alert, key) => {
-  const idx = alertFeed.value.findIndex(item => item._key === key)
-  const merged = { ...(idx >= 0 ? alertFeed.value[idx] : {}), ...alert, _key: key }
-
-  if (idx >= 0) {
-    alertFeed.value[idx] = merged
-    // 更新后移到顶部，确保时间线优先展示最新状态
-    alertFeed.value.unshift(alertFeed.value.splice(idx, 1)[0])
-  } else {
-    alertFeed.value.unshift(merged)
-    if (alertFeed.value.length > ALERT_FEED_LIMIT) {
-      alertFeed.value.length = ALERT_FEED_LIMIT
-    }
-  }
-
-  latestAlert.value = merged
-  return idx < 0
-}
-
 const fetchCameras = async () => {
   loading.value = true
   try {
-    // 操作员也可以看监控设备列表，所以这里调用 supervisor 接口，需要后端放开权限或者前端用已有数据
     const res = await api.get('/supervisor/cameras')
-    cameras.value = res
-  } catch (e) {
+    cameras.value = Array.isArray(res) ? res : []
+  } catch {
     ElMessage.error('无法获取设备列表')
   } finally {
     loading.value = false
@@ -343,18 +370,16 @@ const fetchCameras = async () => {
 
 const initWebSocket = () => {
   if (!isComponentAlive) return
-  if (ws.value && (ws.value.readyState === WebSocket.OPEN || ws.value.readyState === WebSocket.CONNECTING)) {
-    return
-  }
+  if (ws.value && (ws.value.readyState === WebSocket.OPEN || ws.value.readyState === WebSocket.CONNECTING)) return
 
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
   isManualClosing = false
   ws.value = new WebSocket(`${protocol}://${window.location.host}/ws/alerts`)
-  
+
   ws.value.onopen = () => {
     wsConnected.value = true
   }
-  
+
   ws.value.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data)
@@ -369,24 +394,25 @@ const initWebSocket = () => {
 
       upsertAlertFeed(data, key)
 
-      // 同一实例内重复消息只更新时间线，不重复提醒
+      // Same alert in current page lifecycle only updates timeline; no repeat remind.
       if (!isNewAlert) return
-
-      // 跨实例/重复连接去重：同一 key 仅处理一次提醒
+      // Cross reconnect/global dedupe.
       if (!shouldAcceptAlertGlobal(key)) return
 
       unreadCount.value += 1
       touchBurstBanner(data)
       triggerFireFlash(data)
-    } catch (e) {
-      console.error('解析 WebSocket 数据失败:', e)
+      playAlarmSound()
+    } catch (error) {
+      console.error('解析 WebSocket 数据失败:', error)
     }
   }
-  
+
   ws.value.onclose = () => {
     wsConnected.value = false
     ws.value = null
     if (!isComponentAlive || isManualClosing) return
+
     clearReconnectTimer()
     reconnectTimer = setTimeout(() => {
       initWebSocket()
@@ -394,12 +420,14 @@ const initWebSocket = () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   isComponentAlive = true
   clockTimer = setInterval(() => {
     nowTick.value = Date.now()
   }, 1000)
-  fetchCameras()
+
+  await fetchRuntimeConfig()
+  await fetchCameras()
   initWebSocket()
 })
 
@@ -413,6 +441,7 @@ onUnmounted(() => {
     ws.value.close()
     ws.value = null
   }
+
   if (burstBannerTimer) {
     clearTimeout(burstBannerTimer)
     burstBannerTimer = null
@@ -425,6 +454,11 @@ onUnmounted(() => {
     clearInterval(clockTimer)
     clockTimer = null
   }
+  if (alarmAudio) {
+    alarmAudio.pause()
+    alarmAudio = null
+  }
+
   cellRefs.clear()
 })
 </script>
@@ -458,6 +492,12 @@ onUnmounted(() => {
   color: #303133;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .burst-banner {
   margin-bottom: 12px;
 }
@@ -465,70 +505,43 @@ onUnmounted(() => {
 .banner-time {
   color: #909399;
   font-size: 12px;
-  font-weight: 400;
 }
 
-.banner-fade-enter-active,
-.banner-fade-leave-active {
-  transition: all 0.2s ease;
-}
-
-.banner-fade-enter-from,
-.banner-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-6px);
-}
-
-/* 动态网格布局：不超过 4 个时自适应 2x2，超过 4 个时变成自动填充的多列瀑布流 */
 .video-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 15px;
-  flex: 1;
-  overflow-y: auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
   align-content: start;
 }
 
-.video-grid:not(.many-cams) {
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, minmax(300px, 1fr));
+.video-grid.many-cams {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .video-cell {
-  background-color: #000;
-  border-radius: 8px;
-  overflow: hidden;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  min-height: 300px;
-}
-
-.video-cell.offline {
-  background-color: #2c2c2c;
-  border: 1px dashed #555;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0f131b;
+  min-height: 240px;
+  border: 1px solid #dcdfe6;
 }
 
 .cell-title {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  font-size: 14px;
-  z-index: 10;
+  height: 38px;
+  padding: 0 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.65);
+  font-size: 13px;
 }
 
 .cell-meta {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 12px;
   min-width: 0;
 }
 
@@ -537,11 +550,13 @@ onUnmounted(() => {
   align-items: center;
   gap: 6px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .cell-time {
+  color: rgba(255, 255, 255, 0.85);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.88);
+  font-variant-numeric: tabular-nums;
 }
 
 .cell-actions {
@@ -552,87 +567,64 @@ onUnmounted(() => {
 
 .fullscreen-btn {
   color: #fff;
-  padding: 4px;
-}
-
-.fullscreen-btn:hover {
-  color: #409EFF;
 }
 
 .stream-img {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 38px);
+  min-height: 200px;
+  display: block;
   object-fit: cover;
 }
 
-.video-cell:fullscreen {
-  border-radius: 0;
-}
-
-.video-cell:fullscreen .stream-img {
-  object-fit: contain;
-}
-
 .offline-placeholder {
+  height: calc(100% - 38px);
+  min-height: 200px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 100%;
-  color: #909399;
+  justify-content: center;
+  color: #c0c4cc;
 }
 
 .alert-detail {
-  padding: 10px;
+  margin-bottom: 6px;
 }
 
 .alert-image {
   width: 100%;
   border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
-
-.pulse-btn {
-  animation: pulse 2s infinite;
-}
-
-.unread-tag {
-  margin-left: 8px;
+  display: block;
+  max-height: 220px;
+  object-fit: cover;
+  border: 1px solid #ebeef5;
 }
 
 .alert-feed {
-  max-height: 320px;
-  overflow: auto;
-  border: 1px solid #ebeef5;
-  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 420px;
+  overflow-y: auto;
 }
 
 .feed-item {
+  border: 1px solid #ebeef5;
+  border-radius: 8px;
+  padding: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 12px;
-  border-bottom: 1px solid #f2f6fc;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.feed-item:last-child {
-  border-bottom: none;
 }
 
 .feed-item:hover {
-  background-color: #f5f7fa;
+  background: #f5f7fa;
 }
 
 .feed-item.active {
-  background-color: #ecf5ff;
-}
-
-.feed-left {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  border-color: #f56c6c;
+  background: #fff1f0;
 }
 
 .feed-title {
@@ -643,6 +635,7 @@ onUnmounted(() => {
 .feed-time {
   font-size: 12px;
   color: #909399;
+  margin-top: 2px;
 }
 
 .feed-right {
@@ -652,20 +645,59 @@ onUnmounted(() => {
 }
 
 .feed-conf {
-  min-width: 44px;
-  text-align: right;
-  font-size: 12px;
   color: #606266;
+  font-size: 12px;
+  min-width: 42px;
+  text-align: right;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 108, 108, 0.7); }
-  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(245, 108, 108, 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 108, 108, 0); }
+.unread-tag {
+  margin-left: 8px;
+}
+
+.pulse-btn {
+  animation: pulse-red 1.6s infinite;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(245, 108, 108, 0.45); }
+  70% { box-shadow: 0 0 0 10px rgba(245, 108, 108, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(245, 108, 108, 0); }
 }
 
 @keyframes fire-flash {
-  0%, 100% { opacity: 0.25; }
-  50% { opacity: 0.85; }
+  0% { opacity: 0.25; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.25; }
+}
+
+.banner-fade-enter-active,
+.banner-fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.banner-fade-enter-from,
+.banner-fade-leave-to {
+  opacity: 0;
+}
+
+@media (max-width: 1200px) {
+  .video-grid,
+  .video-grid.many-cams {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .header-tools {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .video-grid,
+  .video-grid.many-cams {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
