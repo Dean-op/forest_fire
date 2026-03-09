@@ -520,9 +520,12 @@ onUnmounted(() => {
 
 .video-cell {
   position: relative;
+  display: flex;
+  flex-direction: column;
   border-radius: 10px;
   overflow: hidden;
   background: #0f131b;
+  aspect-ratio: 16 / 10;
   min-height: 240px;
   border: 1px solid #dcdfe6;
 }
@@ -571,20 +574,28 @@ onUnmounted(() => {
 
 .stream-img {
   width: 100%;
-  height: calc(100% - 38px);
-  min-height: 200px;
+  height: auto;
+  min-height: 0;
+  flex: 1;
   display: block;
   object-fit: cover;
 }
 
 .offline-placeholder {
-  height: calc(100% - 38px);
-  min-height: 200px;
+  height: auto;
+  min-height: 0;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #c0c4cc;
+}
+
+.video-cell:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: auto;
 }
 
 .alert-detail {

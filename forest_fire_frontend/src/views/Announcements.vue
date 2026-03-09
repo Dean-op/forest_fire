@@ -5,7 +5,6 @@
         <div class="card-header">
           <div class="title-wrap">
             <h2>公告管理 / SOP</h2>
-            <el-tag type="info">按 ID 升序</el-tag>
           </div>
           <div class="toolbar">
             <el-radio-group v-model="filterCat" @change="fetchList">

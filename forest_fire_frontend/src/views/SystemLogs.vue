@@ -4,7 +4,6 @@
       <template #header>
         <div class="card-header">
           <h2>系统日志</h2>
-          <el-tag type="info">按 ID 升序</el-tag>
         </div>
       </template>
 

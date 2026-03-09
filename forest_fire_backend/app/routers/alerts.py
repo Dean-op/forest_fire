@@ -31,6 +31,7 @@ WORKFLOW_STATUS_LABELS = {
 }
 
 HIDDEN_FOR_OPERATOR = {"archived_low", "reviewing_llm"}
+DELETABLE_STATUSES = {"verified_false", "false_alarm", "resolved", "archived_low"}
 
 
 def expand_status_filter(status: str) -> set[str]:
@@ -55,6 +56,10 @@ def append_remark(original: Optional[str], extra: Optional[str]) -> Optional[str
     if not original:
         return text
     return f"{original}\n{text}"
+
+
+def can_delete_alert(status: str) -> bool:
+    return status in DELETABLE_STATUSES
 
 
 def get_float_config(session: Session, key: str, default: float) -> float:
@@ -319,6 +324,24 @@ def get_alert(
     return alert
 
 
+@router.delete("/{alert_id}")
+def delete_alert(
+    alert_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(require_roles("admin")),
+):
+    alert = session.get(Alert, alert_id)
+    if not alert:
+        raise HTTPException(status_code=404, detail="Alert not found")
+
+    if not can_delete_alert(alert.status):
+        raise HTTPException(status_code=400, detail="Only closed/archived alerts can be deleted")
+
+    session.delete(alert)
+    session.commit()
+    return {"msg": "Deleted", "id": alert_id}
+
+
 @router.post("/batch-delete")
 def batch_delete_alerts(
     data: BatchDeleteRequest,
@@ -326,10 +349,26 @@ def batch_delete_alerts(
     current_user: User = Depends(require_roles("admin")),
 ):
     deleted = 0
+    blocked: list[dict] = []
+    not_found: list[int] = []
+
     for aid in data.ids:
         alert = session.get(Alert, aid)
-        if alert:
-            session.delete(alert)
-            deleted += 1
+        if not alert:
+            not_found.append(aid)
+            continue
+
+        if not can_delete_alert(alert.status):
+            blocked.append({"id": aid, "status": alert.status})
+            continue
+
+        session.delete(alert)
+        deleted += 1
+
     session.commit()
-    return {"msg": f"已删除 {deleted} 条记录", "deleted": deleted}
+    return {
+        "msg": f"Deleted {deleted} alerts",
+        "deleted": deleted,
+        "blocked": blocked,
+        "not_found": not_found,
+    }

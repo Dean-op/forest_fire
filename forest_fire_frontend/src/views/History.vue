@@ -13,6 +13,7 @@
               <el-option label="已联动消防" value="dispatched" />
               <el-option label="已完成上报" value="resolved" />
               <el-option label="低风险归档" value="low_archived" />
+              <el-option v-if="isAdmin" label="可删除记录" value="done" />
             </el-select>
 
             <el-button
@@ -33,7 +34,7 @@
       </template>
 
       <el-table :data="alerts" stripe style="width: 100%" v-loading="loading" @selection-change="handleSelectionChange">
-        <el-table-column v-if="isAdmin" type="selection" width="45" />
+        <el-table-column v-if="isAdmin" type="selection" width="45" :selectable="isRowSelectable" />
         <el-table-column prop="id" label="ID" width="60" />
         <el-table-column prop="timestamp" label="告警时间" width="180">
           <template #default="{ row }">{{ formatTime(row.timestamp) }}</template>
@@ -117,6 +118,7 @@ const filterStatus = ref('')
 const detailVisible = ref(false)
 const currentAlert = ref(null)
 const selectedIds = ref([])
+const deletableStatuses = new Set(['verified_false', 'false_alarm', 'resolved', 'archived_low'])
 
 const formatTime = (t) => (t ? new Date(t).toLocaleString('zh-CN') : '')
 
@@ -146,6 +148,10 @@ const statusType = (s) => ({
   archived_low: 'info'
 }[s] || 'info')
 
+const canDeleteStatus = (status) => deletableStatuses.has(status)
+
+const isRowSelectable = (row) => canDeleteStatus(row.status)
+
 const fetchAlerts = async () => {
   loading.value = true
   try {
@@ -154,6 +160,7 @@ const fetchAlerts = async () => {
     const res = await api.get('/alerts', { params })
     alerts.value = res.items || []
     total.value = res.total || 0
+    selectedIds.value = []
   } catch {
     ElMessage.error('获取告警历史失败')
   } finally {
@@ -193,17 +200,30 @@ const exportCSV = () => {
 }
 
 const handleSelectionChange = (rows) => {
-  selectedIds.value = rows.map(r => r.id)
+  selectedIds.value = rows.filter(r => canDeleteStatus(r.status)).map(r => r.id)
 }
 
 const batchDelete = async () => {
   if (!isAdmin.value || selectedIds.value.length === 0) return
   try {
     await ElMessageBox.confirm(`确认删除选中的 ${selectedIds.value.length} 条记录？`, '批量删除', { type: 'warning' })
-    await api.post('/alerts/batch-delete', { ids: selectedIds.value })
-    ElMessage.success(`已删除 ${selectedIds.value.length} 条记录`)
+    const res = await api.post('/alerts/batch-delete', { ids: selectedIds.value })
+    const deleted = Number(res?.deleted || 0)
+    const blocked = Array.isArray(res?.blocked) ? res.blocked.length : 0
+    const notFound = Array.isArray(res?.not_found) ? res.not_found.length : 0
+
+    if (deleted > 0) {
+      ElMessage.success(`已删除 ${deleted} 条记录`)
+    }
+    if (blocked > 0 || notFound > 0) {
+      ElMessage.warning(`未删除 ${blocked + notFound} 条记录（未闭环或不存在）`)
+    }
+    if (deleted === 0 && blocked === 0 && notFound === 0) {
+      ElMessage.info('没有可删除的记录')
+    }
+
     selectedIds.value = []
-    fetchAlerts()
+    await fetchAlerts()
   } catch (e) {
     if (e !== 'cancel') ElMessage.error('删除失败')
   }

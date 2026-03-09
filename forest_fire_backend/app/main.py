@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 
 from app.database import create_db_and_tables
-from app.config import UPLOAD_DIR
+from app.config import CORS_ORIGINS, UPLOAD_DIR
 from app.routers import auth, stream, ws, alerts, supervisor, admin
 
 # ... (lifespan and app creation stay)
@@ -28,7 +28,7 @@ app.include_router(admin.router)
 # CORS 中间件 — 允许所有来源
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

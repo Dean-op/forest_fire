@@ -1,96 +1,158 @@
 <template>
   <div class="tasks-page">
-    <el-card shadow="hover">
-      <template #header>
-        <div class="card-header">
-          <div class="title-wrap">
-            <h2>Operator 任务中心</h2>
-            <el-tag type="danger">仅高/中风险可见</el-tag>
-          </div>
-          <div class="header-tools">
-            <el-select v-model="filterStatus" placeholder="筛选状态" clearable style="width: 180px" @change="onFilterChange">
-              <el-option label="全部" value="" />
-              <el-option label="待处置" value="pending_verify" />
-              <el-option label="已联动消防" value="dispatched" />
-              <el-option label="已处理" value="resolved" />
-            </el-select>
-            <el-tag type="info">共 {{ total }} 条</el-tag>
-            <el-button @click="fetchAlerts" :loading="loading">刷新</el-button>
-          </div>
+    <section class="hero-panel">
+      <div class="hero-main">
+        <p class="hero-kicker">Operator Console</p>
+        <h2>我的任务</h2>
+        <p class="hero-subtitle">仅展示高/中风险任务，支持 SOP 快速处置闭环。</p>
+      </div>
+      <div class="hero-metrics">
+        <div class="metric-item">
+          <div class="metric-label">当前页任务</div>
+          <div class="metric-value">{{ displayAlerts.length }}</div>
         </div>
-      </template>
+        <div class="metric-item warning">
+          <div class="metric-label">待处置</div>
+          <div class="metric-value">{{ pendingCount }}</div>
+        </div>
+        <div class="metric-item danger">
+          <div class="metric-label">已联动消防</div>
+          <div class="metric-value">{{ dispatchedCount }}</div>
+        </div>
+        <div class="metric-item success">
+          <div class="metric-label">已完成上报</div>
+          <div class="metric-value">{{ resolvedCount }}</div>
+        </div>
+      </div>
+    </section>
 
-      <el-table :data="displayAlerts" stripe border v-loading="loading" style="width: 100%" row-key="id">
-        <el-table-column prop="id" label="ID" width="70" align="center" />
-        <el-table-column prop="timestamp" label="告警时间" width="170">
-          <template #default="{ row }">{{ formatTime(row.timestamp) }}</template>
-        </el-table-column>
-        <el-table-column label="事故地点" min-width="210">
-          <template #default="{ row }">
-            <div class="location-cell">
-              <div class="cam-name">{{ row.camera_name || '未知设备' }}</div>
-              <div class="cam-loc">{{ row.camera_location || '位置未配置' }}</div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="现场截图" width="132" align="center">
-          <template #default="{ row }">
-            <el-image
-              v-if="row.image_path"
-              :src="row.image_path"
-              :preview-src-list="[row.image_path]"
-              fit="cover"
-              class="snapshot"
-              preview-teleported
-            />
-            <div v-else class="snapshot placeholder">无截图</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="风险级别" width="110" align="center">
-          <template #default="{ row }">
-            <el-tag :type="riskType(row)">{{ riskLabel(row) }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="llm_result" label="AI建议" min-width="240" show-overflow-tooltip />
-        <el-table-column label="任务状态" width="130" align="center">
-          <template #default="{ row }">
-            <el-tag :type="workflowType(row.status)">{{ workflowLabel(row.status) }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作处理" width="190" fixed="right" align="center">
-          <template #default="{ row }">
-            <div class="op-actions">
-              <template v-if="isPendingVerify(row.status)">
-                <el-button class="op-btn" type="danger" size="small" @click="openSopExecute(row, 'SOP1')">执行SOP1</el-button>
-                <el-button class="op-btn" type="warning" size="small" @click="openSopExecute(row, 'SOP2')">执行SOP2</el-button>
-              </template>
-              <template v-else-if="row.status === 'dispatched'">
-                <el-button class="op-btn" type="success" size="small" @click="openResolve(row)">完成上报</el-button>
-              </template>
-              <el-tag v-else type="success" size="small">已闭环</el-tag>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
+    <el-card class="control-card" shadow="never">
+      <div class="control-row">
+        <el-radio-group v-model="filterStatus" @change="onFilterChange" size="large" class="status-switch">
+          <el-radio-button value="">运营队列</el-radio-button>
+          <el-radio-button value="pending_verify">待处置</el-radio-button>
+          <el-radio-button value="dispatched">已联动消防</el-radio-button>
+          <el-radio-button value="resolved">已完成上报</el-radio-button>
+          <el-radio-button v-if="isAdmin" value="done">可删除记录</el-radio-button>
+        </el-radio-group>
 
-      <div class="pagination-wrapper">
-        <el-pagination
-          v-model:current-page="page"
-          v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 30, 50]"
-          :total="total"
-          layout="total, sizes, prev, pager, next"
-          @size-change="onPageSizeChange"
-          @current-change="onPageChange"
-        />
+        <div class="control-actions">
+          <el-tag type="info">总计 {{ total }} 条</el-tag>
+          <el-tag v-if="isAdmin && batchMode" type="warning">已选 {{ selectedIds.length }} 条</el-tag>
+          <el-select v-model="pageSize" style="width: 120px" @change="onPageSizeChange">
+            <el-option :value="10" label="10 / 页" />
+            <el-option :value="20" label="20 / 页" />
+            <el-option :value="30" label="30 / 页" />
+            <el-option :value="50" label="50 / 页" />
+          </el-select>
+          <el-button v-if="isAdmin" @click="toggleBatchMode">
+            {{ batchMode ? '退出批量' : '批量选择' }}
+          </el-button>
+          <el-button
+            v-if="isAdmin && batchMode"
+            type="danger"
+            :disabled="selectedIds.length === 0 || deleting"
+            :loading="deleting"
+            @click="deleteSelected"
+          >
+            删除所选
+          </el-button>
+          <el-button :loading="loading" @click="fetchAlerts">刷新</el-button>
+        </div>
       </div>
     </el-card>
 
-    <el-dialog v-model="actionVisible" :title="actionTitle" width="700px">
+    <div class="task-grid" v-loading="loading">
+      <el-empty v-if="!loading && displayAlerts.length === 0" description="当前筛选条件下没有任务" />
+
+      <article v-for="row in displayAlerts" :key="row.id" class="task-card">
+        <header class="task-head">
+          <div class="head-left">
+            <el-checkbox
+              v-if="isAdmin && batchMode"
+              :model-value="selectedIds.includes(row.id)"
+              @change="(v) => toggleSelect(row.id, v)"
+            />
+            <span class="task-id">#{{ row.id }}</span>
+            <span class="task-time">{{ formatTime(row.timestamp) }}</span>
+          </div>
+          <el-tag size="small" :type="workflowType(row.status)">{{ workflowLabel(row.status) }}</el-tag>
+        </header>
+
+        <div class="task-main">
+          <el-image
+            v-if="row.image_path"
+            :src="row.image_path"
+            :preview-src-list="[row.image_path]"
+            fit="cover"
+            class="snapshot"
+            preview-teleported
+          />
+          <div v-else class="snapshot placeholder">暂无截图</div>
+
+          <div class="task-meta">
+            <div class="meta-location">
+              <div class="cam-name">{{ row.camera_name || '未知设备' }}</div>
+              <div class="cam-loc">{{ row.camera_location || '位置未配置' }}</div>
+            </div>
+
+            <div class="meta-risk">
+              <el-tag :type="riskType(row)">{{ riskLabel(row) }}</el-tag>
+              <span class="conf-text">YOLO {{ Math.round((row.yolo_confidence || 0) * 100) }}%</span>
+            </div>
+
+            <el-progress
+              :percentage="Math.round((row.yolo_confidence || 0) * 100)"
+              :stroke-width="8"
+              :show-text="false"
+              :color="progressColor(row)"
+            />
+
+            <p class="ai-advice">{{ row.llm_result || '暂无 AI 建议' }}</p>
+          </div>
+        </div>
+
+        <footer class="task-foot">
+          <template v-if="isPendingVerify(row.status)">
+            <el-button class="action-btn" type="danger" @click="openSopExecute(row, 'SOP1')">执行 SOP1</el-button>
+            <el-button class="action-btn" type="warning" @click="openSopExecute(row, 'SOP2')">执行 SOP2</el-button>
+          </template>
+          <template v-else-if="row.status === 'dispatched'">
+            <el-button class="action-btn" type="success" @click="openResolve(row)">完成上报</el-button>
+          </template>
+          <el-tag v-else type="success" effect="dark">已闭环</el-tag>
+
+          <el-button
+            v-if="isAdmin"
+            class="action-btn delete-btn"
+            type="danger"
+            plain
+            :disabled="!canDeleteStatus(row.status) || deleting"
+            @click="deleteOne(row)"
+          >
+            删除
+          </el-button>
+        </footer>
+      </article>
+    </div>
+
+    <div class="pagination-wrapper">
+      <el-pagination
+        v-model:current-page="page"
+        :page-size="pageSize"
+        :total="total"
+        layout="total, prev, pager, next"
+        @current-change="onPageChange"
+      />
+    </div>
+
+    <el-dialog v-model="actionVisible" :title="actionTitle" width="720px">
       <div v-if="currentAlert">
         <el-descriptions :column="1" border size="small">
-          <el-descriptions-item label="告警ID">{{ currentAlert.id }}</el-descriptions-item>
-          <el-descriptions-item label="事故地点">{{ currentAlert.camera_name || '未知设备' }} / {{ currentAlert.camera_location || '位置未配置' }}</el-descriptions-item>
+          <el-descriptions-item label="告警 ID">{{ currentAlert.id }}</el-descriptions-item>
+          <el-descriptions-item label="事故地点">
+            {{ currentAlert.camera_name || '未知设备' }} / {{ currentAlert.camera_location || '位置未配置' }}
+          </el-descriptions-item>
           <el-descriptions-item label="风险级别">
             <el-tag :type="riskType(currentAlert)">{{ riskLabel(currentAlert) }}</el-tag>
           </el-descriptions-item>
@@ -100,42 +162,51 @@
       <div v-if="actionType === 'SOP1'" class="sop-section">
         <h4>SOP1：高风险紧急处置（确诊火情）</h4>
         <ol class="sop-list">
-          <li>人工视检：3秒内确认是否为明显明火/浓烟。</li>
-          <li>消防联动：拨打消防电话，通报火灾地点与火势初判。</li>
+          <li>人工复核：30 秒内确认明火或浓烟。</li>
+          <li>消防联动：拨打消防电话并通报位置与火势。</li>
           <li>内部调度：通知护林员/应急小组前往现场。</li>
-          <li>归档结单：记录接警人与调度对象，状态改为“已处理”。</li>
+          <li>完成记录：补充接警人与调度对象并闭环。</li>
         </ol>
       </div>
 
       <div v-if="actionType === 'SOP2'" class="sop-section">
         <h4>SOP2：中风险现场核实（疑似火情）</h4>
         <ol class="sop-list">
-          <li>人工视检：结合截图和 LLM 解释判断是否疑似误报。</li>
-          <li>现场复核：调度最近护林员或无人机赴现场核实。</li>
-          <li>决断分流：真实火灾则升级 SOP1；误报则归档。</li>
-          <li>归档结单：填写复核人与误报原因（若为误报）。</li>
+          <li>人工复核：结合截图与 AI 建议判断是否误报。</li>
+          <li>现场核实：调度最近人员或无人机进行复核。</li>
+          <li>结果分流：真实火情升级 SOP1，误报则归档处理。</li>
+          <li>补充备注：记录复核人与误报原因。</li>
         </ol>
       </div>
 
       <el-form label-width="120px" class="action-form">
-        <el-form-item v-if="actionType === 'SOP2'" label="SOP2结果">
+        <el-form-item v-if="actionType === 'SOP2'" label="SOP2 结果">
           <el-radio-group v-model="sop2Outcome">
-            <el-radio value="true_fire">真实火灾（升级SOP1）</el-radio>
+            <el-radio value="true_fire">真实火灾（升级 SOP1）</el-radio>
             <el-radio value="false_alarm">现场误报</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="actionType === 'SOP1' || (actionType === 'SOP2' && sop2Outcome === 'true_fire')" label="消防电话">
+        <el-form-item
+          v-if="actionType === 'SOP1' || (actionType === 'SOP2' && sop2Outcome === 'true_fire')"
+          label="消防电话"
+        >
           <el-input v-model="dispatchContact" placeholder="为空则使用系统默认消防电话" />
           <div class="field-tip">系统默认：{{ fireDispatchPhone }}</div>
         </el-form-item>
 
-        <el-form-item v-if="actionType === 'SOP1' || (actionType === 'SOP2' && sop2Outcome === 'true_fire')" label="接警人">
-          <el-input v-model="receiverName" placeholder="填写接警人" />
+        <el-form-item
+          v-if="actionType === 'SOP1' || (actionType === 'SOP2' && sop2Outcome === 'true_fire')"
+          label="接警人"
+        >
+          <el-input v-model="receiverName" placeholder="填写接警人姓名" />
         </el-form-item>
 
-        <el-form-item v-if="actionType === 'SOP1' || (actionType === 'SOP2' && sop2Outcome === 'true_fire')" label="调度对象">
-          <el-input v-model="dispatchTarget" placeholder="填写护林员/应急小组" />
+        <el-form-item
+          v-if="actionType === 'SOP1' || (actionType === 'SOP2' && sop2Outcome === 'true_fire')"
+          label="调度对象"
+        >
+          <el-input v-model="dispatchTarget" placeholder="填写护林员或应急小组" />
         </el-form-item>
 
         <el-form-item v-if="actionType === 'SOP2'" label="复核人">
@@ -147,7 +218,12 @@
         </el-form-item>
 
         <el-form-item label="处理备注">
-          <el-input v-model="processRemark" type="textarea" :rows="4" placeholder="补充现场情况、联动详情、上报结果" />
+          <el-input
+            v-model="processRemark"
+            type="textarea"
+            :rows="4"
+            placeholder="补充现场情况、联动详情与处置结果"
+          />
         </el-form-item>
       </el-form>
 
@@ -161,8 +237,11 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import api from '../api'
+import { useUserStore } from '../stores/user'
+
+const userStore = useUserStore()
 
 const alerts = ref([])
 const total = ref(0)
@@ -189,6 +268,12 @@ const verifierName = ref('')
 const falseReason = ref('')
 const sop2Outcome = ref('false_alarm')
 const submitting = ref(false)
+const deleting = ref(false)
+const batchMode = ref(false)
+const selectedIds = ref([])
+
+const isAdmin = computed(() => userStore.role === 'admin')
+const deletableStatuses = new Set(['verified_false', 'false_alarm', 'resolved', 'archived_low'])
 
 const isPendingVerify = (status) => ['pending', 'pending_verify', 'confirmed', 'verified_true'].includes(status)
 
@@ -196,50 +281,89 @@ const workflowLabel = (status) => {
   const map = {
     pending: '待处置',
     pending_verify: '待处置',
-    reviewing_llm: 'LLM复核中',
+    reviewing_llm: 'LLM 复核中',
     confirmed: '已核实真火',
     verified_true: '已核实真火',
     false_alarm: '已核实误报',
-    verified_false: '已处理(误报)',
+    verified_false: '已处理（误报）',
     dispatched: '已联动消防',
-    resolved: '已处理',
+    resolved: '已完成上报',
     archived_low: '低风险归档'
   }
   return map[status] || status
 }
 
 const workflowType = (status) => {
-  if (['dispatched', 'resolved', 'confirmed', 'verified_true'].includes(status)) return 'danger'
+  if (['dispatched', 'confirmed', 'verified_true'].includes(status)) return 'danger'
+  if (status === 'resolved') return 'success'
   if (['false_alarm', 'verified_false', 'archived_low'].includes(status)) return 'info'
   return 'warning'
 }
 
+const canDeleteStatus = (status) => deletableStatuses.has(status)
+
+const toggleBatchMode = () => {
+  batchMode.value = !batchMode.value
+  if (!batchMode.value) {
+    selectedIds.value = []
+  }
+}
+
+const toggleSelect = (id, checked) => {
+  const selected = new Set(selectedIds.value)
+  if (checked) {
+    selected.add(id)
+  } else {
+    selected.delete(id)
+  }
+  selectedIds.value = [...selected]
+}
+
 const detectRiskFromText = (text) => {
-  const t = String(text || '')
-  if (t.includes('高风险')) return 'high'
-  if (t.includes('中风险')) return 'medium'
-  if (t.includes('低风险')) return 'low'
+  const t = String(text || '').toLowerCase()
+  if (t.includes('高风险') || t.includes('high')) return 'high'
+  if (t.includes('中风险') || t.includes('medium')) return 'medium'
+  if (t.includes('低风险') || t.includes('low')) return 'low'
   return ''
 }
 
 const riskLevel = (row) => {
   const llmRisk = detectRiskFromText(row?.llm_result)
   if (llmRisk) return llmRisk
+
   const conf = Number(row?.yolo_confidence || 0)
   if (conf > yoloHighThreshold.value) return 'high'
   if (conf < yoloLowThreshold.value) return 'low'
   return 'medium'
 }
 
-const riskLabel = (row) => ({ high: '高风险', medium: '中风险', low: '低风险' }[riskLevel(row)] || '中风险')
-const riskType = (row) => ({ high: 'danger', medium: 'warning', low: 'success' }[riskLevel(row)] || 'warning')
+const riskLabel = (row) => ({
+  high: '高风险',
+  medium: '中风险',
+  low: '低风险'
+}[riskLevel(row)] || '中风险')
 
-const displayAlerts = computed(() =>
-  alerts.value.map((item) => ({
-    ...item,
-    camera_location: cameraLocationMap.value[item.camera_name] || '位置未配置'
-  }))
-)
+const riskType = (row) => ({
+  high: 'danger',
+  medium: 'warning',
+  low: 'success'
+}[riskLevel(row)] || 'warning')
+
+const progressColor = (row) => {
+  const level = riskLevel(row)
+  if (level === 'high') return '#f56c6c'
+  if (level === 'low') return '#67c23a'
+  return '#e6a23c'
+}
+
+const displayAlerts = computed(() => alerts.value.map((item) => ({
+  ...item,
+  camera_location: cameraLocationMap.value[item.camera_name] || '位置未配置'
+})))
+
+const pendingCount = computed(() => displayAlerts.value.filter((a) => isPendingVerify(a.status)).length)
+const dispatchedCount = computed(() => displayAlerts.value.filter((a) => a.status === 'dispatched').length)
+const resolvedCount = computed(() => displayAlerts.value.filter((a) => a.status === 'resolved').length)
 
 const formatTime = (t) => (t ? new Date(t).toLocaleString('zh-CN') : '-')
 
@@ -280,6 +404,8 @@ const fetchAlerts = async () => {
     const res = await api.get('/alerts', { params })
     alerts.value = res.items || []
     total.value = res.total || 0
+    const pageIds = new Set((alerts.value || []).map((item) => item.id))
+    selectedIds.value = selectedIds.value.filter((id) => pageIds.has(id))
   } catch {
     ElMessage.error('获取任务失败')
   } finally {
@@ -316,7 +442,7 @@ const resetActionState = () => {
 const openSopExecute = (row, sopType) => {
   currentAlert.value = row
   actionType.value = sopType
-  actionTitle.value = sopType === 'SOP1' ? '执行SOP1（高风险紧急处置）' : '执行SOP2（中风险现场核实）'
+  actionTitle.value = sopType === 'SOP1' ? '执行 SOP1（高风险紧急处置）' : '执行 SOP2（中风险现场核实）'
   resetActionState()
   actionVisible.value = true
 }
@@ -327,6 +453,72 @@ const openResolve = (row) => {
   actionTitle.value = '完成上报并闭环'
   resetActionState()
   actionVisible.value = true
+}
+
+const deleteOne = async (row) => {
+  if (!isAdmin.value) return
+  if (!canDeleteStatus(row.status)) {
+    ElMessage.warning('仅已闭环/归档记录可删除')
+    return
+  }
+
+  try {
+    await ElMessageBox.confirm(
+      `确认删除任务 #${row.id} 吗？删除后不可恢复。`,
+      '删除任务',
+      { type: 'warning' }
+    )
+  } catch {
+    return
+  }
+
+  deleting.value = true
+  try {
+    await api.delete(`/alerts/${row.id}`)
+    selectedIds.value = selectedIds.value.filter((id) => id !== row.id)
+    ElMessage.success('删除成功')
+    await fetchAlerts()
+  } catch (e) {
+    ElMessage.error(e.response?.data?.detail || '删除失败')
+  } finally {
+    deleting.value = false
+  }
+}
+
+const deleteSelected = async () => {
+  if (!isAdmin.value || selectedIds.value.length === 0) return
+
+  try {
+    await ElMessageBox.confirm(
+      `确认批量删除 ${selectedIds.value.length} 条记录吗？删除后不可恢复。`,
+      '批量删除',
+      { type: 'warning' }
+    )
+  } catch {
+    return
+  }
+
+  deleting.value = true
+  try {
+    const res = await api.post('/alerts/batch-delete', { ids: selectedIds.value })
+    const deleted = Number(res?.deleted || 0)
+    const blocked = Array.isArray(res?.blocked) ? res.blocked.length : 0
+    const notFound = Array.isArray(res?.not_found) ? res.not_found.length : 0
+
+    if (deleted > 0) {
+      ElMessage.success(`已删除 ${deleted} 条`)
+    }
+    if (blocked > 0 || notFound > 0) {
+      ElMessage.warning(`未删除 ${blocked + notFound} 条（未闭环或不存在）`)
+    }
+
+    selectedIds.value = []
+    await fetchAlerts()
+  } catch (e) {
+    ElMessage.error(e.response?.data?.detail || '批量删除失败')
+  } finally {
+    deleting.value = false
+  }
 }
 
 const buildSopNote = () => {
@@ -341,7 +533,9 @@ const buildSopNote = () => {
   if (actionType.value === 'SOP2') {
     return [
       `复核人:${verifierName.value || '未填'}`,
-      sop2Outcome.value === 'false_alarm' ? `误报原因:${falseReason.value || '未填'}` : `升级SOP1接警人:${receiverName.value || '未填'}`,
+      sop2Outcome.value === 'false_alarm'
+        ? `误报原因:${falseReason.value || '未填'}`
+        : `升级SOP1接警人:${receiverName.value || '未填'}`,
       sop2Outcome.value === 'true_fire' ? `调度对象:${dispatchTarget.value || '未填'}` : '',
       processRemark.value || ''
     ].filter(Boolean).join('；')
@@ -368,7 +562,7 @@ const submitAction = async () => {
       return
     }
     if (sop2Outcome.value === 'true_fire' && (!receiverName.value || !dispatchTarget.value)) {
-      ElMessage.warning('升级SOP1时请填写接警人和调度对象')
+      ElMessage.warning('升级 SOP1 时请填写接警人和调度对象')
       return
     }
   }
@@ -407,79 +601,245 @@ onMounted(async () => {
 
 <style scoped>
 .tasks-page {
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.card-header {
+.hero-panel {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(63, 158, 255, 0.3), transparent 42%),
+    linear-gradient(120deg, #0e2a47, #1b4d75 45%, #246898);
+  color: #fff;
+}
+
+.hero-main h2 {
+  margin: 4px 0 8px;
+  font-size: 32px;
+  line-height: 1.1;
+}
+
+.hero-kicker {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.hero-subtitle {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 10px;
+  min-width: 320px;
+}
+
+.metric-item {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+}
+
+.metric-item.warning {
+  background: rgba(230, 162, 60, 0.28);
+}
+
+.metric-item.danger {
+  background: rgba(245, 108, 108, 0.28);
+}
+
+.metric-item.success {
+  background: rgba(103, 194, 58, 0.28);
+}
+
+.metric-label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.metric-value {
+  margin-top: 4px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.control-card {
+  border: 1px solid #dce8f3;
+  border-radius: 12px;
+}
+
+.control-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
-.title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.status-switch {
+  flex-wrap: wrap;
 }
 
-.title-wrap h2 {
-  margin: 0;
-}
-
-.header-tools {
+.control-actions {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.location-cell {
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-height: 180px;
+}
+
+.task-card {
+  border: 1px solid #dde4ee;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.cam-name {
-  font-weight: 600;
-  color: #303133;
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(15, 39, 67, 0.12);
 }
 
-.cam-loc {
+.task-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #edf2f7;
+  background: #fbfdff;
+}
+
+.head-left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+}
+
+.task-id {
+  font-weight: 700;
+  color: #1f2d3d;
+}
+
+.task-time {
   font-size: 12px;
-  color: #909399;
+  color: #7b8a9b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-main {
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 12px;
 }
 
 .snapshot {
-  width: 96px;
-  height: 56px;
-  border-radius: 6px;
-  background: #f2f3f5;
+  width: 140px;
+  height: 96px;
+  border-radius: 10px;
+  background: #f4f5f7;
 }
 
 .snapshot.placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #909399;
   font-size: 12px;
+  color: #909399;
 }
 
-.op-actions {
+.task-meta {
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
-.op-btn {
-  width: 132px;
+.meta-location {
+  min-width: 0;
+}
+
+.cam-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2d3d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cam-loc {
+  font-size: 12px;
+  color: #8896a7;
+  margin-top: 2px;
+}
+
+.meta-risk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.conf-text {
+  font-size: 12px;
+  color: #6b7787;
+}
+
+.ai-advice {
+  margin: 0;
+  color: #4d5a68;
+  font-size: 13px;
+  line-height: 1.5;
+  max-height: 60px;
+  overflow: hidden;
+}
+
+.task-foot {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 14px 14px;
+}
+
+.action-btn {
+  min-width: 110px;
+}
+
+.delete-btn {
+  margin-left: auto;
 }
 
 .pagination-wrapper {
   display: flex;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: 4px;
 }
 
 .sop-section {
@@ -504,5 +864,42 @@ onMounted(async () => {
   margin-top: 6px;
   color: #909399;
   font-size: 12px;
+}
+
+@media (max-width: 1280px) {
+  .task-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-panel {
+    flex-direction: column;
+  }
+
+  .hero-main h2 {
+    font-size: 28px;
+  }
+
+  .hero-metrics {
+    min-width: 0;
+  }
+
+  .task-main {
+    grid-template-columns: 1fr;
+  }
+
+  .snapshot {
+    width: 100%;
+    height: 180px;
+  }
+
+  .task-foot {
+    justify-content: stretch;
+  }
+
+  .action-btn {
+    flex: 1;
+  }
 }
 </style>
