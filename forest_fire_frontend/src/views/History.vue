@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="history-container">
     <el-card shadow="hover">
       <template #header>
@@ -13,6 +13,7 @@
               <el-option label="已联动消防" value="dispatched" />
               <el-option label="已完成上报" value="resolved" />
               <el-option label="低风险归档" value="low_archived" />
+              <el-option v-if="isAdmin" label="已撤销待处置" value="cancelled_pending" />
               <el-option v-if="isAdmin" label="可删除记录" value="done" />
             </el-select>
 
@@ -44,7 +45,7 @@
           <template #default="{ row }">{{ ((row.yolo_confidence || 0) * 100).toFixed(1) }}%</template>
         </el-table-column>
         <el-table-column prop="llm_result" label="AI 建议" min-width="220" show-overflow-tooltip />
-        <el-table-column prop="status" label="状态" width="130">
+        <el-table-column prop="status" label="状态" width="140">
           <template #default="{ row }">
             <el-tag :type="statusType(row.status)">{{ statusLabel(row.status) }}</el-tag>
           </template>
@@ -118,11 +119,11 @@ const filterStatus = ref('')
 const detailVisible = ref(false)
 const currentAlert = ref(null)
 const selectedIds = ref([])
-const deletableStatuses = new Set(['verified_false', 'false_alarm', 'resolved', 'archived_low'])
+const deletableStatuses = new Set(['verified_false', 'false_alarm', 'resolved', 'archived_low', 'cancelled_pending'])
 
-const formatTime = (t) => (t ? new Date(t).toLocaleString('zh-CN') : '')
+const formatTime = (value) => (value ? new Date(value).toLocaleString('zh-CN') : '')
 
-const statusLabel = (s) => ({
+const statusLabel = (status) => ({
   pending: '待核实',
   pending_verify: '待核实',
   reviewing_llm: 'LLM复核中',
@@ -132,10 +133,11 @@ const statusLabel = (s) => ({
   verified_false: '已核实误报',
   dispatched: '已联动消防',
   resolved: '已完成上报',
-  archived_low: '低风险归档'
-}[s] || s)
+  archived_low: '低风险归档',
+  cancelled_pending: '已撤销待处置'
+}[status] || status)
 
-const statusType = (s) => ({
+const statusType = (status) => ({
   pending: 'warning',
   pending_verify: 'warning',
   reviewing_llm: 'warning',
@@ -145,11 +147,11 @@ const statusType = (s) => ({
   resolved: 'success',
   false_alarm: 'info',
   verified_false: 'info',
-  archived_low: 'info'
-}[s] || 'info')
+  archived_low: 'info',
+  cancelled_pending: 'info'
+}[status] || 'info')
 
 const canDeleteStatus = (status) => deletableStatuses.has(status)
-
 const isRowSelectable = (row) => canDeleteStatus(row.status)
 
 const fetchAlerts = async () => {
@@ -184,8 +186,8 @@ const exportCSV = () => {
   fetch(`/api/alerts/export/csv${params}`, {
     headers: { Authorization: `Bearer ${token}` }
   })
-    .then(res => res.blob())
-    .then(blob => {
+    .then((res) => res.blob())
+    .then((blob) => {
       const link = document.createElement('a')
       const url = URL.createObjectURL(blob)
       link.href = url
@@ -200,7 +202,7 @@ const exportCSV = () => {
 }
 
 const handleSelectionChange = (rows) => {
-  selectedIds.value = rows.filter(r => canDeleteStatus(r.status)).map(r => r.id)
+  selectedIds.value = rows.filter((row) => canDeleteStatus(row.status)).map((row) => row.id)
 }
 
 const batchDelete = async () => {
@@ -224,8 +226,10 @@ const batchDelete = async () => {
 
     selectedIds.value = []
     await fetchAlerts()
-  } catch (e) {
-    if (e !== 'cancel') ElMessage.error('删除失败')
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error('删除失败')
+    }
   }
 }
 

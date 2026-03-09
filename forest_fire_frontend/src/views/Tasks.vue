@@ -4,7 +4,7 @@
       <div class="hero-main">
         <p class="hero-kicker">Operator Console</p>
         <h2>我的任务</h2>
-        <p class="hero-subtitle">仅展示高/中风险任务，支持 SOP 快速处置闭环。</p>
+        <p class="hero-subtitle">仅展示高/中风险任务，支持 SOP 快速处置、撤销与闭环。</p>
       </div>
       <div class="hero-metrics">
         <div class="metric-item">
@@ -71,7 +71,7 @@
             <el-checkbox
               v-if="isAdmin && batchMode"
               :model-value="selectedIds.includes(row.id)"
-              @change="(v) => toggleSelect(row.id, v)"
+              @change="(checked) => toggleSelect(row.id, checked)"
             />
             <span class="task-id">#{{ row.id }}</span>
             <span class="task-time">{{ formatTime(row.timestamp) }}</span>
@@ -116,6 +116,15 @@
           <template v-if="isPendingVerify(row.status)">
             <el-button class="action-btn" type="danger" @click="openSopExecute(row, 'SOP1')">执行 SOP1</el-button>
             <el-button class="action-btn" type="warning" @click="openSopExecute(row, 'SOP2')">执行 SOP2</el-button>
+            <el-button
+              v-if="isAdmin && canCancelStatus(row.status)"
+              class="action-btn"
+              type="info"
+              plain
+              @click="cancelOne(row)"
+            >
+              撤销任务
+            </el-button>
           </template>
           <template v-else-if="row.status === 'dispatched'">
             <el-button class="action-btn" type="success" @click="openResolve(row)">完成上报</el-button>
@@ -164,7 +173,7 @@
         <ol class="sop-list">
           <li>人工复核：30 秒内确认明火或浓烟。</li>
           <li>消防联动：拨打消防电话并通报位置与火势。</li>
-          <li>内部调度：通知护林员/应急小组前往现场。</li>
+          <li>内部调度：通知护林员或应急小组前往现场。</li>
           <li>完成记录：补充接警人与调度对象并闭环。</li>
         </ol>
       </div>
@@ -273,7 +282,8 @@ const batchMode = ref(false)
 const selectedIds = ref([])
 
 const isAdmin = computed(() => userStore.role === 'admin')
-const deletableStatuses = new Set(['verified_false', 'false_alarm', 'resolved', 'archived_low'])
+const deletableStatuses = new Set(['verified_false', 'false_alarm', 'resolved', 'archived_low', 'cancelled_pending'])
+const cancellableStatuses = new Set(['pending', 'pending_verify'])
 
 const isPendingVerify = (status) => ['pending', 'pending_verify', 'confirmed', 'verified_true'].includes(status)
 
@@ -288,7 +298,8 @@ const workflowLabel = (status) => {
     verified_false: '已处理（误报）',
     dispatched: '已联动消防',
     resolved: '已完成上报',
-    archived_low: '低风险归档'
+    archived_low: '低风险归档',
+    cancelled_pending: '已撤销待处置'
   }
   return map[status] || status
 }
@@ -296,11 +307,12 @@ const workflowLabel = (status) => {
 const workflowType = (status) => {
   if (['dispatched', 'confirmed', 'verified_true'].includes(status)) return 'danger'
   if (status === 'resolved') return 'success'
-  if (['false_alarm', 'verified_false', 'archived_low'].includes(status)) return 'info'
+  if (['false_alarm', 'verified_false', 'archived_low', 'cancelled_pending'].includes(status)) return 'info'
   return 'warning'
 }
 
 const canDeleteStatus = (status) => deletableStatuses.has(status)
+const canCancelStatus = (status) => cancellableStatuses.has(status)
 
 const toggleBatchMode = () => {
   batchMode.value = !batchMode.value
@@ -320,10 +332,10 @@ const toggleSelect = (id, checked) => {
 }
 
 const detectRiskFromText = (text) => {
-  const t = String(text || '').toLowerCase()
-  if (t.includes('高风险') || t.includes('high')) return 'high'
-  if (t.includes('中风险') || t.includes('medium')) return 'medium'
-  if (t.includes('低风险') || t.includes('low')) return 'low'
+  const normalized = String(text || '').toLowerCase()
+  if (normalized.includes('高风险') || normalized.includes('high')) return 'high'
+  if (normalized.includes('中风险') || normalized.includes('medium')) return 'medium'
+  if (normalized.includes('低风险') || normalized.includes('low')) return 'low'
   return ''
 }
 
@@ -331,9 +343,9 @@ const riskLevel = (row) => {
   const llmRisk = detectRiskFromText(row?.llm_result)
   if (llmRisk) return llmRisk
 
-  const conf = Number(row?.yolo_confidence || 0)
-  if (conf > yoloHighThreshold.value) return 'high'
-  if (conf < yoloLowThreshold.value) return 'low'
+  const confidence = Number(row?.yolo_confidence || 0)
+  if (confidence > yoloHighThreshold.value) return 'high'
+  if (confidence < yoloLowThreshold.value) return 'low'
   return 'medium'
 }
 
@@ -361,11 +373,11 @@ const displayAlerts = computed(() => alerts.value.map((item) => ({
   camera_location: cameraLocationMap.value[item.camera_name] || '位置未配置'
 })))
 
-const pendingCount = computed(() => displayAlerts.value.filter((a) => isPendingVerify(a.status)).length)
-const dispatchedCount = computed(() => displayAlerts.value.filter((a) => a.status === 'dispatched').length)
-const resolvedCount = computed(() => displayAlerts.value.filter((a) => a.status === 'resolved').length)
+const pendingCount = computed(() => displayAlerts.value.filter((item) => isPendingVerify(item.status)).length)
+const dispatchedCount = computed(() => displayAlerts.value.filter((item) => item.status === 'dispatched').length)
+const resolvedCount = computed(() => displayAlerts.value.filter((item) => item.status === 'resolved').length)
 
-const formatTime = (t) => (t ? new Date(t).toLocaleString('zh-CN') : '-')
+const formatTime = (value) => (value ? new Date(value).toLocaleString('zh-CN') : '-')
 
 const fetchOpsConfig = async () => {
   try {
@@ -383,11 +395,11 @@ const fetchOpsConfig = async () => {
 const fetchCameraMap = async () => {
   try {
     const cameras = await api.get('/supervisor/cameras')
-    const map = {}
-    cameras.forEach((cam) => {
-      map[cam.name] = cam.location || '位置未配置'
+    const nextMap = {}
+    cameras.forEach((camera) => {
+      nextMap[camera.name] = camera.location || '位置未配置'
     })
-    cameraLocationMap.value = map
+    cameraLocationMap.value = nextMap
   } catch {
     cameraLocationMap.value = {}
   }
@@ -418,13 +430,13 @@ const onFilterChange = () => {
   fetchAlerts()
 }
 
-const onPageChange = (val) => {
-  page.value = val
+const onPageChange = (value) => {
+  page.value = value
   fetchAlerts()
 }
 
-const onPageSizeChange = (val) => {
-  pageSize.value = val
+const onPageSizeChange = (value) => {
+  pageSize.value = value
   page.value = 1
   fetchAlerts()
 }
@@ -455,10 +467,38 @@ const openResolve = (row) => {
   actionVisible.value = true
 }
 
+const cancelOne = async (row) => {
+  if (!isAdmin.value || !canCancelStatus(row.status)) return
+
+  try {
+    const { value } = await ElMessageBox.prompt(
+      `请输入撤销任务 #${row.id} 的原因`,
+      '撤销任务',
+      {
+        confirmButtonText: '确认撤销',
+        cancelButtonText: '取消',
+        inputPlaceholder: '例如：重复告警、现场核查后确认无需处置',
+        inputValidator: (input) => (String(input || '').trim() ? true : '请填写撤销原因')
+      }
+    )
+
+    deleting.value = true
+    await api.put(`/alerts/${row.id}/cancel`, { reason: value })
+    ElMessage.success('任务已撤销')
+    await fetchAlerts()
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error(error.response?.data?.detail || '撤销失败')
+    }
+  } finally {
+    deleting.value = false
+  }
+}
+
 const deleteOne = async (row) => {
   if (!isAdmin.value) return
   if (!canDeleteStatus(row.status)) {
-    ElMessage.warning('仅已闭环/归档记录可删除')
+    ElMessage.warning('仅已闭环或归档记录可删除')
     return
   }
 
@@ -478,8 +518,8 @@ const deleteOne = async (row) => {
     selectedIds.value = selectedIds.value.filter((id) => id !== row.id)
     ElMessage.success('删除成功')
     await fetchAlerts()
-  } catch (e) {
-    ElMessage.error(e.response?.data?.detail || '删除失败')
+  } catch (error) {
+    ElMessage.error(error.response?.data?.detail || '删除失败')
   } finally {
     deleting.value = false
   }
@@ -514,8 +554,8 @@ const deleteSelected = async () => {
 
     selectedIds.value = []
     await fetchAlerts()
-  } catch (e) {
-    ElMessage.error(e.response?.data?.detail || '批量删除失败')
+  } catch (error) {
+    ElMessage.error(error.response?.data?.detail || '批量删除失败')
   } finally {
     deleting.value = false
   }
@@ -586,8 +626,8 @@ const submitAction = async () => {
 
     actionVisible.value = false
     await fetchAlerts()
-  } catch (e) {
-    ElMessage.error(e.response?.data?.detail || '操作失败')
+  } catch (error) {
+    ElMessage.error(error.response?.data?.detail || '操作失败')
   } finally {
     submitting.value = false
   }

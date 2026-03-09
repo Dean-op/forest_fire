@@ -28,10 +28,12 @@ WORKFLOW_STATUS_LABELS = {
     "dispatched": "已联动消防",
     "resolved": "已处理",
     "archived_low": "低风险静默归档",
+    "cancelled_pending": "已撤销待处置",
 }
 
 HIDDEN_FOR_OPERATOR = {"archived_low", "reviewing_llm"}
-DELETABLE_STATUSES = {"verified_false", "false_alarm", "resolved", "archived_low"}
+DELETABLE_STATUSES = {"verified_false", "false_alarm", "resolved", "archived_low", "cancelled_pending"}
+CANCELLABLE_STATUSES = {"pending", "pending_verify"}
 
 
 def expand_status_filter(status: str) -> set[str]:
@@ -41,8 +43,9 @@ def expand_status_filter(status: str) -> set[str]:
         "confirmed": {"confirmed", "verified_true", "dispatched", "resolved"},
         "false_alarm": {"false_alarm", "verified_false"},
         "operator_queue": {"pending", "pending_verify", "confirmed", "verified_true", "dispatched"},
-        "done": {"resolved", "verified_false", "false_alarm", "archived_low"},
+        "done": {"resolved", "verified_false", "false_alarm", "archived_low", "cancelled_pending"},
         "low_archived": {"archived_low"},
+        "cancelled_pending": {"cancelled_pending"},
     }
     return aliases.get(status, {status})
 
@@ -60,6 +63,10 @@ def append_remark(original: Optional[str], extra: Optional[str]) -> Optional[str
 
 def can_delete_alert(status: str) -> bool:
     return status in DELETABLE_STATUSES
+
+
+def can_cancel_alert(status: str) -> bool:
+    return status in CANCELLABLE_STATUSES
 
 
 def get_float_config(session: Session, key: str, default: float) -> float:
@@ -81,7 +88,7 @@ def get_text_config(session: Session, key: str, default: str) -> str:
 
 
 class AlertProcess(BaseModel):
-    status: str  # confirmed / false_alarm
+    status: str
     remark: Optional[str] = None
 
 
@@ -92,6 +99,10 @@ class AlertDispatch(BaseModel):
 
 class AlertResolve(BaseModel):
     remark: Optional[str] = None
+
+
+class AlertCancel(BaseModel):
+    reason: str
 
 
 class AlertSOPExecute(BaseModel):
@@ -170,7 +181,7 @@ def execute_sop(
     if not alert:
         raise HTTPException(status_code=404, detail="Alert not found")
 
-    if alert.status in {"archived_low", "reviewing_llm", "verified_false", "false_alarm", "resolved"}:
+    if alert.status in {"archived_low", "reviewing_llm", "verified_false", "false_alarm", "resolved", "cancelled_pending"}:
         raise HTTPException(status_code=400, detail="This alert is not executable for SOP")
 
     default_phone = get_text_config(session, "fire_dispatch_phone", "119")
@@ -193,9 +204,7 @@ def execute_sop(
             )
         else:
             alert.status = "verified_false"
-            remark = (
-                f"【SOP2 已执行-确认为误报】{now_str} 完成现场复核，确认误报并归档处理。"
-            )
+            remark = f"【SOP2 已执行-确认为误报】{now_str} 完成现场复核，确认误报并归档处理。"
 
     alert.remark = append_remark(alert.remark, remark)
     alert.remark = append_remark(alert.remark, data.note)
@@ -270,6 +279,34 @@ def resolve_fire_alert(
     return alert
 
 
+@router.put("/{alert_id}/cancel")
+def cancel_alert(
+    alert_id: int,
+    data: AlertCancel,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(require_roles("admin")),
+):
+    alert = session.get(Alert, alert_id)
+    if not alert:
+        raise HTTPException(status_code=404, detail="Alert not found")
+
+    if not can_cancel_alert(alert.status):
+        raise HTTPException(status_code=400, detail="Only pending alerts can be cancelled")
+
+    reason = (data.reason or "").strip()
+    if not reason:
+        raise HTTPException(status_code=400, detail="Cancel reason is required")
+
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    alert.status = "cancelled_pending"
+    alert.remark = append_remark(alert.remark, f"【任务撤销】{now_str} {current_user.username}：{reason}")
+
+    session.add(alert)
+    session.commit()
+    session.refresh(alert)
+    return alert
+
+
 @router.get("/export/csv")
 def export_alerts_csv(
     status: Optional[str] = None,
@@ -289,15 +326,15 @@ def export_alerts_csv(
     output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(["ID", "时间", "YOLO置信度", "AI建议", "工作流状态", "备注", "截图路径"])
-    for a in alerts:
+    for alert in alerts:
         writer.writerow([
-            a.id,
-            a.timestamp,
-            a.yolo_confidence,
-            a.llm_result,
-            WORKFLOW_STATUS_LABELS.get(a.status, a.status),
-            a.remark,
-            a.image_path,
+            alert.id,
+            alert.timestamp,
+            alert.yolo_confidence,
+            alert.llm_result,
+            WORKFLOW_STATUS_LABELS.get(alert.status, alert.status),
+            alert.remark,
+            alert.image_path,
         ])
 
     output.seek(0)
@@ -352,14 +389,14 @@ def batch_delete_alerts(
     blocked: list[dict] = []
     not_found: list[int] = []
 
-    for aid in data.ids:
-        alert = session.get(Alert, aid)
+    for alert_id in data.ids:
+        alert = session.get(Alert, alert_id)
         if not alert:
-            not_found.append(aid)
+            not_found.append(alert_id)
             continue
 
         if not can_delete_alert(alert.status):
-            blocked.append({"id": aid, "status": alert.status})
+            blocked.append({"id": alert_id, "status": alert.status})
             continue
 
         session.delete(alert)
