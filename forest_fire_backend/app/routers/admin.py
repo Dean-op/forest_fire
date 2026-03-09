@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sqlalchemy import inspect, text
-from sqlmodel import Session, desc, select
+from sqlmodel import Session, select
 
 from app.database import engine, get_session
 from app.models.admin import Announcement, SystemConfig, SystemLog
@@ -294,7 +294,7 @@ def list_announcements(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
-    query = select(Announcement).order_by(desc(Announcement.created_at))
+    query = select(Announcement).order_by(Announcement.id)
     if category:
         query = query.where(Announcement.category == category)
     if current_user.role != "admin":
@@ -357,7 +357,7 @@ def list_system_logs(
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("admin")),
 ):
-    query = select(SystemLog).order_by(desc(SystemLog.timestamp))
+    query = select(SystemLog).order_by(SystemLog.id)
     total = len(session.exec(select(SystemLog)).all())
     logs = session.exec(query.offset((page - 1) * size).limit(size)).all()
     return {"total": total, "items": logs}
