@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Literal, Optional
 import csv
 import io
+import os
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
@@ -9,6 +10,7 @@ from pydantic import BaseModel
 from sqlmodel import Session, desc, select
 
 from app.database import get_session
+from app.config import UPLOAD_DIR
 from app.models.admin import SystemConfig
 from app.models.alert import Alert
 from app.models.user import User
@@ -67,6 +69,23 @@ def can_delete_alert(status: str) -> bool:
 
 def can_cancel_alert(status: str) -> bool:
     return status in CANCELLABLE_STATUSES
+
+
+def sanitize_image_path(image_path: Optional[str]) -> str:
+    path = (image_path or "").strip()
+    if not path:
+        return ""
+    if not path.startswith("/static/"):
+        return path
+    filename = os.path.basename(path)
+    full_path = os.path.join(UPLOAD_DIR, filename)
+    return path if os.path.exists(full_path) else ""
+
+
+def serialize_alert(alert: Alert) -> dict:
+    data = alert.dict()
+    data["image_path"] = sanitize_image_path(alert.image_path)
+    return data
 
 
 def get_float_config(session: Session, key: str, default: float) -> float:
@@ -138,7 +157,7 @@ def list_alerts(
 
     total = len(session.exec(total_query).all())
     alerts = session.exec(query.offset((page - 1) * size).limit(size)).all()
-    return {"total": total, "items": alerts}
+    return {"total": total, "items": [serialize_alert(a) for a in alerts]}
 
 
 @router.put("/{alert_id}/process")
@@ -358,7 +377,7 @@ def get_alert(
     if current_user.role == "operator" and alert.status in HIDDEN_FOR_OPERATOR:
         raise HTTPException(status_code=404, detail="Alert not found")
 
-    return alert
+    return serialize_alert(alert)
 
 
 @router.delete("/{alert_id}")
