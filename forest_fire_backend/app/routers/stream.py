@@ -51,6 +51,17 @@ except Exception as e:
 camera_cooldowns: dict[int, float] = {}
 
 
+def create_video_capture(video_source: object) -> cv2.VideoCapture:
+    cap = cv2.VideoCapture()
+    # Reduce blocking time on RTSP/network sources to avoid freezing the API event loop.
+    if hasattr(cv2, "CAP_PROP_OPEN_TIMEOUT_MSEC"):
+        cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 2500)
+    if hasattr(cv2, "CAP_PROP_READ_TIMEOUT_MSEC"):
+        cap.set(cv2.CAP_PROP_READ_TIMEOUT_MSEC, 2000)
+    cap.open(video_source)
+    return cap
+
+
 def load_detection_config() -> dict:
     defaults = {
         "yolo_interval": 2.0,
@@ -251,15 +262,58 @@ async def call_llm_review(alert_id: int, image_url: str, confidence: float, came
         )
 
 
+def resolve_video_source(configured_source: str) -> tuple[object, bool]:
+    source = (configured_source or "").strip()
+    if not source:
+        return DEMO_VIDEO, True
+
+    aliases = {
+        "demo": "demo.mp4",
+        "demo.mp4": "demo.mp4",
+        "firework": "firework.mp4",
+        "firework.mp4": "firework.mp4",
+        "fire": "\u706b\u707e.mp4",
+        "fire.mp4": "\u706b\u707e.mp4",
+        "\u706b\u707e.mp4": "\u706b\u707e.mp4",
+        "sunset": "sunset.mp4",
+        "sunset.mp4": "sunset.mp4",
+    }
+    source = aliases.get(source.lower(), source)
+
+    lower_source = source.lower()
+    if lower_source.startswith(("rtsp://", "rtsps://", "http://", "https://")):
+        return source, False
+    if source.isdigit():
+        return int(source), False
+
+    source_path = Path(source)
+    if not source_path.is_absolute():
+        source_path = BASE_DIR / source_path
+    if source_path.exists():
+        return str(source_path), True
+
+    return DEMO_VIDEO, True
+
+
+def build_status_frame(text: str, size: tuple[int, int] = (640, 480)) -> bytes:
+    width, height = size
+    frame = np.zeros((height, width, 3), dtype=np.uint8)
+    cv2.putText(frame, text, (30, int(height * 0.5)), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 220, 255), 2)
+    _, buf = cv2.imencode(".jpg", frame)
+    return b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buf.tobytes() + b"\r\n"
+
+
 async def generate_frames(camera_id: int):
     camera_name = f"Camera-{camera_id}"
     camera_enable_ai = True
+    camera_source_config = ""
 
     with Session(engine) as session:
         cam = session.get(Camera, camera_id)
         if cam:
             camera_name = cam.name
             camera_enable_ai = cam.enable_ai
+            camera_source_config = cam.rtsp_url or ""
         else:
             while True:
                 err = np.zeros((480, 640, 3), dtype=np.uint8)
@@ -272,143 +326,177 @@ async def generate_frames(camera_id: int):
     config = load_detection_config()
     last_config_load = time.time()
 
-    cap = cv2.VideoCapture(DEMO_VIDEO)
+    video_source, is_file_source = resolve_video_source(camera_source_config)
+    cap = await asyncio.to_thread(create_video_capture, video_source)
     if not cap.isOpened():
+        # Don't block forever on an unavailable source; keep pushing status frames.
         while True:
-            err = np.zeros((480, 640, 3), dtype=np.uint8)
-            cv2.putText(err, "Video Source Unavailable", (50, 220), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2)
-            _, buf = cv2.imencode(".jpg", err)
-            yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buf.tobytes() + b"\r\n"
+            yield build_status_frame(f"camera-{camera_id}: source unavailable")
             await asyncio.sleep(1)
-        return
+            with Session(engine) as session:
+                cam_refresh = session.get(Camera, camera_id)
+                if cam_refresh:
+                    camera_enable_ai = cam_refresh.enable_ai
+                    new_source_config = (cam_refresh.rtsp_url or "").strip()
+                    if new_source_config != (camera_source_config or "").strip():
+                        camera_source_config = new_source_config
+                        video_source, is_file_source = resolve_video_source(camera_source_config)
+            cap = await asyncio.to_thread(create_video_capture, video_source)
+            if cap.isOpened():
+                break
 
     last_detect_time = 0.0
     detect_task = None
     detect_context = None
 
-    while True:
-        success, frame = cap.read()
-        if not success:
-            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-            continue
+    try:
+        while True:
+            success, frame = await asyncio.to_thread(cap.read)
+            if not success:
+                if is_file_source:
+                    await asyncio.to_thread(cap.set, cv2.CAP_PROP_POS_FRAMES, 0)
+                else:
+                    await asyncio.to_thread(cap.release)
+                    # RTSP/device read failure: reconnect and return a placeholder frame
+                    # to avoid browser hanging on an endless black panel.
+                    yield build_status_frame(f"camera-{camera_id}: reconnecting stream")
+                    await asyncio.sleep(0.8)
+                    cap = await asyncio.to_thread(create_video_capture, video_source)
+                continue
 
-        now = time.time()
+            now = time.time()
 
-        if now - last_config_load >= config["yolo_interval"]:
-            config = load_detection_config()
-            last_config_load = now
-            with Session(engine) as session:
-                cam_refresh = session.get(Camera, camera_id)
-                if cam_refresh:
-                    camera_enable_ai = cam_refresh.enable_ai
+            if now - last_config_load >= config["yolo_interval"]:
+                config = load_detection_config()
+                last_config_load = now
+                with Session(engine) as session:
+                    cam_refresh = session.get(Camera, camera_id)
+                    if cam_refresh:
+                        camera_enable_ai = cam_refresh.enable_ai
+                        new_source_config = (cam_refresh.rtsp_url or "").strip()
+                        if new_source_config != (camera_source_config or "").strip():
+                            camera_source_config = new_source_config
+                            next_source, next_is_file_source = resolve_video_source(camera_source_config)
+                            if next_source != video_source:
+                                await asyncio.to_thread(cap.release)
+                                cap = await asyncio.to_thread(create_video_capture, next_source)
+                                video_source = next_source
+                                is_file_source = next_is_file_source
 
-        in_cooldown = now < camera_cooldowns.get(camera_id, 0)
-        should_detect = (
-            model is not None
-            and camera_enable_ai
-            and not in_cooldown
-            and (now - last_detect_time) >= config["yolo_interval"]
-        )
-
-        if should_detect and detect_task is None:
-            last_detect_time = now
-            detect_context = {
-                "camera_name": camera_name,
-                "config": config.copy(),
-                "frame": frame.copy(),
-                "started_at": now,
-            }
-            detect_task = asyncio.create_task(
-                asyncio.to_thread(run_yolo_inference, frame.copy(), detect_context["config"]["yolo_infer_scale"])
+            in_cooldown = now < camera_cooldowns.get(camera_id, 0)
+            should_detect = (
+                model is not None
+                and camera_enable_ai
+                and not in_cooldown
+                and (now - last_detect_time) >= config["yolo_interval"]
             )
 
-        output_frame = frame
+            if should_detect and detect_task is None:
+                last_detect_time = now
+                detect_context = {
+                    "camera_name": camera_name,
+                    "config": config.copy(),
+                    "frame": frame.copy(),
+                    "started_at": now,
+                }
+                detect_task = asyncio.create_task(
+                    asyncio.to_thread(run_yolo_inference, frame.copy(), detect_context["config"]["yolo_infer_scale"])
+                )
 
-        if detect_task is not None and detect_task.done():
-            try:
-                annotated_frame, highest_conf = detect_task.result()
-                output_frame = annotated_frame
+            output_frame = frame
 
-                if highest_conf is not None and detect_context is not None:
-                    high_th = detect_context["config"]["yolo_high_threshold"]
-                    low_th = detect_context["config"]["yolo_low_threshold"]
-                    cooldown_sec = detect_context["config"]["alert_cooldown"]
-                    detect_camera_name = detect_context["camera_name"]
-                    detect_started_at = detect_context["started_at"]
-                    detect_frame = detect_context["frame"]
+            if detect_task is not None and detect_task.done():
+                try:
+                    annotated_frame, highest_conf = detect_task.result()
+                    output_frame = annotated_frame
 
-                    camera_cooldowns[camera_id] = detect_started_at + cooldown_sec
-                    img_url = save_snapshot(detect_frame, camera_id)
+                    if highest_conf is not None and detect_context is not None:
+                        high_th = detect_context["config"]["yolo_high_threshold"]
+                        low_th = detect_context["config"]["yolo_low_threshold"]
+                        cooldown_sec = detect_context["config"]["alert_cooldown"]
+                        detect_camera_name = detect_context["camera_name"]
+                        detect_started_at = detect_context["started_at"]
+                        detect_frame = detect_context["frame"]
 
-                    if highest_conf > high_th:
-                        # 直接高风险
-                        llm_text = (
-                            f"[风险级别:高风险] YOLO置信度 {highest_conf:.1%} > {high_th:.0%}，"
-                            "直接判定高风险并进入人工处置。"
-                        )
-                        alert_id = create_alert(
-                            img_url,
-                            highest_conf,
-                            detect_camera_name,
-                            status="pending_verify",
-                            llm_result=llm_text,
-                        )
-                        asyncio.create_task(
-                            ws_manager.broadcast(
-                                {
-                                    "id": alert_id,
-                                    "camera_name": detect_camera_name,
-                                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                    "image_path": img_url,
-                                    "yolo_confidence": highest_conf,
-                                    "status": "pending_verify",
-                                    "llm_result": llm_text,
-                                }
+                        camera_cooldowns[camera_id] = detect_started_at + cooldown_sec
+                        img_url = save_snapshot(detect_frame, camera_id)
+
+                        if highest_conf > high_th:
+                            # 直接高风险
+                            llm_text = (
+                                f"[风险级别:高风险] YOLO置信度 {highest_conf:.1%} > {high_th:.0%}，"
+                                "直接判定高风险并进入人工处置。"
                             )
-                        )
-
-                    elif highest_conf < low_th:
-                        # 直接低风险：静默归档，不通知operator
-                        llm_text = (
-                            f"[风险级别:低风险] YOLO置信度 {highest_conf:.1%} < {low_th:.0%}，"
-                            "自动静默归档。"
-                        )
-                        create_alert(
-                            img_url,
-                            highest_conf,
-                            detect_camera_name,
-                            status="archived_low",
-                            llm_result=llm_text,
-                        )
-
-                    else:
-                        # 中间区间：先入LLM复核队列，复核后再决定是否推送operator
-                        alert_id = create_alert(
-                            img_url,
-                            highest_conf,
-                            detect_camera_name,
-                            status="reviewing_llm",
-                            llm_result=f"[风险级别:待复核] YOLO置信度 {highest_conf:.1%} 进入大模型二次复核。",
-                        )
-                        asyncio.create_task(
-                            call_llm_review(
-                                alert_id,
+                            alert_id = create_alert(
                                 img_url,
                                 highest_conf,
                                 detect_camera_name,
-                                detect_context["config"],
+                                status="pending_verify",
+                                llm_result=llm_text,
                             )
-                        )
+                            asyncio.create_task(
+                                ws_manager.broadcast(
+                                    {
+                                        "id": alert_id,
+                                        "camera_name": detect_camera_name,
+                                        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                        "image_path": img_url,
+                                        "yolo_confidence": highest_conf,
+                                        "status": "pending_verify",
+                                        "llm_result": llm_text,
+                                    }
+                                )
+                            )
 
-            except Exception as e:
-                print(f"YOLO async inference failed for camera {camera_id}: {e}")
-            finally:
-                detect_task = None
-                detect_context = None
+                        elif highest_conf < low_th:
+                            # 直接低风险：静默归档，不通知operator
+                            llm_text = (
+                                f"[风险级别:低风险] YOLO置信度 {highest_conf:.1%} < {low_th:.0%}，"
+                                "自动静默归档。"
+                            )
+                            create_alert(
+                                img_url,
+                                highest_conf,
+                                detect_camera_name,
+                                status="archived_low",
+                                llm_result=llm_text,
+                            )
 
-        _, buffer = cv2.imencode(".jpg", output_frame)
-        yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buffer.tobytes() + b"\r\n"
-        await asyncio.sleep(0.033)
+                        else:
+                            # 中间区间：先入LLM复核队列，复核后再决定是否推送operator
+                            alert_id = create_alert(
+                                img_url,
+                                highest_conf,
+                                detect_camera_name,
+                                status="reviewing_llm",
+                                llm_result=f"[风险级别:待复核] YOLO置信度 {highest_conf:.1%} 进入大模型二次复核。",
+                            )
+                            asyncio.create_task(
+                                call_llm_review(
+                                    alert_id,
+                                    img_url,
+                                    highest_conf,
+                                    detect_camera_name,
+                                    detect_context["config"],
+                                )
+                            )
+
+                except Exception as e:
+                    print(f"YOLO async inference failed for camera {camera_id}: {e}")
+                finally:
+                    detect_task = None
+                    detect_context = None
+
+            _, buffer = cv2.imencode(".jpg", output_frame)
+            yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buffer.tobytes() + b"\r\n"
+            await asyncio.sleep(0.033)
+    finally:
+        if detect_task is not None and not detect_task.done():
+            detect_task.cancel()
+        try:
+            await asyncio.to_thread(cap.release)
+        except Exception:
+            pass
 
 
 @router.get("/video/{camera_id}")
@@ -417,3 +505,5 @@ async def video_feed(camera_id: int):
         generate_frames(camera_id),
         media_type="multipart/x-mixed-replace; boundary=frame",
     )
+
+

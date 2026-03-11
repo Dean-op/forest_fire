@@ -75,7 +75,7 @@
 
           <div class="camera-meta">
             <div class="meta-item">
-              <span class="meta-label">RTSP</span>
+              <span class="meta-label">Source</span>
               <span class="meta-value mono">{{ camera.rtsp_url || '未配置' }}</span>
             </div>
             <div class="meta-item compact">
@@ -115,8 +115,14 @@
         <el-form-item label="设备名称">
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="RTSP 地址">
-          <el-input v-model="form.rtsp_url" placeholder="rtsp://..." />
+        <el-form-item label="Video Source">
+          <el-input v-model="form.rtsp_url" placeholder="rtsp://... or demo.mp4" />
+          <div class="source-presets">
+            <el-button text size="small" @click="applySourceTemplate('demo.mp4')">demo.mp4</el-button>
+            <el-button text size="small" @click="applySourceTemplate('firework.mp4')">firework.mp4</el-button>
+            <el-button text size="small" @click="applySourceTemplate('fire.mp4')">fire.mp4</el-button>
+            <el-button text size="small" @click="applySourceTemplate('sunset.mp4')">sunset.mp4</el-button>
+          </div>
         </el-form-item>
         <el-form-item label="安装位置">
           <el-input v-model="form.location" />
@@ -273,6 +279,10 @@ const viewLogs = async (row) => {
   logVisible.value = true
 }
 
+
+const applySourceTemplate = (value) => {
+  form.rtsp_url = value
+}
 onMounted(fetchCameras)
 </script>
 
@@ -378,6 +388,13 @@ onMounted(fetchCameras)
 
 .search-input {
   width: 260px;
+}
+
+.source-presets {
+  margin-top: 6px;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
 }
 
 .camera-grid {
