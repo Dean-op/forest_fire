@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="history-container">
     <el-card shadow="hover">
       <template #header>
@@ -72,7 +72,7 @@
     <el-dialog v-model="detailVisible" title="告警详情" width="640px">
       <div v-if="currentAlert">
         <div class="detail-image-wrapper" v-if="currentAlert.image_path">
-          <img :src="currentAlert.image_path" class="detail-image" />
+          <img :src="assetUrl(currentAlert.image_path)" class="detail-image" />
         </div>
         <el-descriptions :column="1" border style="margin-top: 15px;">
           <el-descriptions-item label="告警 ID">{{ currentAlert.id }}</el-descriptions-item>
@@ -105,6 +105,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Delete, Download } from '@element-plus/icons-vue'
 import api from '../api'
+import { buildBackendUrl, normalizeAssetUrl } from '../api/backend'
 import { useUserStore } from '../stores/user'
 
 const userStore = useUserStore()
@@ -153,6 +154,7 @@ const statusType = (status) => ({
 
 const canDeleteStatus = (status) => deletableStatuses.has(status)
 const isRowSelectable = (row) => canDeleteStatus(row.status)
+const assetUrl = (path) => normalizeAssetUrl(path)
 
 const fetchAlerts = async () => {
   loading.value = true
@@ -183,7 +185,7 @@ const showDetail = (row) => {
 const exportCSV = () => {
   const token = localStorage.getItem('token')
   const params = filterStatus.value ? `?status=${filterStatus.value}` : ''
-  fetch(`/api/alerts/export/csv${params}`, {
+  fetch(buildBackendUrl(`/api/alerts/export/csv${params}`), {
     headers: { Authorization: `Bearer ${token}` }
   })
     .then((res) => res.blob())

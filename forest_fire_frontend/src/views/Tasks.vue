@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="tasks-page">
     <section class="hero-panel">
       <div class="hero-main">
@@ -82,8 +82,8 @@
         <div class="task-main">
           <el-image
             v-if="row.image_path"
-            :src="row.image_path"
-            :preview-src-list="[row.image_path]"
+            :src="assetUrl(row.image_path)"
+            :preview-src-list="previewList(row.image_path)"
             fit="cover"
             class="snapshot"
             preview-teleported
@@ -248,6 +248,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import api from '../api'
+import { normalizeAssetUrl } from '../api/backend'
 import { useUserStore } from '../stores/user'
 
 const userStore = useUserStore()
@@ -284,6 +285,11 @@ const selectedIds = ref([])
 const isAdmin = computed(() => userStore.role === 'admin')
 const deletableStatuses = new Set(['verified_false', 'false_alarm', 'resolved', 'archived_low', 'cancelled_pending'])
 const cancellableStatuses = new Set(['pending', 'pending_verify'])
+const assetUrl = (path) => normalizeAssetUrl(path)
+const previewList = (path) => {
+  const url = assetUrl(path)
+  return url ? [url] : []
+}
 
 const isPendingVerify = (status) => ['pending', 'pending_verify', 'confirmed', 'verified_true'].includes(status)
 

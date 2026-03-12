@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="dashboard-container">
     <div v-if="fireFlashActive" class="fire-flash-overlay"></div>
 
@@ -41,7 +41,7 @@
     >
       <div v-if="latestAlert" class="alert-detail">
         <el-alert title="检测到疑似火情" type="error" show-icon :closable="false" style="margin-bottom: 15px" />
-        <img :src="latestAlert.image_path" class="alert-image" alt="告警截图" />
+        <img :src="assetUrl(latestAlert.image_path)" class="alert-image" alt="告警截图" />
         <el-descriptions :column="1" border style="margin-top: 15px">
           <el-descriptions-item label="报警设备">{{ latestAlert.camera_name || '未知设备' }}</el-descriptions-item>
           <el-descriptions-item label="发生时间">{{ latestAlert.timestamp }}</el-descriptions-item>
@@ -124,6 +124,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { FullScreen, VideoCamera, VideoPause, Warning } from '@element-plus/icons-vue'
 import api from '../api'
+import { buildBackendUrl, buildBackendWsUrl, ensureBackendOrigin, normalizeAssetUrl } from '../api/backend'
 
 const wsConnected = ref(false)
 const ws = ref(null)
@@ -159,7 +160,7 @@ const nowTick = ref(Date.now())
 const cellRefs = new Map()
 
 const alertSoundEnabled = ref(true)
-const alarmAudioUrl = ref('/api/admin/public/alarm-audio')
+const alarmAudioUrl = ref('')
 let alarmAudio = null
 
 const statusLabel = (status) => {
@@ -192,7 +193,8 @@ const statusTypeSafe = (status) => statusType(status)
 
 const displayTime = computed(() => new Date(nowTick.value).toLocaleString('zh-CN', { hour12: false }))
 
-const streamUrl = (cameraId) => `/api/stream/video/${cameraId}`
+const streamUrl = (cameraId) => buildBackendUrl(`/api/stream/video/${cameraId}`)
+const assetUrl = (path) => normalizeAssetUrl(path)
 
 const setCellRef = (cameraId, el) => {
   if (el) cellRefs.set(cameraId, el)
@@ -231,11 +233,14 @@ const fetchRuntimeConfig = async () => {
     const cfg = await api.get('/admin/public/system-name')
     alertSoundEnabled.value = toBool(cfg?.alert_sound, true)
     if (cfg?.alarm_audio_url) {
-      alarmAudioUrl.value = cfg.alarm_audio_url
+      alarmAudioUrl.value = assetUrl(cfg.alarm_audio_url)
     }
   } catch {
     alertSoundEnabled.value = true
   } finally {
+    if (!alarmAudioUrl.value) {
+      alarmAudioUrl.value = buildBackendUrl('/api/admin/public/alarm-audio')
+    }
     initAlarmAudio()
   }
 }
@@ -372,9 +377,8 @@ const initWebSocket = () => {
   if (!isComponentAlive) return
   if (ws.value && (ws.value.readyState === WebSocket.OPEN || ws.value.readyState === WebSocket.CONNECTING)) return
 
-  const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
   isManualClosing = false
-  ws.value = new WebSocket(`${protocol}://${window.location.host}/ws/alerts`)
+  ws.value = new WebSocket(buildBackendWsUrl('/ws/alerts'))
 
   ws.value.onopen = () => {
     wsConnected.value = true
@@ -422,6 +426,7 @@ const initWebSocket = () => {
 
 onMounted(async () => {
   isComponentAlive = true
+  await ensureBackendOrigin()
   clockTimer = setInterval(() => {
     nowTick.value = Date.now()
   }, 1000)
