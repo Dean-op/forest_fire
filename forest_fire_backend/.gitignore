@@ -14,6 +14,8 @@ dist/
 build/
 *.egg-info/
 uploads/
+backups/*.sql
+!backups/.gitkeep
 app/models/best.pt
 *.db
 *.sqlite3
