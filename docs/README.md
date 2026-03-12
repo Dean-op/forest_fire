@@ -9,6 +9,7 @@ This folder stores non-runtime project documentation.
 ## Runtime Entry (for demo/defense)
 
 - Backend: `forest_fire_backend/`
+- Backend media assets: `forest_fire_backend/media/`
 - Frontend: `forest_fire_frontend/`
 
 Quick start:
@@ -26,4 +27,3 @@ npm run dev
 ```
 
 Open: `http://127.0.0.1:5173`
-

@@ -18,7 +18,17 @@ router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 BACKUP_DIR = PROJECT_ROOT / "backups"
-ALARM_AUDIO_PATH = PROJECT_ROOT / "火灾警报.m4a"
+MEDIA_DIR = PROJECT_ROOT / "media"
+
+
+def resolve_alarm_audio_path() -> Optional[Path]:
+    for folder in (MEDIA_DIR, PROJECT_ROOT):
+        if not folder.exists():
+            continue
+        files = sorted([p for p in folder.glob("*.m4a") if p.is_file()])
+        if files:
+            return files[0]
+    return None
 
 REQUIRED_CONFIGS = {
     "system_name": ("防火预警系统", "系统名称", "general"),
@@ -430,18 +440,21 @@ def get_public_system_name(
     except ValueError:
         low = 0.4
 
+    alarm_audio_path = resolve_alarm_audio_path()
+
     return {
         "system_name": values.get("system_name") or "防火预警系统",
         "fire_dispatch_phone": values.get("fire_dispatch_phone") or "119",
         "yolo_high_threshold": high,
         "yolo_low_threshold": low,
         "alert_sound": get_bool_config(session, "alert_sound", True),
-        "alarm_audio_url": "/api/admin/public/alarm-audio" if ALARM_AUDIO_PATH.exists() else None,
+        "alarm_audio_url": "/api/admin/public/alarm-audio" if alarm_audio_path else None,
     }
 
 
 @router.get("/public/alarm-audio")
 def get_alarm_audio():
-    if not ALARM_AUDIO_PATH.exists() or not ALARM_AUDIO_PATH.is_file():
+    alarm_audio_path = resolve_alarm_audio_path()
+    if not alarm_audio_path:
         raise HTTPException(status_code=404, detail="Alarm audio not found")
-    return FileResponse(path=ALARM_AUDIO_PATH, media_type="audio/mp4", filename=ALARM_AUDIO_PATH.name)
+    return FileResponse(path=alarm_audio_path, media_type="audio/mp4", filename=alarm_audio_path.name)

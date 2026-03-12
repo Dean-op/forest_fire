@@ -33,9 +33,19 @@ from app.routers.ws import ws_manager
 router = APIRouter(prefix="/api/stream", tags=["stream"])
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DEMO_VIDEO = str(BASE_DIR / "demo.mp4")
+MEDIA_DIR = BASE_DIR / "media"
 MODEL_PATH = str(BASE_DIR / "app" / "models" / "best.pt")
 UPLOADS_DIR = str(BASE_DIR / "uploads")
+
+
+def resolve_demo_video_path() -> str:
+    for candidate in (MEDIA_DIR / "demo.mp4", BASE_DIR / "demo.mp4"):
+        if candidate.exists():
+            return str(candidate)
+    return str(MEDIA_DIR / "demo.mp4")
+
+
+DEMO_VIDEO = resolve_demo_video_path()
 
 model = None
 try:
@@ -265,7 +275,7 @@ async def call_llm_review(alert_id: int, image_url: str, confidence: float, came
 def resolve_video_source(configured_source: str) -> tuple[object, bool]:
     source = (configured_source or "").strip()
     if not source:
-        return DEMO_VIDEO, True
+        return resolve_demo_video_path(), True
 
     aliases = {
         "demo": "demo.mp4",
@@ -287,12 +297,18 @@ def resolve_video_source(configured_source: str) -> tuple[object, bool]:
         return int(source), False
 
     source_path = Path(source)
-    if not source_path.is_absolute():
-        source_path = BASE_DIR / source_path
-    if source_path.exists():
-        return str(source_path), True
+    if source_path.is_absolute():
+        if source_path.exists():
+            return str(source_path), True
+        return resolve_demo_video_path(), True
 
-    return DEMO_VIDEO, True
+    # Prefer media/ for local sample files, then fallback to backend root.
+    candidates = [MEDIA_DIR / source_path, BASE_DIR / source_path]
+    for candidate in candidates:
+        if candidate.exists():
+            return str(candidate), True
+
+    return resolve_demo_video_path(), True
 
 
 def build_status_frame(text: str, size: tuple[int, int] = (640, 480)) -> bytes:
