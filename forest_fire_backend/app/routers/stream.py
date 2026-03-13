@@ -12,6 +12,7 @@
 import asyncio
 import base64
 import os
+import re
 import time
 from datetime import datetime
 from pathlib import Path
@@ -155,23 +156,42 @@ def run_yolo_inference(frame, infer_scale: float = 1.0):
     return annotated_frame, highest_conf
 
 
-def parse_llm_risk(text: str) -> str:
+def parse_llm_verdict(text: str) -> str:
     content = text or ""
-    if "高风险" in content:
-        return "high"
-    if "中风险" in content:
-        return "medium"
+    normalized = content.lower()
+    # 优先识别误报，避免“非火灾”中的“火灾”造成误判。
+    if any(token in content for token in ["误报", "非火灾", "非火情"]) or "false_alarm" in normalized:
+        return "false_alarm"
+    if any(token in content for token in ["真实火灾", "真火", "存在火情"]) or "true_fire" in normalized:
+        return "true_fire"
+    # 兼容旧版风险分级输出。
     if "低风险" in content:
-        return "low"
-    return "medium"
+        return "false_alarm"
+    if "高风险" in content or "中风险" in content:
+        return "true_fire"
+    return "unknown"
 
 
-def risk_to_status(risk: str) -> str:
-    return "pending_verify" if risk in {"high", "medium"} else "archived_low"
+def verdict_to_status(verdict: str) -> str:
+    return "pending_verify" if verdict == "true_fire" else "archived_low"
 
 
-def risk_label_zh(risk: str) -> str:
-    return {"high": "高风险", "medium": "中风险", "low": "低风险"}.get(risk, "中风险")
+def verdict_label_zh(verdict: str) -> str:
+    return {"true_fire": "真实火灾", "false_alarm": "误报"}.get(verdict, "待复核")
+
+
+def verdict_risk_label_zh(verdict: str) -> str:
+    return {"true_fire": "高风险", "false_alarm": "低风险"}.get(verdict, "待复核")
+
+
+def extract_llm_suggestion(text: str) -> str:
+    content = (text or "").strip()
+    if not content:
+        return ""
+    match = re.search(r"处置建议\s*[:：]\s*(.+)", content)
+    if match:
+        return match.group(1).strip().splitlines()[0][:80]
+    return content.splitlines()[0][:80]
 
 
 async def call_llm_review(alert_id: int, image_url: str, confidence: float, camera_name: str, config: dict):
@@ -180,7 +200,8 @@ async def call_llm_review(alert_id: int, image_url: str, confidence: float, came
     llm_model = config.get("llm_model", "qwen-vl-max")
 
     llm_text = ""
-    risk = "medium"
+    verdict = "unknown"
+    suggestion = ""
 
     if llm_url and llm_key and llm_key != "sk-xxxxx":
         try:
@@ -201,9 +222,9 @@ async def call_llm_review(alert_id: int, image_url: str, confidence: float, came
                             {
                                 "type": "text",
                                 "text": (
-                                    "你是森林火灾风险分级专家。"
-                                    "请仅按下述格式输出，不要输出额外内容。\n"
-                                    "风险级别: 高风险 或 中风险 或 低风险\n"
+                                    "你是森林火灾复核专家。"
+                                    "请仅输出两行，不要输出其他内容。\n"
+                                    "复核结论: 真实火灾 或 误报\n"
                                     "处置建议: 20字以内"
                                 ),
                             },
@@ -224,25 +245,35 @@ async def call_llm_review(alert_id: int, image_url: str, confidence: float, came
                 )
                 resp.raise_for_status()
                 data = resp.json()
-                llm_text = data["choices"][0]["message"]["content"]
+                raw_llm_text = data["choices"][0]["message"]["content"]
 
-            risk = parse_llm_risk(llm_text)
+            verdict = parse_llm_verdict(raw_llm_text)
+            suggestion = extract_llm_suggestion(raw_llm_text)
+            if verdict == "unknown":
+                # 模型输出不合规时按火灾兜底，避免漏报。
+                verdict = "true_fire"
+                if not suggestion:
+                    suggestion = "模型输出不规范，已转人工复核。"
 
         except Exception as e:
-            # LLM失败时，保守处理为中风险，避免漏报
-            risk = "medium"
-            llm_text = f"LLM调用失败，按中风险兜底处理：{e}"
+            verdict = "true_fire"
+            suggestion = f"LLM调用失败，按火灾兜底并转人工复核：{e}"
 
     else:
-        # 未配置LLM：按置信度做本地保守分级模拟
+        # 未配置LLM：按置信度做本地二分类模拟。
         if confidence >= 0.75:
-            risk = "medium"
+            verdict = "true_fire"
+            suggestion = "未配置LLM，按高疑似火情转人工复核。"
         else:
-            risk = "low"
-        llm_text = f"[模拟LLM] 风险级别: {risk_label_zh(risk)}；建议人工复核。"
+            verdict = "false_alarm"
+            suggestion = "未配置LLM，判定疑似误报并归档。"
 
-    final_status = risk_to_status(risk)
-    llm_text = f"[风险级别:{risk_label_zh(risk)}] {llm_text}"
+    final_status = verdict_to_status(verdict)
+    llm_text = (
+        f"复核结论: {verdict_label_zh(verdict)}\n"
+        f"风险级别: {verdict_risk_label_zh(verdict)}\n"
+        f"处置建议: {suggestion or '请人工复核。'}"
+    )
 
     broadcast = False
     with Session(engine) as session:
@@ -257,7 +288,7 @@ async def call_llm_review(alert_id: int, image_url: str, confidence: float, came
             broadcast = alert.status == "pending_verify"
             final_status = alert.status
 
-    # 仅高/中风险通知前端；低风险静默归档
+    # 仅真实火灾通知前端；误报静默归档。
     if broadcast:
         await ws_manager.broadcast(
             {
@@ -440,8 +471,9 @@ async def generate_frames(camera_id: int):
                         if highest_conf > high_th:
                             # 直接高风险
                             llm_text = (
-                                f"[风险级别:高风险] YOLO置信度 {highest_conf:.1%} > {high_th:.0%}，"
-                                "直接判定高风险并进入人工处置。"
+                                "复核结论: 真实火灾\n"
+                                "风险级别: 高风险\n"
+                                f"处置建议: YOLO置信度 {highest_conf:.1%} 超过阈值 {high_th:.0%}，请立刻按 SOP1 处置。"
                             )
                             alert_id = create_alert(
                                 img_url,
@@ -467,8 +499,9 @@ async def generate_frames(camera_id: int):
                         elif highest_conf < low_th:
                             # 直接低风险：静默归档，不通知operator
                             llm_text = (
-                                f"[风险级别:低风险] YOLO置信度 {highest_conf:.1%} < {low_th:.0%}，"
-                                "自动静默归档。"
+                                "复核结论: 误报\n"
+                                "风险级别: 低风险\n"
+                                f"处置建议: YOLO置信度 {highest_conf:.1%} 低于阈值 {low_th:.0%}，系统已自动归档。"
                             )
                             create_alert(
                                 img_url,
@@ -485,7 +518,7 @@ async def generate_frames(camera_id: int):
                                 highest_conf,
                                 detect_camera_name,
                                 status="reviewing_llm",
-                                llm_result=f"[风险级别:待复核] YOLO置信度 {highest_conf:.1%} 进入大模型二次复核。",
+                                llm_result=f"复核结论: 待复核\n风险级别: 待复核\n处置建议: YOLO置信度 {highest_conf:.1%}，正在等待大模型复核。",
                             )
                             asyncio.create_task(
                                 call_llm_review(

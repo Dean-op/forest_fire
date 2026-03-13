@@ -171,20 +171,20 @@
       <div v-if="actionType === 'SOP1'" class="sop-section">
         <h4>SOP1：高风险紧急处置（确诊火情）</h4>
         <ol class="sop-list">
-          <li>人工复核：30 秒内确认明火或浓烟。</li>
-          <li>消防联动：拨打消防电话并通报位置与火势。</li>
-          <li>内部调度：通知护林员或应急小组前往现场。</li>
-          <li>完成记录：补充接警人与调度对象并闭环。</li>
+          <li>先看截图和摄像头位置，30秒内确认是不是明火或大面积浓烟。</li>
+          <li>确认为真火后，立即拨打消防电话，按“位置+火势+是否蔓延”三项报清楚。</li>
+          <li>同步通知最近的护林员或应急小组先赶到现场，做外围隔离和人员疏散。</li>
+          <li>把接警人、调度对象、现场情况写进备注，提交后进入已联动状态。</li>
         </ol>
       </div>
 
       <div v-if="actionType === 'SOP2'" class="sop-section">
         <h4>SOP2：中风险现场核实（疑似火情）</h4>
         <ol class="sop-list">
-          <li>人工复核：结合截图与 AI 建议判断是否误报。</li>
-          <li>现场核实：调度最近人员或无人机进行复核。</li>
-          <li>结果分流：真实火情升级 SOP1，误报则归档处理。</li>
-          <li>补充备注：记录复核人与误报原因。</li>
+          <li>先按截图和AI分析做初判，判断更像真火还是反光/烟尘误报。</li>
+          <li>安排最近值守人员或无人机到点位复核，优先确认“有无明火、烟雾来源、扩散方向”。</li>
+          <li>现场回报为真火就立刻升级到 SOP1；回报为误报就选择误报归档。</li>
+          <li>备注里写清复核人、复核时间和结论原因，便于后续追溯。</li>
         </ol>
       </div>
 
@@ -339,6 +339,8 @@ const toggleSelect = (id, checked) => {
 
 const detectRiskFromText = (text) => {
   const normalized = String(text || '').toLowerCase()
+  if (normalized.includes('复核结论:真实火灾') || normalized.includes('true_fire')) return 'high'
+  if (normalized.includes('复核结论:误报') || normalized.includes('false_alarm')) return 'low'
   if (normalized.includes('高风险') || normalized.includes('high')) return 'high'
   if (normalized.includes('中风险') || normalized.includes('medium')) return 'medium'
   if (normalized.includes('低风险') || normalized.includes('low')) return 'low'
@@ -861,6 +863,7 @@ onMounted(async () => {
   color: #4d5a68;
   font-size: 13px;
   line-height: 1.5;
+  white-space: pre-line;
   max-height: 60px;
   overflow: hidden;
 }

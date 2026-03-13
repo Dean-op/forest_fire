@@ -2,6 +2,7 @@ const STORAGE_KEY = 'ff_backend_origin'
 const DEV_FRONTEND_PORTS = new Set(['4173', '5173', '5174'])
 const PROBE_PATH = '/api/admin/public/system-name'
 const PROBE_TIMEOUT_MS = 1500
+const ACCEPTABLE_PROBE_STATUS = new Set([200, 401, 403])
 
 let resolvedOrigin = ''
 let resolvingPromise = null
@@ -27,6 +28,15 @@ const saveOrigin = (origin) => {
     // Ignore storage failures.
   }
   return normalized
+}
+
+const clearStoredOrigin = () => {
+  resolvedOrigin = ''
+  try {
+    window.localStorage.removeItem(STORAGE_KEY)
+  } catch {
+    // Ignore storage failures.
+  }
 }
 
 const getCandidateOrigins = () => {
@@ -65,7 +75,7 @@ const probeOrigin = async (origin) => {
       cache: 'no-store',
       signal: controller.signal
     })
-    return response.status < 500
+    return ACCEPTABLE_PROBE_STATUS.has(response.status)
   } catch {
     return false
   } finally {
@@ -78,13 +88,17 @@ export const ensureBackendOrigin = async () => {
 
   if (!resolvingPromise) {
     resolvingPromise = (async () => {
+      const envOrigin = normalizeOrigin(import.meta.env.VITE_BACKEND_TARGET)
+      const fallbackOrigin = envOrigin || 'http://localhost:8010'
+
       for (const candidate of getCandidateOrigins()) {
         if (await probeOrigin(candidate)) {
           return saveOrigin(candidate)
         }
       }
 
-      return saveOrigin(getCandidateOrigins()[0] || 'http://localhost:8010')
+      clearStoredOrigin()
+      return saveOrigin(fallbackOrigin)
     })().finally(() => {
       resolvingPromise = null
     })

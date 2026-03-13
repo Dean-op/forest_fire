@@ -3,6 +3,7 @@ from typing import Literal, Optional
 import csv
 import io
 import os
+import re
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
@@ -82,9 +83,58 @@ def sanitize_image_path(image_path: Optional[str]) -> str:
     return path if os.path.exists(full_path) else ""
 
 
+def normalize_llm_result(llm_result: Optional[str]) -> str:
+    text = (llm_result or "").strip()
+    if not text:
+        return ""
+
+    raw = text.replace("\r\n", "\n")
+    flattened = raw.replace("[", "").replace("]", "")
+
+    verdict_match = re.search(r"复核结论\s*[:：]\s*(真实火灾|误报|待复核)", flattened)
+    risk_match = re.search(r"风险级别\s*[:：]\s*(高风险|中风险|低风险|待复核)", flattened)
+    suggestion_match = re.search(r"处置建议\s*[:：]\s*(.+)$", flattened, re.DOTALL)
+
+    verdict = verdict_match.group(1) if verdict_match else ""
+    if not verdict:
+        if any(token in flattened for token in ["误报", "非火灾", "非火情", "低风险"]):
+            verdict = "误报"
+        elif any(token in flattened for token in ["真实火灾", "真火", "高风险", "中风险"]):
+            verdict = "真实火灾"
+        else:
+            verdict = "待复核"
+
+    risk = risk_match.group(1) if risk_match else ""
+    if not risk:
+        if "高风险" in flattened:
+            risk = "高风险"
+        elif "中风险" in flattened:
+            risk = "中风险"
+        elif "低风险" in flattened:
+            risk = "低风险"
+        elif verdict == "真实火灾":
+            risk = "高风险"
+        elif verdict == "误报":
+            risk = "低风险"
+        else:
+            risk = "待复核"
+
+    suggestion = suggestion_match.group(1).strip() if suggestion_match else ""
+    if not suggestion:
+        suggestion = flattened
+        suggestion = re.sub(r"复核结论\s*[:：]\s*(真实火灾|误报|待复核)", "", suggestion)
+        suggestion = re.sub(r"风险级别\s*[:：]\s*(高风险|中风险|低风险|待复核)", "", suggestion)
+        suggestion = suggestion.strip(" ：:;；")
+    if not suggestion:
+        suggestion = "请结合现场情况进行人工复核。"
+
+    return f"复核结论: {verdict}\n风险级别: {risk}\n处置建议: {suggestion}"
+
+
 def serialize_alert(alert: Alert) -> dict:
     data = alert.dict()
     data["image_path"] = sanitize_image_path(alert.image_path)
+    data["llm_result"] = normalize_llm_result(alert.llm_result)
     return data
 
 
@@ -350,7 +400,7 @@ def export_alerts_csv(
             alert.id,
             alert.timestamp,
             alert.yolo_confidence,
-            alert.llm_result,
+            normalize_llm_result(alert.llm_result),
             WORKFLOW_STATUS_LABELS.get(alert.status, alert.status),
             alert.remark,
             alert.image_path,

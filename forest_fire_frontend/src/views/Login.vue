@@ -7,37 +7,83 @@
           <span class="subtitle">AI 智能监控平台</span>
         </div>
       </template>
-      
-      <el-form :model="loginForm" :rules="rules" ref="formRef" @keyup.enter="handleLogin">
-        <el-form-item prop="username">
-          <el-input 
-            v-model="loginForm.username" 
-            placeholder="用户名" 
-            prefix-icon="User" />
-        </el-form-item>
-        
-        <el-form-item prop="password">
-          <el-input 
-            v-model="loginForm.password" 
-            type="password" 
-            placeholder="密码" 
-            prefix-icon="Lock" 
-            show-password />
-        </el-form-item>
-        
-        <el-form-item>
-          <el-button type="primary" class="login-btn" @click="handleLogin" :loading="loading">
-            登录系统
-          </el-button>
-        </el-form-item>
-      </el-form>
-      
-      <div class="test-accounts">
-        <p>测试账号(密码皆为123456):</p>
-        <el-tag size="small" @click="fill('admin')">admin</el-tag>
-        <el-tag size="small" type="success" @click="fill('manager')">manager</el-tag>
-        <el-tag size="small" type="warning" @click="fill('operator')">operator</el-tag>
-      </div>
+
+      <el-tabs v-model="activeTab" stretch>
+        <el-tab-pane label="登录" name="login">
+          <el-form :model="loginForm" :rules="loginRules" ref="loginFormRef" @keyup.enter="handleLogin">
+            <el-form-item prop="username">
+              <el-input
+                v-model="loginForm.username"
+                placeholder="用户名"
+                :prefix-icon="User"
+              />
+            </el-form-item>
+
+            <el-form-item prop="password">
+              <el-input
+                v-model="loginForm.password"
+                type="password"
+                placeholder="密码"
+                :prefix-icon="Lock"
+                show-password
+              />
+            </el-form-item>
+
+            <el-form-item>
+              <el-button type="primary" class="primary-btn" @click="handleLogin" :loading="loginLoading">
+                登录系统
+              </el-button>
+            </el-form-item>
+          </el-form>
+
+          <div class="test-accounts">
+            <p>测试账号(密码皆为123456):</p>
+            <el-tag size="small" @click="fill('admin')">admin</el-tag>
+            <el-tag size="small" type="success" @click="fill('manager')">manager</el-tag>
+            <el-tag size="small" type="warning" @click="fill('operator')">operator</el-tag>
+          </div>
+        </el-tab-pane>
+
+        <el-tab-pane label="注册" name="register">
+          <el-form :model="registerForm" :rules="registerRules" ref="registerFormRef" @keyup.enter="handleRegister">
+            <el-form-item prop="username">
+              <el-input
+                v-model="registerForm.username"
+                placeholder="请输入 3-32 位用户名"
+                :prefix-icon="User"
+              />
+            </el-form-item>
+
+            <el-form-item prop="password">
+              <el-input
+                v-model="registerForm.password"
+                type="password"
+                placeholder="请输入不少于 6 位密码"
+                :prefix-icon="Lock"
+                show-password
+              />
+            </el-form-item>
+
+            <el-form-item prop="confirmPassword">
+              <el-input
+                v-model="registerForm.confirmPassword"
+                type="password"
+                placeholder="请再次输入密码"
+                :prefix-icon="CircleCheck"
+                show-password
+              />
+            </el-form-item>
+
+            <div class="register-tip">自助注册账号默认创建为“操作员”角色。</div>
+
+            <el-form-item>
+              <el-button type="primary" class="primary-btn" @click="handleRegister" :loading="registerLoading">
+                注册账号
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+      </el-tabs>
     </el-card>
   </div>
 </template>
@@ -47,35 +93,72 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import { ElMessage } from 'element-plus'
-import { User, Lock } from '@element-plus/icons-vue'
+import { User, Lock, CircleCheck } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const userStore = useUserStore()
 
-const formRef = ref(null)
-const loading = ref(false)
+const activeTab = ref('login')
+const loginFormRef = ref(null)
+const registerFormRef = ref(null)
+const loginLoading = ref(false)
+const registerLoading = ref(false)
 
 const loginForm = reactive({
   username: '',
   password: ''
 })
 
-const rules = {
+const registerForm = reactive({
+  username: '',
+  password: '',
+  confirmPassword: ''
+})
+
+const loginRules = {
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+}
+
+const validateConfirmPassword = (_rule, value, callback) => {
+  if (!value) {
+    callback(new Error('请再次输入密码'))
+    return
+  }
+  if (value !== registerForm.password) {
+    callback(new Error('两次输入的密码不一致'))
+    return
+  }
+  callback()
+}
+
+const registerRules = {
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 3, max: 32, message: '用户名长度需为 3-32 位', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, max: 64, message: '密码长度需为 6-64 位', trigger: 'blur' }
+  ],
+  confirmPassword: [
+    { required: true, message: '请再次输入密码', trigger: 'blur' },
+    { validator: validateConfirmPassword, trigger: 'blur' }
+  ]
 }
 
 const fill = (uname) => {
   loginForm.username = uname
   loginForm.password = '123456'
+  activeTab.value = 'login'
 }
 
 const handleLogin = async () => {
-  if (!formRef.value) return
-  
-  await formRef.value.validate(async (valid) => {
+  if (!loginFormRef.value) return
+
+  await loginFormRef.value.validate(async (valid) => {
     if (valid) {
-      loading.value = true
+      loginLoading.value = true
       try {
         await userStore.login(loginForm.username, loginForm.password)
         ElMessage.success('登录成功')
@@ -83,7 +166,40 @@ const handleLogin = async () => {
       } catch (error) {
         ElMessage.error(error.response?.data?.detail || '登录失败，请检查账号密码')
       } finally {
-        loading.value = false
+        loginLoading.value = false
+      }
+    }
+  })
+}
+
+const resetRegisterForm = () => {
+  registerForm.username = ''
+  registerForm.password = ''
+  registerForm.confirmPassword = ''
+  registerFormRef.value?.clearValidate()
+}
+
+const handleRegister = async () => {
+  if (!registerFormRef.value) return
+
+  await registerFormRef.value.validate(async (valid) => {
+    if (valid) {
+      registerLoading.value = true
+      try {
+        await userStore.register(
+          registerForm.username,
+          registerForm.password,
+          registerForm.confirmPassword
+        )
+        ElMessage.success('注册成功，请使用新账号登录')
+        loginForm.username = registerForm.username
+        loginForm.password = ''
+        resetRegisterForm()
+        activeTab.value = 'login'
+      } catch (error) {
+        ElMessage.error(error.response?.data?.detail || '注册失败')
+      } finally {
+        registerLoading.value = false
       }
     }
   })
@@ -122,10 +238,16 @@ const handleLogin = async () => {
   display: inline-block;
 }
 
-.login-btn {
+.primary-btn {
   width: 100%;
   font-size: 16px;
   padding: 12px;
+}
+
+.register-tip {
+  margin: -4px 0 16px;
+  font-size: 12px;
+  color: #909399;
 }
 
 .test-accounts {

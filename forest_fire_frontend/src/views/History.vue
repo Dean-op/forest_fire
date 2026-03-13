@@ -93,7 +93,9 @@
           <el-descriptions-item label="当前状态">
             <el-tag :type="statusType(currentAlert.status)" size="large">{{ statusLabel(currentAlert.status) }}</el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="处理备注">{{ currentAlert.remark || '暂无' }}</el-descriptions-item>
+          <el-descriptions-item label="处理备注">
+            <div style="white-space: pre-wrap;">{{ currentAlert.remark || '暂无' }}</div>
+          </el-descriptions-item>
         </el-descriptions>
       </div>
     </el-dialog>

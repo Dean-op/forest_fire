@@ -26,6 +26,13 @@ class PasswordUpdate(BaseModel):
     old_password: str
     new_password: str
 
+
+class RegisterRequest(BaseModel):
+    username: str
+    password: str
+    confirm_password: str
+
+
 async def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -46,6 +53,22 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: Session
     return user
 
 
+def validate_username(username: str) -> str:
+    normalized = (username or "").strip()
+    if len(normalized) < 3 or len(normalized) > 32:
+        raise HTTPException(status_code=400, detail="Username length must be 3-32 characters")
+    if not normalized.replace("_", "").replace("-", "").isalnum():
+        raise HTTPException(status_code=400, detail="Username can only contain letters, numbers, '_' and '-'")
+    return normalized
+
+
+def validate_password(password: str) -> str:
+    value = (password or "").strip()
+    if len(value) < 6 or len(value) > 64:
+        raise HTTPException(status_code=400, detail="Password length must be 6-64 characters")
+    return value
+
+
 @router.post("/login", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     user = session.exec(select(User).where(User.username == form_data.username)).first()
@@ -61,6 +84,29 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = D
 
     access_token = create_access_token(data={"sub": user.username, "role": user.role})
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def register(data: RegisterRequest, session: Session = Depends(get_session)):
+    username = validate_username(data.username)
+    password = validate_password(data.password)
+
+    if password != (data.confirm_password or "").strip():
+        raise HTTPException(status_code=400, detail="Passwords do not match")
+
+    existing = session.exec(select(User).where(User.username == username)).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Username already exists")
+
+    user = User(
+        username=username,
+        hashed_password=get_password_hash(password),
+        role="operator",
+    )
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return UserResponse(id=user.id, username=user.username, role=user.role)
 
 
 @router.get("/me", response_model=UserResponse)
@@ -83,8 +129,8 @@ def require_roles(*allowed_roles: str):
 def update_password(pw_data: PasswordUpdate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
     if not verify_password(pw_data.old_password, current_user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect old password")
-        
-    current_user.hashed_password = get_password_hash(pw_data.new_password)
+
+    current_user.hashed_password = get_password_hash(validate_password(pw_data.new_password))
     session.add(current_user)
     session.commit()
     return {"msg": "Password updated successfully"}

@@ -29,6 +29,13 @@ export const useUserStore = defineStore('user', {
             this.user = user
             localStorage.setItem('user', JSON.stringify(user))
         },
+        async register(username, password, confirmPassword) {
+            return api.post('/auth/register', {
+                username,
+                password,
+                confirm_password: confirmPassword
+            })
+        },
         logout() {
             this.token = ''
             this.user = null
