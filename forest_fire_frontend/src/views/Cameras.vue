@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="cameras-page">
     <section class="hero-panel">
       <div class="hero-main">
@@ -363,7 +363,7 @@ onMounted(fetchCameras)
 }
 
 .control-card {
-  border: 1px solid #dce8f3;
+  border: 1px solid var(--el-border-color-light);
   border-radius: 12px;
 }
 
@@ -405,9 +405,9 @@ onMounted(fetchCameras)
 }
 
 .camera-card {
-  border: 1px solid #dde4ee;
+  border: 1px solid var(--el-border-color-light);
   border-radius: 14px;
-  background: #fff;
+  background: var(--el-bg-color);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -425,8 +425,8 @@ onMounted(fetchCameras)
   align-items: flex-start;
   gap: 12px;
   padding: 14px;
-  border-bottom: 1px solid #edf2f7;
-  background: #fbfdff;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+  background: var(--el-fill-color-light);
 }
 
 .head-main {
@@ -436,7 +436,7 @@ onMounted(fetchCameras)
 .camera-name {
   font-size: 18px;
   font-weight: 700;
-  color: #1f2d3d;
+  color: var(--el-text-color-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -445,7 +445,7 @@ onMounted(fetchCameras)
 .camera-location {
   margin-top: 4px;
   font-size: 12px;
-  color: #7b8a9b;
+  color: var(--el-text-color-regular);
 }
 
 .camera-body {
@@ -509,7 +509,7 @@ onMounted(fetchCameras)
   gap: 6px;
   padding: 10px 12px;
   border-radius: 10px;
-  background: #f6f9fc;
+  background: var(--el-fill-color-light);
 }
 
 .meta-item.compact {
@@ -520,12 +520,12 @@ onMounted(fetchCameras)
 
 .meta-label {
   font-size: 12px;
-  color: #7b8a9b;
+  color: var(--el-text-color-regular);
 }
 
 .meta-value {
   font-size: 13px;
-  color: #2c3e50;
+  color: var(--el-text-color-primary);
   word-break: break-all;
 }
 

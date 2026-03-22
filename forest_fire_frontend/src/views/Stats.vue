@@ -1,6 +1,5 @@
 <template>
   <div class="stats-container" v-loading="loading">
-    <!-- 第一行：6 个渐变 KPI 卡片 -->
     <div class="kpi-grid">
       <div class="kpi-card" v-for="(kpi, idx) in kpiList" :key="idx" :style="{ background: kpi.bg }">
         <div class="kpi-icon">{{ kpi.icon }}</div>
@@ -14,49 +13,46 @@
       </div>
     </div>
 
-    <!-- 第二行：趋势面积图 + 占比环形图 -->
     <el-row :gutter="16" class="chart-row">
       <el-col :span="16">
-        <div class="chart-card">
+        <div class="chart-card glass-card">
           <div class="chart-title">📈 近 7 天告警趋势（堆叠面积）</div>
           <div ref="trendChart" class="chart-body"></div>
         </div>
       </el-col>
       <el-col :span="8">
-        <div class="chart-card">
+        <div class="chart-card glass-card">
           <div class="chart-title">🍩 告警类别占比</div>
           <div ref="pieChart" class="chart-body"></div>
         </div>
       </el-col>
     </el-row>
 
-    <!-- 第三行：仪表盘 + 24h 热力柱状图 + 置信度分布 -->
     <el-row :gutter="16" class="chart-row">
       <el-col :span="8">
-        <div class="chart-card">
+        <div class="chart-card glass-card">
           <div class="chart-title">🎯 设备在线率</div>
           <div ref="gaugeChart" class="chart-body"></div>
         </div>
       </el-col>
       <el-col :span="8">
-        <div class="chart-card">
+        <div class="chart-card glass-card">
           <div class="chart-title">🕐 24 小时告警热力分布</div>
           <div ref="hourlyChart" class="chart-body"></div>
         </div>
       </el-col>
       <el-col :span="8">
-        <div class="chart-card">
+        <div class="chart-card glass-card">
           <div class="chart-title">🔬 YOLO 置信度分布</div>
           <div ref="confChart" class="chart-body"></div>
         </div>
       </el-col>
     </el-row>
 
-    <!-- 第四行：设备状态列表 + 最近告警 -->
     <el-row :gutter="16" class="chart-row">
       <el-col :span="10">
-        <div class="chart-card" style="padding: 20px;">
-          <div class="chart-title" style="margin-bottom: 15px;">📷 设备状态一览</div>
+        <div class="chart-card glass-card" style="padding: 20px;">
+          <div class="chart-title" style="margin-bottom: 15px; padding: 0;">📷 设备状态一览</div>
           <div class="device-grid">
             <div v-for="cam in stats.camera_list" :key="cam.name" class="device-item">
               <div class="device-dot" :class="cam.status"></div>
@@ -64,7 +60,7 @@
                 <div class="device-name">{{ cam.name }}</div>
                 <div class="device-loc">{{ cam.location }}</div>
               </div>
-              <el-tag :type="cam.status==='online'?'success':'danger'" size="small">
+              <el-tag :type="cam.status==='online'?'success':'danger'" effect="dark" size="small">
                 {{ cam.status==='online'?'在线':'离线' }}
               </el-tag>
             </div>
@@ -72,12 +68,12 @@
         </div>
       </el-col>
       <el-col :span="14">
-        <div class="chart-card" style="padding: 20px;">
-          <div class="chart-title" style="margin-bottom: 15px;">🔥 最近告警动态</div>
-          <el-table :data="stats.recent_alerts" stripe size="small" style="width:100%">
+        <div class="chart-card glass-card" style="padding: 20px;">
+          <div class="chart-title" style="margin-bottom: 15px; padding: 0;">🔥 最近告警动态</div>
+          <el-table :data="stats.recent_alerts" stripe size="small" class="transparent-table">
             <el-table-column prop="id" label="#" width="50" />
-            <el-table-column prop="timestamp" label="时间" width="120" />
-            <el-table-column prop="confidence" label="置信度" width="100">
+            <el-table-column prop="timestamp" label="时间" width="140" />
+            <el-table-column prop="confidence" label="置信度" width="120">
               <template #default="{ row }">
                 <el-progress 
                   :percentage="Math.round(row.confidence * 100)"
@@ -88,7 +84,7 @@
             </el-table-column>
             <el-table-column prop="status" label="状态" width="100">
               <template #default="{ row }">
-                <el-tag :type="statusTagType(row.status)" size="small">
+                <el-tag :type="statusTagType(row.status)" effect="dark" size="small">
                   {{ statusTagLabel(row.status) }}
                 </el-tag>
               </template>
@@ -101,10 +97,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick, onUnmounted } from 'vue'
+import { ref, computed, onMounted, nextTick, onUnmounted, watch } from 'vue'
 import api from '../api'
 import * as echarts from 'echarts'
 import { ElMessage } from 'element-plus'
+import { useThemeStore } from '../stores/theme'
+
+const themeStore = useThemeStore()
 
 const loading = ref(false)
 const stats = ref({
@@ -124,12 +123,12 @@ const confChart = ref(null)
 let charts = []
 
 const kpiList = computed(() => [
-  { icon: '🔥', value: stats.value.total_alerts, label: '总告警次数', bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
-  { icon: '🚨', value: stats.value.confirmed, label: '确认火灾', bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
-  { icon: '✅', value: stats.value.false_alarm, label: '误报次数', bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
-  { icon: '⏳', value: stats.value.pending, label: '待核实/处置', bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
-  { icon: '🎯', value: stats.value.avg_confidence, label: '平均置信度', bg: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)' },
-  { icon: '📊', value: stats.value.accuracy, unit: '%', label: '检测精准率', bg: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)' },
+  { icon: '🔥', value: stats.value.total_alerts, label: '总告警次数', bg: 'linear-gradient(135deg, #1e3a8a 0%, #312e81 100%)' },
+  { icon: '🚨', value: stats.value.confirmed, label: '确认火灾', bg: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)' },
+  { icon: '✅', value: stats.value.false_alarm, label: '误报次数', bg: 'linear-gradient(135deg, #164e63 0%, #0c4a6e 100%)' },
+  { icon: '⏳', value: stats.value.pending, label: '待核实/处置', bg: 'linear-gradient(135deg, #78350f 0%, #a16207 100%)' },
+  { icon: '🎯', value: stats.value.avg_confidence, label: '平均置信度', bg: 'linear-gradient(135deg, #4c1d95 0%, #5b21b6 100%)' },
+  { icon: '📊', value: stats.value.accuracy, unit: '%', label: '检测精准率', bg: 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)' },
 ])
 
 const statusTagLabel = (status) => ({
@@ -168,14 +167,22 @@ const fetchStats = async () => {
   }
 }
 
+watch(() => themeStore.isDark, () => {
+  if (stats.value.total_alerts !== undefined) {
+    nextTick(() => renderCharts(stats.value))
+  }
+})
+
 const renderCharts = (data) => {
   charts.forEach(c => c.dispose())
   charts = []
 
-  // 1. 趋势面积图（堆叠）
-  const t = echarts.init(trendChart.value)
+  const themeStr = themeStore.isDark ? 'dark' : null
+  
+  const t = echarts.init(trendChart.value, themeStr)
   charts.push(t)
   t.setOption({
+    backgroundColor: 'transparent',
     tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
     legend: { data: ['真实火灾', '误报', '总计'], bottom: 0 },
     grid: { top: 20, right: 20, bottom: 50, left: 50 },
@@ -188,10 +195,10 @@ const renderCharts = (data) => {
     ]
   })
 
-  // 2. 南丁格尔玫瑰图
-  const p = echarts.init(pieChart.value)
+  const p = echarts.init(pieChart.value, themeStr)
   charts.push(p)
   p.setOption({
+    backgroundColor: 'transparent',
     tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
     series: [{
       type: 'pie', radius: ['30%', '70%'], center: ['50%', '48%'],
@@ -207,10 +214,10 @@ const renderCharts = (data) => {
     }]
   })
 
-  // 3. 仪表盘
-  const g = echarts.init(gaugeChart.value)
+  const g = echarts.init(gaugeChart.value, themeStr)
   charts.push(g)
   g.setOption({
+    backgroundColor: 'transparent',
     series: [{
       type: 'gauge', 
       startAngle: 200, endAngle: -20,
@@ -221,7 +228,7 @@ const renderCharts = (data) => {
       axisTick: { show: false },
       splitLine: { show: false },
       axisLabel: { show: false },
-      title: { offsetCenter: [0, '30%'], fontSize: 14, color: '#666' },
+      title: { offsetCenter: [0, '30%'], fontSize: 14, color: '#94a3b8' },
       detail: { 
         valueAnimation: true, fontSize: 36, fontWeight: 'bold',
         offsetCenter: [0, '-10%'],
@@ -241,10 +248,10 @@ const renderCharts = (data) => {
     }]
   })
 
-  // 4. 24h 渐变柱状图
-  const h = echarts.init(hourlyChart.value)
+  const h = echarts.init(hourlyChart.value, themeStr)
   charts.push(h)
   h.setOption({
+    backgroundColor: 'transparent',
     tooltip: { trigger: 'axis', formatter: '{b}时: {c} 次' },
     grid: { top: 15, right: 15, bottom: 30, left: 35 },
     xAxis: { 
@@ -273,11 +280,11 @@ const renderCharts = (data) => {
     }]
   })
 
-  // 5. 置信度分布柱状图
-  const cf = echarts.init(confChart.value)
+  const cf = echarts.init(confChart.value, themeStr)
   charts.push(cf)
   const confData = data.confidence_distribution
   cf.setOption({
+    backgroundColor: 'transparent',
     tooltip: { trigger: 'axis' },
     grid: { top: 15, right: 15, bottom: 30, left: 35 },
     xAxis: { type: 'category', data: Object.keys(confData), axisLabel: { fontSize: 10 } },
@@ -296,12 +303,14 @@ const renderCharts = (data) => {
     }]
   })
 
-  // 全局 resize
-  window.addEventListener('resize', () => charts.forEach(c => c.resize()))
+  window.addEventListener('resize', handleResize)
 }
+
+const handleResize = () => charts.forEach(c => c.resize())
 
 onMounted(fetchStats)
 onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
   charts.forEach(c => c.dispose())
 })
 </script>
@@ -313,7 +322,6 @@ onUnmounted(() => {
   gap: 16px;
 }
 
-/* KPI 卡片网格 */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -321,62 +329,51 @@ onUnmounted(() => {
 }
 
 .kpi-card {
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 18px 16px;
   color: #fff;
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s, box-shadow 0.3s;
   cursor: default;
 }
+html.dark .kpi-card { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.05); }
 
 .kpi-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
+html.dark .kpi-card:hover { box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6); }
 
-.kpi-icon {
-  font-size: 32px;
-  flex-shrink: 0;
-}
+.kpi-icon { font-size: 32px; flex-shrink: 0; }
+.kpi-value { font-size: 28px; font-weight: 800; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.kpi-unit { font-size: 16px; font-weight: 400; opacity: 0.8; }
+.kpi-label { font-size: 12px; opacity: 0.9; margin-top: 4px; }
 
-.kpi-value {
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.kpi-unit {
-  font-size: 16px;
-  font-weight: 400;
-  opacity: 0.8;
-}
-
-.kpi-label {
-  font-size: 12px;
-  opacity: 0.85;
-  margin-top: 4px;
-}
-
-/* 图表卡片 */
-.chart-row {
-  /* el-row handles gutter */
-}
-
-.chart-card {
-  background: #fff;
+/* Light/Dark Cards */
+.glass-card {
+  background: var(--el-bg-color);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--el-border-color-light);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   overflow: hidden;
+}
+html.dark .glass-card {
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .chart-title {
-  padding: 14px 18px 0;
+  padding: 16px 20px 0;
   font-size: 15px;
   font-weight: 600;
-  color: #303133;
+  color: var(--el-text-color-primary);
+  letter-spacing: 0.5px;
 }
 
 .chart-body {
@@ -384,11 +381,13 @@ onUnmounted(() => {
   padding: 8px;
 }
 
-/* 设备状态网格 */
 .device-grid {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 8px;
 }
 
 .device-item {
@@ -396,49 +395,45 @@ onUnmounted(() => {
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  border-radius: 10px;
-  background: #f5f7fa;
-  transition: background 0.2s;
+  border-radius: 8px;
+  background: var(--el-fill-color-light);
+  border: 1px solid var(--el-border-color-lighter);
+  transition: all 0.2s;
+}
+html.dark .device-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .device-item:hover {
-  background: #ecf5ff;
+  background: var(--el-color-primary-light-9);
+  border-color: var(--el-color-primary-light-7);
+}
+html.dark .device-item:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
-.device-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
+.device-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .device-dot.online {
   background: #67C23A;
   box-shadow: 0 0 8px rgba(103, 194, 58, 0.6);
   animation: pulse 2s infinite;
 }
-
-.device-dot.offline {
-  background: #F56C6C;
-}
+.device-dot.offline { background: #F56C6C; }
 
 @keyframes pulse {
   0%, 100% { box-shadow: 0 0 4px rgba(103, 194, 58, 0.4); }
   50% { box-shadow: 0 0 12px rgba(103, 194, 58, 0.8); }
 }
 
-.device-info {
-  flex: 1;
-}
+.device-info { flex: 1; }
+.device-name { font-size: 14px; font-weight: 600; color: var(--el-text-color-primary); }
+.device-loc { font-size: 12px; color: var(--el-text-color-regular); margin-top: 2px; }
 
-.device-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #303133;
+:deep(.transparent-table.el-table) {
+  background-color: transparent !important;
+  color: var(--el-text-color-primary);
 }
-
-.device-loc {
-  font-size: 12px;
-  color: #909399;
-}
+:deep(.transparent-table .el-table__cell) { background-color: transparent !important; }
 </style>

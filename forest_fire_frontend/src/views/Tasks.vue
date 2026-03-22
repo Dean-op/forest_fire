@@ -830,9 +830,9 @@ onMounted(async () => {
 }
 
 .task-card {
-  border: 1px solid #dde4ee;
+  border: 1px solid var(--el-border-color-light);
   border-radius: 12px;
-  background: #fff;
+  background: var(--el-bg-color);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -850,8 +850,8 @@ onMounted(async () => {
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border-bottom: 1px solid #edf2f7;
-  background: #fbfdff;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+  background: var(--el-fill-color-light);
 }
 
 .head-left {
@@ -863,7 +863,7 @@ onMounted(async () => {
 
 .task-id {
   font-weight: 700;
-  color: #1f2d3d;
+  color: var(--el-text-color-primary);
 }
 
 .task-time {
@@ -910,7 +910,7 @@ onMounted(async () => {
 .cam-name {
   font-size: 16px;
   font-weight: 700;
-  color: #1f2d3d;
+  color: var(--el-text-color-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -918,7 +918,7 @@ onMounted(async () => {
 
 .cam-loc {
   font-size: 12px;
-  color: #8896a7;
+  color: var(--el-text-color-regular);
   margin-top: 2px;
 }
 
@@ -935,8 +935,11 @@ onMounted(async () => {
 
 .ai-advice {
   margin: 0;
-  color: #4d5a68;
+  padding: 10px 12px;
+  background: var(--el-color-primary-light-9);
+  border-radius: 8px;
   font-size: 13px;
+  color: var(--el-color-primary);
   line-height: 1.5;
   white-space: pre-line;
   max-height: 60px;
@@ -968,16 +971,22 @@ onMounted(async () => {
 
 .sop-section {
   margin-top: 12px;
+  padding: 14px;
+  background: var(--el-fill-color-light);
+  border-left: 4px solid var(--el-color-primary);
+  border-radius: 4px;
 }
 
 .sop-section h4 {
   margin: 0 0 8px;
+  color: var(--el-text-color-primary);
 }
 
 .sop-list {
   margin: 0;
   padding-left: 20px;
   line-height: 1.8;
+  color: var(--el-text-color-regular);
 }
 
 .action-form {
