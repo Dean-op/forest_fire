@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="tasks-page">
     <section class="hero-panel">
       <div class="hero-main">
@@ -47,6 +47,24 @@
           </el-select>
           <el-button v-if="isAdmin" @click="toggleBatchMode">
             {{ batchMode ? '退出批量' : '批量选择' }}
+          </el-button>
+          <el-button
+            v-if="isAdmin && batchMode"
+            plain
+            :disabled="displayAlerts.length === 0"
+            @click="toggleSelectAll"
+          >
+            {{ isAllSelected ? '取消全选' : '全选当前页' }}
+          </el-button>
+          <el-button
+            v-if="isAdmin && batchMode"
+            type="info"
+            plain
+            :disabled="selectedIds.length === 0 || deleting"
+            :loading="deleting"
+            @click="batchCancelSelected"
+          >
+            撤销所选
           </el-button>
           <el-button
             v-if="isAdmin && batchMode"
@@ -337,6 +355,21 @@ const toggleSelect = (id, checked) => {
   selectedIds.value = [...selected]
 }
 
+const currentPageIds = computed(() => displayAlerts.value.map((item) => item.id))
+const isAllSelected = computed(() => (
+  currentPageIds.value.length > 0
+  && currentPageIds.value.every((id) => selectedIds.value.includes(id))
+))
+
+const toggleSelectAll = () => {
+  const selected = new Set(selectedIds.value)
+  if (isAllSelected.value) {
+    currentPageIds.value.forEach((id) => selected.delete(id))
+  } else {
+    currentPageIds.value.forEach((id) => selected.add(id))
+  }
+  selectedIds.value = [...selected]
+}
 const detectRiskFromText = (text) => {
   const normalized = String(text || '').toLowerCase()
   if (normalized.includes('复核结论:真实火灾') || normalized.includes('true_fire')) return 'high'
@@ -528,6 +561,48 @@ const deleteOne = async (row) => {
     await fetchAlerts()
   } catch (error) {
     ElMessage.error(error.response?.data?.detail || '删除失败')
+  } finally {
+    deleting.value = false
+  }
+}
+
+const batchCancelSelected = async () => {
+  if (!isAdmin.value || selectedIds.value.length === 0) return
+
+  try {
+    const { value } = await ElMessageBox.prompt(
+      `请输入批量撤销 ${selectedIds.value.length} 条任务的原因`,
+      '批量撤销任务',
+      {
+        confirmButtonText: '确认撤销',
+        cancelButtonText: '取消',
+        inputPlaceholder: '例如：重复告警、现场核查后确认无需处置',
+        inputValidator: (input) => (String(input || '').trim() ? true : '请填写撤销原因')
+      }
+    )
+
+    deleting.value = true
+    const res = await api.post('/alerts/batch-cancel', {
+      ids: selectedIds.value,
+      reason: value
+    })
+    const cancelled = Number(res?.cancelled || 0)
+    const blocked = Array.isArray(res?.blocked) ? res.blocked.length : 0
+    const notFound = Array.isArray(res?.not_found) ? res.not_found.length : 0
+
+    if (cancelled > 0) {
+      ElMessage.success(`已撤销 ${cancelled} 条任务`)
+    }
+    if (blocked > 0 || notFound > 0) {
+      ElMessage.warning(`未撤销 ${blocked + notFound} 条（非待处置或不存在）`)
+    }
+
+    selectedIds.value = []
+    await fetchAlerts()
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error(error.response?.data?.detail || '批量撤销失败')
+    }
   } finally {
     deleting.value = false
   }
@@ -952,3 +1027,4 @@ onMounted(async () => {
   }
 }
 </style>
+

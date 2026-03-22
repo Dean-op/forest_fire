@@ -174,6 +174,11 @@ class AlertCancel(BaseModel):
     reason: str
 
 
+class BatchCancelRequest(BaseModel):
+    ids: list[int]
+    reason: str
+
+
 class AlertSOPExecute(BaseModel):
     sop_type: Literal["SOP1", "SOP2"]
     outcome: Optional[Literal["true_fire", "false_alarm"]] = None
@@ -478,3 +483,46 @@ def batch_delete_alerts(
         "blocked": blocked,
         "not_found": not_found,
     }
+
+
+@router.post("/batch-cancel")
+def batch_cancel_alerts(
+    data: BatchCancelRequest,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(require_roles("admin")),
+):
+    reason = (data.reason or "").strip()
+    if not reason:
+        raise HTTPException(status_code=400, detail="Cancel reason is required")
+
+    cancelled = 0
+    blocked: list[dict] = []
+    not_found: list[int] = []
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    for alert_id in data.ids:
+        alert = session.get(Alert, alert_id)
+        if not alert:
+            not_found.append(alert_id)
+            continue
+
+        if not can_cancel_alert(alert.status):
+            blocked.append({"id": alert_id, "status": alert.status})
+            continue
+
+        alert.status = "cancelled_pending"
+        alert.remark = append_remark(
+            alert.remark,
+            f"【任务撤销】{now_str} {current_user.username}：{reason}",
+        )
+        session.add(alert)
+        cancelled += 1
+
+    session.commit()
+    return {
+        "msg": f"Cancelled {cancelled} alerts",
+        "cancelled": cancelled,
+        "blocked": blocked,
+        "not_found": not_found,
+    }
+
