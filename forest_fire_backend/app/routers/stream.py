@@ -87,21 +87,37 @@ def load_detection_config() -> dict:
 
     keys = list(defaults.keys())
     with Session(engine) as session:
-        rows = session.exec(select(SystemConfig).where(SystemConfig.key.in_(keys))).all()
+        rows = session.exec(
+            select(SystemConfig).where(SystemConfig.key.in_(keys))
+        ).all()
         for row in rows:
             try:
-                if row.key in {"yolo_interval", "yolo_infer_scale", "yolo_high_threshold", "yolo_low_threshold", "alert_cooldown"}:
+                if row.key in {
+                    "yolo_interval",
+                    "yolo_infer_scale",
+                    "yolo_high_threshold",
+                    "yolo_low_threshold",
+                    "alert_cooldown",
+                }:
                     defaults[row.key] = float(row.value)
                 else:
                     defaults[row.key] = row.value
             except (TypeError, ValueError):
                 pass
 
-    defaults["yolo_infer_scale"] = max(0.2, min(1.0, float(defaults["yolo_infer_scale"])))
-    defaults["yolo_high_threshold"] = max(0.5, min(0.99, float(defaults["yolo_high_threshold"])))
-    defaults["yolo_low_threshold"] = max(0.1, min(0.8, float(defaults["yolo_low_threshold"])))
+    defaults["yolo_infer_scale"] = max(
+        0.2, min(1.0, float(defaults["yolo_infer_scale"]))
+    )
+    defaults["yolo_high_threshold"] = max(
+        0.5, min(0.99, float(defaults["yolo_high_threshold"]))
+    )
+    defaults["yolo_low_threshold"] = max(
+        0.1, min(0.8, float(defaults["yolo_low_threshold"]))
+    )
     if defaults["yolo_low_threshold"] >= defaults["yolo_high_threshold"]:
-        defaults["yolo_low_threshold"] = max(0.1, defaults["yolo_high_threshold"] - 0.05)
+        defaults["yolo_low_threshold"] = max(
+            0.1, defaults["yolo_high_threshold"] - 0.05
+        )
 
     return defaults
 
@@ -143,14 +159,18 @@ def run_yolo_inference(frame, infer_scale: float = 1.0):
     if infer_scale < 0.999:
         infer_w = max(64, int(w * infer_scale))
         infer_h = max(64, int(h * infer_scale))
-        infer_frame = cv2.resize(frame, (infer_w, infer_h), interpolation=cv2.INTER_AREA)
+        infer_frame = cv2.resize(
+            frame, (infer_w, infer_h), interpolation=cv2.INTER_AREA
+        )
 
     results = model(infer_frame, verbose=False)
     result = results[0]
     annotated_frame = result.plot()
 
     if infer_scale < 0.999:
-        annotated_frame = cv2.resize(annotated_frame, (w, h), interpolation=cv2.INTER_LINEAR)
+        annotated_frame = cv2.resize(
+            annotated_frame, (w, h), interpolation=cv2.INTER_LINEAR
+        )
 
     highest_conf = float(result.boxes.conf.max()) if len(result.boxes) > 0 else None
     return annotated_frame, highest_conf
@@ -159,10 +179,26 @@ def run_yolo_inference(frame, infer_scale: float = 1.0):
 def parse_llm_verdict(text: str) -> str:
     content = text or ""
     normalized = content.lower()
+    for raw_line in content.splitlines():
+        line = raw_line.strip()
+        if not line.startswith("复核结论"):
+            continue
+        verdict_text = line.split(":", 1)[1] if ":" in line else line.split("：", 1)[1] if "：" in line else ""
+        verdict_text = verdict_text.strip()
+        if verdict_text.startswith("真实火灾"):
+            return "true_fire"
+        if verdict_text.startswith("误报"):
+            return "false_alarm"
     # 优先识别误报，避免“非火灾”中的“火灾”造成误判。
-    if any(token in content for token in ["误报", "非火灾", "非火情"]) or "false_alarm" in normalized:
+    if (
+        any(token in content for token in ["误报", "非火灾", "非火情"])
+        or "false_alarm" in normalized
+    ):
         return "false_alarm"
-    if any(token in content for token in ["真实火灾", "真火", "存在火情"]) or "true_fire" in normalized:
+    if (
+        any(token in content for token in ["真实火灾", "真火", "存在火情"])
+        or "true_fire" in normalized
+    ):
         return "true_fire"
     # 兼容旧版风险分级输出。
     if "低风险" in content:
@@ -170,6 +206,19 @@ def parse_llm_verdict(text: str) -> str:
     if "高风险" in content or "中风险" in content:
         return "true_fire"
     return "unknown"
+
+
+def extract_structured_line_value(text: str, field_name: str) -> str:
+    content = text or ""
+    for raw_line in content.splitlines():
+        line = raw_line.strip()
+        if not line.startswith(field_name):
+            continue
+        if ":" in line:
+            return line.split(":", 1)[1].strip()
+        if "：" in line:
+            return line.split("：", 1)[1].strip()
+    return ""
 
 
 def verdict_to_status(verdict: str) -> str:
@@ -184,6 +233,30 @@ def verdict_risk_label_zh(verdict: str) -> str:
     return {"true_fire": "高风险", "false_alarm": "低风险"}.get(verdict, "待复核")
 
 
+def extract_llm_verdict_display(text: str, verdict: str) -> str:
+    verdict_text = extract_structured_line_value(text, "复核结论")
+    false_alarm_reason = extract_structured_line_value(text, "误报原因")
+    false_alarm_reason = false_alarm_reason.strip("()（） ")
+    if false_alarm_reason in {"无", "none", "None", "N/A", "n/a"}:
+        false_alarm_reason = ""
+
+    if verdict == "false_alarm":
+        if verdict_text.startswith("误报"):
+            if any(bracket in verdict_text for bracket in ["（", "("]):
+                return verdict_text
+            if false_alarm_reason:
+                return f"误报（{false_alarm_reason}）"
+            return "误报"
+        if false_alarm_reason:
+            return f"误报（{false_alarm_reason}）"
+        return "误报"
+
+    if verdict == "true_fire":
+        return "真实火灾"
+
+    return verdict_text or verdict_label_zh(verdict)
+
+
 def extract_llm_suggestion(text: str) -> str:
     content = (text or "").strip()
     if not content:
@@ -194,7 +267,22 @@ def extract_llm_suggestion(text: str) -> str:
     return content.splitlines()[0][:80]
 
 
-async def call_llm_review(alert_id: int, image_url: str, confidence: float, camera_name: str, config: dict):
+def build_llm_failure_suggestion(error: Exception) -> str:
+    if isinstance(error, httpx.HTTPStatusError):
+        status_code = error.response.status_code
+        if status_code in {401, 403}:
+            return "大模型复核鉴权失败，系统已按高风险转人工复核。"
+        if 500 <= status_code <= 599:
+            return "大模型复核服务暂时不可用，系统已按高风险转人工复核。"
+        return f"大模型复核请求失败（HTTP {status_code}），系统已按高风险转人工复核。"
+    if isinstance(error, httpx.RequestError):
+        return "大模型复核服务连接异常，系统已按高风险转人工复核。"
+    return "大模型复核执行异常，系统已按高风险转人工复核。"
+
+
+async def call_llm_review(
+    alert_id: int, image_url: str, confidence: float, camera_name: str, config: dict
+):
     llm_url = config.get("llm_api_url", "")
     llm_key = config.get("llm_api_key", "")
     llm_model = config.get("llm_model", "qwen-vl-max")
@@ -202,6 +290,7 @@ async def call_llm_review(alert_id: int, image_url: str, confidence: float, came
     llm_text = ""
     verdict = "unknown"
     suggestion = ""
+    verdict_display = ""
 
     if llm_url and llm_key and llm_key != "sk-xxxxx":
         try:
@@ -217,15 +306,42 @@ async def call_llm_review(alert_id: int, image_url: str, confidence: float, came
                         "content": [
                             {
                                 "type": "image_url",
-                                "image_url": {"url": f"data:image/jpeg;base64,{img_b64}"},
+                                "image_url": {
+                                    "url": f"data:image/jpeg;base64,{img_b64}"
+                                },
                             },
                             {
                                 "type": "text",
                                 "text": (
-                                    "你是森林火灾复核专家。"
-                                    "请仅输出两行，不要输出其他内容。\n"
-                                    "复核结论: 真实火灾 或 误报\n"
-                                    "处置建议: 20字以内"
+                                    """
+                                    你是森林火灾图像复核专家。请只根据图片本身进行判断，不要猜测画面外信息。
+
+                                    你需要特别注意以下常见误报来源：
+                                    1. 夕阳反光、晚霞高亮、玻璃反射
+                                    2. 路灯、车灯、探照灯、屏幕亮光等灯光干扰
+                                    3. 蜡烛、篝火、打火机、舞台火焰、烟花等非森林火源
+                                    4. 屏幕播放内容、广告画面、投影画面
+                                    5. 工业排烟、雾气、云层染色、水汽等非火灾烟雾
+
+                                    判定规则：
+                                    - 如果画面中存在林地、山体、树木、草地等自然场景中的持续燃烧、蔓延火线、大面积浓烟，可判定为真实火灾
+                                    - 如果更符合反光、照明、蜡烛、打火机、舞台火焰、烟花、工业排烟、雾气等情况，应判定为误报
+                                    - 必须二选一，只能输出“真实火灾”或“误报（具体原因）”
+                                    - 不允许输出“疑似”“可能”“中风险”“需进一步观察”等模糊表述
+
+                                    当判定为误报时，括号中的具体原因优先从以下类别中选择最接近的一项：
+                                    夕阳反光、灯光干扰、蜡烛燃烧、打火机火焰、舞台火焰、烟花、工业排烟、雾气、水汽、屏幕画面、玻璃反射、其他
+
+                                    请严格按照下面格式输出，除以下两行外不要输出任何其他内容：
+
+                                    复核结论: 真实火灾
+                                    处置建议: 20字以内，给出值守人员下一步动作
+
+                                    或
+
+                                    复核结论: 误报（具体原因）
+                                    处置建议: 20字以内，给出值守人员下一步动作
+                                    """
                                 ),
                             },
                         ],
@@ -248,29 +364,35 @@ async def call_llm_review(alert_id: int, image_url: str, confidence: float, came
                 raw_llm_text = data["choices"][0]["message"]["content"]
 
             verdict = parse_llm_verdict(raw_llm_text)
+            verdict_display = extract_llm_verdict_display(raw_llm_text, verdict)
             suggestion = extract_llm_suggestion(raw_llm_text)
             if verdict == "unknown":
                 # 模型输出不合规时按火灾兜底，避免漏报。
                 verdict = "true_fire"
+                verdict_display = "真实火灾"
                 if not suggestion:
                     suggestion = "模型输出不规范，已转人工复核。"
 
         except Exception as e:
             verdict = "true_fire"
-            suggestion = f"LLM调用失败，按火灾兜底并转人工复核：{e}"
+            verdict_display = "真实火灾"
+            print(f"LLM review failed for alert {alert_id}: {e}")
+            suggestion = build_llm_failure_suggestion(e)
 
     else:
         # 未配置LLM：按置信度做本地二分类模拟。
         if confidence >= 0.75:
             verdict = "true_fire"
+            verdict_display = "真实火灾"
             suggestion = "未配置LLM，按高疑似火情转人工复核。"
         else:
             verdict = "false_alarm"
+            verdict_display = "误报（未配置LLM）"
             suggestion = "未配置LLM，判定疑似误报并归档。"
 
     final_status = verdict_to_status(verdict)
     llm_text = (
-        f"复核结论: {verdict_label_zh(verdict)}\n"
+        f"复核结论: {verdict_display or verdict_label_zh(verdict)}\n"
         f"风险级别: {verdict_risk_label_zh(verdict)}\n"
         f"处置建议: {suggestion or '请人工复核。'}"
     )
@@ -345,7 +467,15 @@ def resolve_video_source(configured_source: str) -> tuple[object, bool]:
 def build_status_frame(text: str, size: tuple[int, int] = (640, 480)) -> bytes:
     width, height = size
     frame = np.zeros((height, width, 3), dtype=np.uint8)
-    cv2.putText(frame, text, (30, int(height * 0.5)), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 220, 255), 2)
+    cv2.putText(
+        frame,
+        text,
+        (30, int(height * 0.5)),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.8,
+        (0, 220, 255),
+        2,
+    )
     _, buf = cv2.imencode(".jpg", frame)
     return b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buf.tobytes() + b"\r\n"
 
@@ -364,9 +494,21 @@ async def generate_frames(camera_id: int):
         else:
             while True:
                 err = np.zeros((480, 640, 3), dtype=np.uint8)
-                cv2.putText(err, f"Camera {camera_id} Not Found", (60, 240), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                cv2.putText(
+                    err,
+                    f"Camera {camera_id} Not Found",
+                    (60, 240),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (0, 0, 255),
+                    2,
+                )
                 _, buf = cv2.imencode(".jpg", err)
-                yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buf.tobytes() + b"\r\n"
+                yield (
+                    b"--frame\r\nContent-Type: image/jpeg\r\n\r\n"
+                    + buf.tobytes()
+                    + b"\r\n"
+                )
                 await asyncio.sleep(1)
             return
 
@@ -387,7 +529,9 @@ async def generate_frames(camera_id: int):
                     new_source_config = (cam_refresh.rtsp_url or "").strip()
                     if new_source_config != (camera_source_config or "").strip():
                         camera_source_config = new_source_config
-                        video_source, is_file_source = resolve_video_source(camera_source_config)
+                        video_source, is_file_source = resolve_video_source(
+                            camera_source_config
+                        )
             cap = await asyncio.to_thread(create_video_capture, video_source)
             if cap.isOpened():
                 break
@@ -423,10 +567,14 @@ async def generate_frames(camera_id: int):
                         new_source_config = (cam_refresh.rtsp_url or "").strip()
                         if new_source_config != (camera_source_config or "").strip():
                             camera_source_config = new_source_config
-                            next_source, next_is_file_source = resolve_video_source(camera_source_config)
+                            next_source, next_is_file_source = resolve_video_source(
+                                camera_source_config
+                            )
                             if next_source != video_source:
                                 await asyncio.to_thread(cap.release)
-                                cap = await asyncio.to_thread(create_video_capture, next_source)
+                                cap = await asyncio.to_thread(
+                                    create_video_capture, next_source
+                                )
                                 video_source = next_source
                                 is_file_source = next_is_file_source
 
@@ -447,7 +595,11 @@ async def generate_frames(camera_id: int):
                     "started_at": now,
                 }
                 detect_task = asyncio.create_task(
-                    asyncio.to_thread(run_yolo_inference, frame.copy(), detect_context["config"]["yolo_infer_scale"])
+                    asyncio.to_thread(
+                        run_yolo_inference,
+                        frame.copy(),
+                        detect_context["config"]["yolo_infer_scale"],
+                    )
                 )
 
             output_frame = frame
@@ -487,7 +639,9 @@ async def generate_frames(camera_id: int):
                                     {
                                         "id": alert_id,
                                         "camera_name": detect_camera_name,
-                                        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                        "timestamp": datetime.now().strftime(
+                                            "%Y-%m-%d %H:%M:%S"
+                                        ),
                                         "image_path": img_url,
                                         "yolo_confidence": highest_conf,
                                         "status": "pending_verify",
@@ -537,7 +691,11 @@ async def generate_frames(camera_id: int):
                     detect_context = None
 
             _, buffer = cv2.imencode(".jpg", output_frame)
-            yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + buffer.tobytes() + b"\r\n"
+            yield (
+                b"--frame\r\nContent-Type: image/jpeg\r\n\r\n"
+                + buffer.tobytes()
+                + b"\r\n"
+            )
             await asyncio.sleep(0.033)
     finally:
         if detect_task is not None and not detect_task.done():
@@ -554,5 +712,4 @@ async def video_feed(camera_id: int):
         generate_frames(camera_id),
         media_type="multipart/x-mixed-replace; boundary=frame",
     )
-
 
