@@ -940,10 +940,10 @@ onMounted(async () => {
   border-radius: 8px;
   font-size: 13px;
   color: var(--el-color-primary);
-  line-height: 1.5;
-  white-space: pre-line;
-  max-height: 60px;
-  overflow: hidden;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .task-foot {

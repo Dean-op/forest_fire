@@ -26,19 +26,24 @@
     </div>
 
     <transition name="banner-fade">
-      <el-alert
+      <section
         v-if="burstBanner.visible && !showAlertDrawer"
-        :type="burstBanner.level"
-        show-icon
-        :closable="false"
-        class="burst-banner glass-alert"
+        class="burst-banner"
+        :class="burstBanner.level"
       >
-        <template #title>
-          最近 12 秒新增 {{ burstBanner.count }} 条告警，最新来自 <span class="highlight-text">{{ burstBanner.lastCamera }}</span>
-          <span v-if="burstBanner.lastAt" class="banner-time">（{{ burstBanner.lastAt }}）</span>
-        </template>
-        <template #default>告警已聚合到告警中心，请点击右上角“告警中心”查看详情。</template>
-      </el-alert>
+        <div class="banner-icon-wrap">
+          <el-icon><Warning /></el-icon>
+        </div>
+        <div class="banner-copy">
+          <div class="banner-title-row">
+            <span class="banner-title">最近 12 秒新增 {{ burstBanner.count }} 条告警，最新来自</span>
+            <span class="highlight-text">{{ burstBanner.lastCamera }}</span>
+            <span v-if="burstBanner.lastAt" class="banner-time">{{ burstBanner.lastAt }}</span>
+          </div>
+          <p class="banner-desc">告警已聚合到告警中心，可直接查看详情并进行后续处置。</p>
+        </div>
+        <el-button class="banner-action" size="small" @click="openAlertCenter">查看告警</el-button>
+      </section>
     </transition>
 
     <el-drawer
@@ -415,6 +420,99 @@ html.dark .glass-card {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
+.burst-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin: -4px 0 18px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: linear-gradient(135deg, rgba(255, 247, 237, 0.98) 0%, rgba(255, 251, 235, 0.98) 100%);
+  box-shadow: 0 10px 24px rgba(245, 158, 11, 0.12);
+  position: relative;
+  z-index: 12;
+}
+html.dark .burst-banner {
+  background: linear-gradient(135deg, rgba(69, 26, 3, 0.92) 0%, rgba(120, 53, 15, 0.9) 100%);
+  border-color: rgba(251, 191, 36, 0.32);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
+}
+.burst-banner.error {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: linear-gradient(135deg, rgba(254, 242, 242, 0.98) 0%, rgba(255, 241, 242, 0.98) 100%);
+  box-shadow: 0 10px 24px rgba(239, 68, 68, 0.14);
+}
+html.dark .burst-banner.error {
+  background: linear-gradient(135deg, rgba(69, 10, 10, 0.94) 0%, rgba(127, 29, 29, 0.9) 100%);
+  border-color: rgba(248, 113, 113, 0.32);
+}
+.banner-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.14);
+}
+.burst-banner.error .banner-icon-wrap {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+.banner-icon-wrap .el-icon {
+  font-size: 18px;
+}
+.banner-copy {
+  min-width: 0;
+  flex: 1;
+}
+.banner-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  line-height: 1.5;
+}
+.banner-title {
+  color: var(--el-text-color-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+html.dark .banner-title {
+  color: #f8fafc;
+}
+.highlight-text {
+  color: #d97706;
+  font-size: 14px;
+  font-weight: 700;
+}
+html.dark .highlight-text {
+  color: #fbbf24;
+}
+.banner-time {
+  font-size: 12px;
+  color: var(--el-text-color-regular);
+}
+html.dark .banner-time {
+  color: rgba(248, 250, 252, 0.72);
+}
+.banner-desc {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--el-text-color-regular);
+}
+html.dark .banner-desc {
+  color: rgba(248, 250, 252, 0.82);
+}
+.banner-action {
+  align-self: center;
+  flex-shrink: 0;
+}
+
 .glass-alert {
   background: var(--el-fill-color-light) !important;
   border: 1px solid var(--el-color-warning) !important;
@@ -424,9 +522,10 @@ html.dark .glass-alert {
   background: rgba(15, 23, 42, 0.8) !important;
   color: #f8fafc !important;
 }
-.glass-alert.el-alert--error { border-color: var(--el-color-danger) !important; }
+.glass-alert.el-alert--error {
+  border-color: var(--el-color-danger) !important;
+}
 
-.highlight-text { color: var(--el-color-warning); font-weight: bold; }
 .pulse-btn { animation: pulse-red 2s infinite; border: none; }
 .glass-btn-red { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
 .glass-btn-red:hover { background: linear-gradient(135deg, #f87171 0%, #ef4444 100%); }
