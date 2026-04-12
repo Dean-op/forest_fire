@@ -1,0 +1,164 @@
+<mxfile host="app.diagrams.net" modified="2026-04-11T10:40:00.000Z" agent="Codex" version="24.7.17">
+  <diagram id="forest-fire-er" name="ER Diagram">
+    <mxGraphModel dx="1280" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="0" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ========== 实体 (矩形) ========== -->
+        <!-- 三个角色 -->
+        <mxCell id="Eadm" value="系统管理员" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="150" y="300" width="100" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="Eopr" value="安全操作员" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="270" y="590" width="100" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="Esup" value="安全主管" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="750" y="300" width="100" height="38" as="geometry"/>
+        </mxCell>
+
+        <!-- 业务实体 -->
+        <mxCell id="Ecfg" value="系统参数" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="60" y="90" width="100" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="Eusr" value="用户账户" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="260" y="90" width="100" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="Esop" value="SOP公告" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="460" y="90" width="100" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="Elog" value="系统日志" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="60" y="590" width="100" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="Eshf" value="交接班日志" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="800" y="90" width="110" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="Ealt" value="告警事件" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="500" y="430" width="100" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="Ecam" value="监控设备" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="750" y="590" width="100" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="Ecap" value="抓拍配置" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="940" y="430" width="100" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="Eclg" value="设备日志" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="940" y="590" width="100" height="38" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== 关系 (菱形) ========== -->
+        <mxCell id="Rcfg" value="配置" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="130" y="192" width="72" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="Rmng" value="管理" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="265" y="192" width="72" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="Rpub" value="发布" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="380" y="192" width="72" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="Rlog" value="查看" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="100" y="445" width="72" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="Rref" value="查阅" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="355" y="340" width="72" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="Rhdl" value="处置" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="376" y="510" width="72" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="Rshf" value="填写" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="820" y="192" width="72" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="Rexp" value="导出" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="634" y="365" width="72" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="Rsup" value="管辖" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="764" y="445" width="72" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="Rtrg" value="触发" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="634" y="510" width="72" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="Rmnt" value="挂载" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="856" y="449" width="72" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="Rrec" value="记录" style="shape=rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="856" y="591" width="72" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== 连线与基数标注 ========== -->
+
+        <!-- 管理员 — 配置 — 系统参数 -->
+        <mxCell id="c1a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Eadm" target="Rcfg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c1a_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c1a"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c1b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rcfg" target="Ecfg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c1b_l" value="n" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c1b"><mxGeometry x="0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 管理员 — 管理 — 用户账户 -->
+        <mxCell id="c2a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Eadm" target="Rmng"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2a_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c2a"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c2b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rmng" target="Eusr"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2b_l" value="n" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c2b"><mxGeometry x="0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 管理员 — 发布 — SOP公告 -->
+        <mxCell id="c3a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Eadm" target="Rpub"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3a_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c3a"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c3b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rpub" target="Esop"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3b_l" value="n" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c3b"><mxGeometry x="0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 管理员 — 查看 — 系统日志 -->
+        <mxCell id="c4a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Eadm" target="Rlog"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4a_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c4a"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c4b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rlog" target="Elog"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4b_l" value="n" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c4b"><mxGeometry x="0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 操作员 — 查阅 — SOP公告 -->
+        <mxCell id="c5a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Eopr" target="Rref"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c5a_l" value="m" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c5a"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c5b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rref" target="Esop"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c5b_l" value="n" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c5b"><mxGeometry x="0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 操作员 — 处置 — 告警事件 -->
+        <mxCell id="c6a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Eopr" target="Rhdl"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c6a_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c6a"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c6b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rhdl" target="Ealt"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c6b_l" value="n" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c6b"><mxGeometry x="0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 主管 — 填写 — 交接班日志 -->
+        <mxCell id="c7a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Esup" target="Rshf"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c7a_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c7a"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c7b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rshf" target="Eshf"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c7b_l" value="n" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c7b"><mxGeometry x="0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 主管 — 导出 — 告警事件 -->
+        <mxCell id="c8a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Esup" target="Rexp"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c8a_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c8a"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c8b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rexp" target="Ealt"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c8b_l" value="n" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c8b"><mxGeometry x="0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 主管 — 管辖 — 监控设备 -->
+        <mxCell id="c9a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Esup" target="Rsup"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c9a_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c9a"><mxGeometry x="-0.3" y="12" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c9b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rsup" target="Ecam"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c9b_l" value="n" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c9b"><mxGeometry x="0.3" y="12" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 监控设备 — 触发 — 告警事件 -->
+        <mxCell id="c10a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Ecam" target="Rtrg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c10a_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c10a"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c10b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rtrg" target="Ealt"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c10b_l" value="n" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c10b"><mxGeometry x="0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 监控设备 — 挂载 — 抓拍配置 -->
+        <mxCell id="c11a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Ecam" target="Rmnt"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c11a_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c11a"><mxGeometry x="-0.3" y="12" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c11b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rmnt" target="Ecap"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c11b_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c11b"><mxGeometry x="0.3" y="12" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 监控设备 — 记录 — 设备日志 -->
+        <mxCell id="c12a" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Ecam" target="Rrec"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c12a_l" value="1" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c12a"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+        <mxCell id="c12b" style="endArrow=none;html=1;strokeWidth=1.5;strokeColor=#111111;" edge="1" parent="1" source="Rrec" target="Eclg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c12b_l" value="n" style="edgeLabel;html=1;fontSize=13;" vertex="1" connectable="0" parent="c12b"><mxGeometry x="0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

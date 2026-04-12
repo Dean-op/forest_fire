@@ -1,0 +1,123 @@
+<mxfile host="Electron" agent="Mozilla/5.0 draw.io" version="29.6.6">
+  <diagram id="forest-fire-function-module" name="Page-1">
+    <mxGraphModel dx="1554" dy="922" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="0" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="980" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- top -->
+        <mxCell id="10" value="森林火灾预警系统" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="640" y="40" width="320" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- level 2 -->
+        <mxCell id="20" value="安全操作员" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=18;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="120" y="210" width="190" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="21" value="安全主管" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=18;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="705" y="210" width="190" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="22" value="系统管理员" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=18;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="210" width="190" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- level 3 operator -->
+        <mxCell id="30" value="注册&#xa;登录" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="10" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="31" value="监控&#xa;大屏" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="95" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="32" value="告警&#xa;中心" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="180" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="33" value="任务&#xa;处置" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="265" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="34" value="历史&#xa;回溯" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="35" value="公告&#xa;查阅" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="435" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- level 3 supervisor -->
+        <mxCell id="40" value="统计&#xa;分析" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="615" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="41" value="视频源&#xa;管理" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="700" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="42" value="设备&#xa;状态" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="785" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="43" value="设备&#xa;日志" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="870" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="44" value="数据&#xa;导出" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="955" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="45" value="交接班&#xa;日志" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- level 3 admin -->
+        <mxCell id="50" value="用户&#xa;管理" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1135" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="51" value="角色&#xa;权限" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="52" value="系统&#xa;参数" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="53" value="AI接口&#xa;配置" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="54" value="公告&#xa;管理" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1475" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="55" value="系统&#xa;日志" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="470" width="70" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- connectors top to level 2 -->
+        <mxCell id="100" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;exitX=0.5;exitY=1;exitPerimeter=0;" edge="1" parent="1" source="10" target="20">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="101" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;exitX=0.5;exitY=1;exitPerimeter=0;" edge="1" parent="1" source="10" target="21">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="102" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;exitX=0.5;exitY=1;exitPerimeter=0;" edge="1" parent="1" source="10" target="22">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- operator connectors -->
+        <mxCell id="110" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="20" target="30"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="111" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="20" target="31"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="112" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="20" target="32"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="113" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="20" target="33"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="114" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="20" target="34"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="115" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="20" target="35"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- supervisor connectors -->
+        <mxCell id="120" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="21" target="40"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="121" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="21" target="41"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="122" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="21" target="42"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="123" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="21" target="43"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="124" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="21" target="44"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="125" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="21" target="45"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- admin connectors -->
+        <mxCell id="130" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="22" target="50"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="131" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="22" target="51"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="132" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="22" target="52"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="133" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="22" target="53"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="134" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="22" target="54"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="135" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=none;" edge="1" parent="1" source="22" target="55"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

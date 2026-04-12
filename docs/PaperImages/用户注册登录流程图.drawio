@@ -1,0 +1,191 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram id="login-flow" name="用户注册登录流程图">
+    <mxGraphModel dx="1554" dy="922" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="800" pageHeight="1100" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="start" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=14;labelBackgroundColor=none;" value="开始" vertex="1">
+          <mxGeometry height="40" width="120" x="430" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="q1" parent="1" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="是否注册新用户？" vertex="1">
+          <mxGeometry height="70" width="190" x="399" y="108" as="geometry" />
+        </mxCell>
+        <mxCell id="reg_fill" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="填写注册信息" vertex="1">
+          <mxGeometry height="40" width="140" x="119" y="223" as="geometry" />
+        </mxCell>
+        <mxCell id="reg_check" parent="1" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="注册信息是否正确？" vertex="1">
+          <mxGeometry height="70" width="190" x="94" y="303" as="geometry" />
+        </mxCell>
+        <mxCell id="reg_fail" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="注册失败" vertex="1">
+          <mxGeometry height="40" width="110" x="54" y="419" as="geometry" />
+        </mxCell>
+        <mxCell id="reg_ok" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="校验并创建账号" vertex="1">
+          <mxGeometry height="40" width="130" x="211" y="419" as="geometry" />
+        </mxCell>
+        <mxCell id="input_pwd" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="输入用户名和密码" vertex="1">
+          <mxGeometry height="40" width="160" x="419" y="213" as="geometry" />
+        </mxCell>
+        <mxCell id="submit" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="提交登录请求" vertex="1">
+          <mxGeometry height="40" width="160" x="419" y="311" as="geometry" />
+        </mxCell>
+        <mxCell id="q2" parent="1" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="登录是否成功？" vertex="1">
+          <mxGeometry height="70" width="190" x="409" y="393" as="geometry" />
+        </mxCell>
+        <mxCell id="login_fail" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="提示登录失败" vertex="1">
+          <mxGeometry height="40" width="130" x="635" y="409" as="geometry" />
+        </mxCell>
+        <mxCell id="read_role" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="读取角色与权限" vertex="1">
+          <mxGeometry height="40" width="160" x="424" y="506" as="geometry" />
+        </mxCell>
+        <mxCell id="q3" parent="1" style="rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="用户角色？" vertex="1">
+          <mxGeometry height="70" width="190" x="409" y="572" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_op" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="进入操作员界面" vertex="1">
+          <mxGeometry height="40" width="130" x="259" y="694" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_sup" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="进入主管界面" vertex="1">
+          <mxGeometry height="40" width="130" x="442" y="694" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_adm" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="进入管理员界面" vertex="1">
+          <mxGeometry height="40" width="130" x="655" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="load_menu" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="加载对应功能菜单" vertex="1">
+          <mxGeometry height="40" width="180" x="419" y="784" as="geometry" />
+        </mxCell>
+        <mxCell id="endnode" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=14;labelBackgroundColor=none;" value="结束" vertex="1">
+          <mxGeometry height="40" width="120" x="452" y="864" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="start" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="q1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="q1" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;" target="reg_fill">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2_l" connectable="0" parent="e2" style="edgeLabel;html=1;fontSize=12;labelBackgroundColor=none;" value="是" vertex="1">
+          <mxGeometry relative="1" x="-0.3" y="-10" as="geometry">
+            <mxPoint y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="q1" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="input_pwd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3_l" connectable="0" parent="e3" style="edgeLabel;html=1;fontSize=12;labelBackgroundColor=none;" value="否" vertex="1">
+          <mxGeometry relative="1" x="0.3" y="-10" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="reg_fill" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="reg_check">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="reg_check" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;" target="reg_fail">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5_l" connectable="0" parent="e5" style="edgeLabel;html=1;fontSize=12;labelBackgroundColor=none;" value="否" vertex="1">
+          <mxGeometry relative="1" x="-0.2" y="-10" as="geometry">
+            <mxPoint x="-10" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="reg_check" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="reg_ok">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6_l" connectable="0" parent="e6" style="edgeLabel;html=1;fontSize=12;labelBackgroundColor=none;" value="是" vertex="1">
+          <mxGeometry relative="1" x="0.2" y="-10" as="geometry">
+            <mxPoint x="-41" y="-32" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="reg_fail" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;rounded=0;curved=0;" target="reg_fill">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="49" y="443" />
+              <mxPoint x="49" y="243" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="reg_ok" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;exitX=0.812;exitY=0.01;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;exitPerimeter=0;edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;" target="input_pwd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="input_pwd" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="submit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="submit" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="q2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="504" y="463" as="sourcePoint" />
+            <mxPoint x="504" y="506" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11_l" connectable="0" parent="e11" style="edgeLabel;html=1;fontSize=12;labelBackgroundColor=none;" value="是" vertex="1">
+          <mxGeometry relative="1" x="-0.2" y="-10" as="geometry">
+            <mxPoint x="-8" y="-8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="q2" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;" target="login_fail">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12_l" connectable="0" parent="e12" style="edgeLabel;html=1;fontSize=12;labelBackgroundColor=none;" value="否" vertex="1">
+          <mxGeometry relative="1" x="-0.3" y="-10" as="geometry">
+            <mxPoint x="-9" y="-32" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="login_fail" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;" target="input_pwd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="read_role" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="q3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="q3" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;rounded=0;curved=0;" target="ui_op">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="324" y="609" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e15_l" connectable="0" parent="e15" style="edgeLabel;html=1;fontSize=12;labelBackgroundColor=none;" value="操作员" vertex="1">
+          <mxGeometry relative="1" x="-0.2" y="-12" as="geometry">
+            <mxPoint x="2" y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="q3" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="ui_sup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16_l" connectable="0" parent="e16" style="edgeLabel;html=1;fontSize=12;labelBackgroundColor=none;" value="主管" vertex="1">
+          <mxGeometry relative="1" x="-0.2" y="-10" as="geometry">
+            <mxPoint x="6" y="-9" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="q3" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;rounded=0;curved=0;" target="ui_adm">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="609" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e17_l" connectable="0" parent="e17" style="edgeLabel;html=1;fontSize=12;labelBackgroundColor=none;" value="管理员" vertex="1">
+          <mxGeometry relative="1" x="0.2" y="-12" as="geometry">
+            <mxPoint x="-68" y="-23" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" source="ui_op" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;rounded=0;curved=0;" target="load_menu">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="324" y="804" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="1" source="ui_sup" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="load_menu">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="549" y="778" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e20" edge="1" parent="1" source="ui_adm" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=default;edgeStyle=orthogonalEdgeStyle;rounded=0;curved=0;" target="load_menu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e21" edge="1" parent="1" source="load_menu" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="endnode">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

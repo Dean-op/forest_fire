@@ -1,0 +1,197 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="login-flow" name="用户注册登录流程图">
+    <mxGraphModel dx="1000" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="800" pageHeight="1100" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- 开始 -->
+        <mxCell id="start" value="开始" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="300" y="40" width="120" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- 是否注册新用户（菱形） -->
+        <mxCell id="q1" value="是否注册新用户？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="265" y="120" width="190" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 否分支 → 跳到输入用户名密码 -->
+        <!-- 左侧：注册流程 -->
+        <mxCell id="reg_fill" value="填写注册信息" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="80" y="230" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="reg_check" value="注册信息是否正确？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="55" y="310" width="190" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="reg_fail" value="注册失败" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="430" width="110" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="reg_ok" value="校验并创建账号" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="155" y="430" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- 主流程：输入用户名密码 -->
+        <mxCell id="input_pwd" value="输入用户名和密码" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="230" width="160" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="submit" value="提交登录请求" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="310" width="160" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="q2" value="登录是否成功？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="275" y="390" width="190" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="login_fail" value="提示登录失败" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="530" y="410" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- 登录成功后 -->
+        <mxCell id="read_role" value="读取角色与权限" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="510" width="160" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="q3" value="用户角色？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="275" y="590" width="190" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 三个角色分支 -->
+        <mxCell id="ui_op" value="进入操作员界面" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="80" y="710" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="ui_sup" value="进入主管界面" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="295" y="710" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="ui_adm" value="进入管理员界面" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="510" y="710" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- 加载菜单 -->
+        <mxCell id="load_menu" value="加载对应功能菜单" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="270" y="800" width="180" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- 结束 -->
+        <mxCell id="endnode" value="结束" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="300" y="890" width="120" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== 连线 ===== -->
+
+        <!-- 开始 → 是否注册 -->
+        <mxCell id="e1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="start" target="q1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- 是否注册 是 → 填写注册信息（向左） -->
+        <mxCell id="e2" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="q1" target="reg_fill">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="150" y="155"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2_l" value="是" style="edgeLabel;html=1;fontSize=12;" vertex="1" connectable="0" parent="e2"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 是否注册 否 → 输入用户名 -->
+        <mxCell id="e3" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="q1" target="input_pwd">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3_l" value="否" style="edgeLabel;html=1;fontSize=12;" vertex="1" connectable="0" parent="e3"><mxGeometry x="0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 填写注册信息 → 注册信息是否正确 -->
+        <mxCell id="e4" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="reg_fill" target="reg_check"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- 注册信息 否 → 注册失败 -->
+        <mxCell id="e5" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="reg_check" target="reg_fail">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="75" y="380"/><mxPoint x="75" y="450"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5_l" value="否" style="edgeLabel;html=1;fontSize=12;" vertex="1" connectable="0" parent="e5"><mxGeometry x="-0.2" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 注册信息 是 → 校验并创建账号 -->
+        <mxCell id="e6" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="reg_check" target="reg_ok">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="220" y="380"/><mxPoint x="220" y="450"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6_l" value="是" style="edgeLabel;html=1;fontSize=12;" vertex="1" connectable="0" parent="e6"><mxGeometry x="0.2" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 注册失败 → 回到填写注册信息 -->
+        <mxCell id="e7" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="reg_fail" target="reg_fill">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="10" y="450"/><mxPoint x="10" y="250"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 校验并创建账号 → 输入用户名和密码 -->
+        <mxCell id="e8" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="reg_ok" target="input_pwd">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="285" y="450"/><mxPoint x="285" y="250"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 输入用户名 → 提交登录 -->
+        <mxCell id="e9" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="input_pwd" target="submit"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- 提交登录 → 登录是否成功 -->
+        <mxCell id="e10" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="submit" target="q2"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- 登录成功 → 读取角色 -->
+        <mxCell id="e11" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="q2" target="read_role">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e11_l" value="是" style="edgeLabel;html=1;fontSize=12;" vertex="1" connectable="0" parent="e11"><mxGeometry x="-0.2" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 登录失败分支 -->
+        <mxCell id="e12" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="q2" target="login_fail">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e12_l" value="否" style="edgeLabel;html=1;fontSize=12;" vertex="1" connectable="0" parent="e12"><mxGeometry x="-0.3" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 提示登录失败 → 回到输入用户名 -->
+        <mxCell id="e13" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="login_fail" target="input_pwd">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="595" y="250"/><mxPoint x="450" y="250"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 读取角色 → 用户角色判断 -->
+        <mxCell id="e14" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="read_role" target="q3"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- 角色判断 → 操作员 -->
+        <mxCell id="e15" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="q3" target="ui_op">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="145" y="625"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e15_l" value="操作员" style="edgeLabel;html=1;fontSize=12;" vertex="1" connectable="0" parent="e15"><mxGeometry x="-0.2" y="-12" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 角色判断 → 主管 -->
+        <mxCell id="e16" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="q3" target="ui_sup">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e16_l" value="主管" style="edgeLabel;html=1;fontSize=12;" vertex="1" connectable="0" parent="e16"><mxGeometry x="-0.2" y="-10" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 角色判断 → 管理员 -->
+        <mxCell id="e17" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="q3" target="ui_adm">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="575" y="625"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e17_l" value="管理员" style="edgeLabel;html=1;fontSize=12;" vertex="1" connectable="0" parent="e17"><mxGeometry x="0.2" y="-12" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
+
+        <!-- 三个界面 → 加载功能菜单 -->
+        <mxCell id="e18" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ui_op" target="load_menu">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="145" y="820"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e19" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="ui_sup" target="load_menu"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e20" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ui_adm" target="load_menu">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="575" y="820"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 加载菜单 → 结束 -->
+        <mxCell id="e21" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.5;" edge="1" parent="1" source="load_menu" target="endnode"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

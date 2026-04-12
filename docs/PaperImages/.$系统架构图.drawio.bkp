@@ -1,0 +1,138 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="sysarch" name="系统架构图">
+    <mxGraphModel dx="912" dy="864" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- 展现层 -->
+        <mxCell id="L1" value="展现层" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#555555;fontColor=#ffffff;fontSize=13;fontStyle=1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="10" y="20" width="80" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="B1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#555555;strokeWidth=1.5;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="20" width="840" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="P1" value="&lt;b&gt;实时监控大屏&lt;/b&gt;&lt;br&gt;Dashboard" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="115" y="35" width="140" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="P2" value="&lt;b&gt;任务中心&lt;/b&gt;&lt;br&gt;Tasks" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="265" y="35" width="125" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="P3" value="&lt;b&gt;统计看板&lt;/b&gt;&lt;br&gt;Stats · ECharts" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="400" y="35" width="138" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="P4" value="&lt;b&gt;历史回溯&lt;/b&gt;&lt;br&gt;History" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="548" y="35" width="115" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="P5" value="&lt;b&gt;系统管理&lt;/b&gt;&lt;br&gt;Admin · 参数 · 用户 · 公告" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="673" y="35" width="252" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="P0" value="Vue 3 + Element Plus + Pinia" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="105" y="100" width="160" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- 通讯层 -->
+        <mxCell id="L2" value="通讯层" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#555555;fontColor=#ffffff;fontSize=13;fontStyle=1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="10" y="135" width="80" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="B2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ebebeb;strokeColor=#555555;strokeWidth=1.5;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="135" width="840" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="C1" value="HTTP / RESTful API" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="115" y="148" width="185" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="C2" value="WebSocket 实时推送" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="315" y="148" width="170" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="C3" value="MJPEG 视频流" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="500" y="148" width="155" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="C4" value="JWT Token 认证" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=12;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="670" y="148" width="155" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- 服务层 -->
+        <mxCell id="L3" value="服务层" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#555555;fontColor=#ffffff;fontSize=13;fontStyle=1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="10" y="230" width="80" height="310" as="geometry"/>
+        </mxCell>
+        <mxCell id="B3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#555555;strokeWidth=1.5;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="230" width="840" height="310" as="geometry"/>
+        </mxCell>
+
+        <!-- S1: AI推理引擎 -->
+        <mxCell id="S1" value="AI 推理引擎" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dddddd;fontColor=#111111;fontSize=13;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="115" y="245" width="228" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="A1" value="&lt;b&gt;YOLOv8 / v11&lt;/b&gt;&lt;br&gt;实时目标检测" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="130" y="280" width="198" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="A2" value="&lt;b&gt;Qwen2.5-VL&lt;/b&gt;&lt;br&gt;多模态语义复核" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="130" y="336" width="198" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="A3" value="&lt;b&gt;双阈值分级策略&lt;/b&gt;&lt;br&gt;高 / 中 / 低 风险截流" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="130" y="392" width="198" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- S2: 业务模块集群 -->
+        <mxCell id="S2" value="业务模块集群" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dddddd;fontColor=#111111;fontSize=13;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="358" y="245" width="262" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="M1" value="&lt;b&gt;告警生命周期&lt;/b&gt;&lt;br&gt;alerts" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="373" y="280" width="110" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="M2" value="&lt;b&gt;视频流处理&lt;/b&gt;&lt;br&gt;stream" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="495" y="280" width="110" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="M3" value="&lt;b&gt;SOP 处置引擎&lt;/b&gt;&lt;br&gt;SOP1 / SOP2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="373" y="336" width="110" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="M4" value="&lt;b&gt;WS 实时广播&lt;/b&gt;&lt;br&gt;ws_manager" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="495" y="336" width="110" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="M5" value="&lt;b&gt;批量操作&lt;/b&gt;&lt;br&gt;cancel / delete" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="373" y="392" width="110" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="M6" value="&lt;b&gt;数据导出&lt;/b&gt;&lt;br&gt;CSV export" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="495" y="392" width="110" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- S3: 权限与系统配置 -->
+        <mxCell id="S3" value="权限与系统配置" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dddddd;fontColor=#111111;fontSize=13;fontStyle=1;strokeColor=#333333;strokeWidth=1.5;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="635" y="245" width="290" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="R1" value="&lt;b&gt;用户认证 RBAC&lt;/b&gt;&lt;br&gt;auth · JWT · 三级角色" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="650" y="280" width="260" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="R2" value="&lt;b&gt;系统参数热配置&lt;/b&gt;&lt;br&gt;admin · EAV 动态键值" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="650" y="336" width="260" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="R3" value="&lt;b&gt;设备与班务管理&lt;/b&gt;&lt;br&gt;supervisor · 交接班日志" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="650" y="392" width="260" height="46" as="geometry"/>
+        </mxCell>
+
+        <!-- 技术栈横幅 -->
+        <mxCell id="TB" value="FastAPI 异步引擎 · asyncio 事件循环 · OpenCV 视频解码 · httpx 异步客户端 · Uvicorn ASGI" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#333333;strokeColor=#111111;strokeWidth=1;fontSize=11;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="115" y="480" width="810" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- 数据层 -->
+        <mxCell id="L4" value="数据层" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#555555;fontColor=#ffffff;fontSize=13;fontStyle=1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="10" y="560" width="80" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="B4" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ebebeb;strokeColor=#555555;strokeWidth=1.5;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="560" width="840" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="D1" value="&lt;b&gt;MySQL&lt;/b&gt;&lt;br&gt;关系型数据库" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="150" y="568" width="170" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="D2" value="&lt;b&gt;SQLModel&lt;/b&gt;&lt;br&gt;ORM 映射层" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="390" y="568" width="170" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="D3" value="&lt;b&gt;文件存储&lt;/b&gt;&lt;br&gt;uploads / media" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#ffffff;strokeColor=#333333;strokeWidth=1;fontSize=11;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="640" y="568" width="190" height="65" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
