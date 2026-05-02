@@ -1,0 +1,184 @@
+<mxfile host="app.diagrams.net" modified="2025-02-14T00:00:00.000Z" agent="OpenAI" version="24.7.17">
+  <diagram id="usecase2" name="Page-1">
+    <mxGraphModel dx="1280" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1800" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Actor -->
+        <mxCell id="actor1" value="安全主管" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="760" width="70" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- Left Use Cases -->
+        <mxCell id="uc1" value="用户登录" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="80" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc2" value="查看统计分析" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="220" width="180" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc3" value="管理设备信息" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="500" width="180" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc4" value="查看设备日志" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="820" width="180" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc5" value="查询历史告警" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="980" width="180" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc6" value="导出业务数据" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="1180" width="180" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc7" value="管理交接班日志" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="1460" width="180" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Right Use Cases -->
+        <mxCell id="uc8" value="查看告警总量" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="0" width="190" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc9" value="查看真实火灾占比" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="100" width="210" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc10" value="查看误报比例" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="200" width="190" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc11" value="查看设备在线率" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="300" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc12" value="查看趋势图" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="420" width="180" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc13" value="查看设备列表" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="440" width="190" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc14" value="新增设备信息" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="540" width="190" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc15" value="修改设备信息" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="640" width="190" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc16" value="删除设备信息" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="740" width="190" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc17" value="管理 AI 检测开关" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="860" width="220" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc18" value="查看上线掉线记录" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="820" width="220" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc19" value="查看告警记录" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="960" width="190" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc20" value="查看处置结果" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1080" width="190" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc21" value="导出告警记录" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1160" width="190" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc22" value="导出统计结果" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1280" width="190" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc23" value="查看交接班记录" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1420" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc24" value="填写交接班记录" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1520" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc25" value="管理交接班记录" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1620" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Actor Associations -->
+        <mxCell id="e1" style="endArrow=none;rounded=0;html=1;" edge="1" parent="1" source="actor1" target="uc1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" style="endArrow=none;rounded=0;html=1;" edge="1" parent="1" source="actor1" target="uc2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" style="endArrow=none;rounded=0;html=1;" edge="1" parent="1" source="actor1" target="uc3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" style="endArrow=none;rounded=0;html=1;" edge="1" parent="1" source="actor1" target="uc4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" style="endArrow=none;rounded=0;html=1;" edge="1" parent="1" source="actor1" target="uc5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" style="endArrow=none;rounded=0;html=1;" edge="1" parent="1" source="actor1" target="uc6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" style="endArrow=none;rounded=0;html=1;" edge="1" parent="1" source="actor1" target="uc7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Include Relations -->
+        <mxCell id="i1" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc2" target="uc8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i2" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc2" target="uc9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i3" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc2" target="uc10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i4" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc2" target="uc11">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i5" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc2" target="uc12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="i6" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc3" target="uc13">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i7" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc3" target="uc14">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i8" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc3" target="uc15">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i9" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc3" target="uc16">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i10" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc3" target="uc17">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="i11" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc4" target="uc18">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="i12" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc5" target="uc19">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i13" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc5" target="uc20">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="i14" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc6" target="uc21">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i15" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc6" target="uc22">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="i16" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc7" target="uc23">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i17" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc7" target="uc24">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="i18" value="&lt;&lt;include&gt;&gt;" style="dashed=1;endArrow=open;rounded=0;html=1;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=13;fontStyle=1;" edge="1" parent="1" source="uc7" target="uc25">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

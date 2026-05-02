@@ -27,6 +27,24 @@ npm run dev
 
 Open `http://127.0.0.1:5173`.
 
+### One-click start
+
+From the project root:
+
+```powershell
+.\start_project.ps1
+```
+
+Or double-click `start_project.bat`.
+
+Optional flags:
+
+```powershell
+.\start_project.ps1 -BackendOnly
+.\start_project.ps1 -FrontendOnly
+.\start_project.ps1 -DryRun
+```
+
 ## Documentation
 
 - Main docs index: `docs/README.md`
