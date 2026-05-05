@@ -45,7 +45,7 @@
           </el-form>
 
           <div class="test-accounts">
-            <span>快速体验：</span>
+            <span>演示账号：</span>
             <el-tag effect="dark" size="small" @click="fill('admin')" class="demo-tag admin-tag">admin</el-tag>
             <el-tag effect="dark" size="small" type="success" @click="fill('manager')" class="demo-tag manager-tag">manager</el-tag>
             <el-tag effect="dark" size="small" type="warning" @click="fill('operator')" class="demo-tag operator-tag">operator</el-tag>

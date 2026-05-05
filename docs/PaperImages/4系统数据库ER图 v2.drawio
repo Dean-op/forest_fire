@@ -1,0 +1,254 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram id="forest-fire-er-optimized-v3" name="ER Diagram (Optimized)">
+    <mxGraphModel dx="1426" dy="849" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Elog" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="系统日志" vertex="1">
+          <mxGeometry height="40" width="100" x="100" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="Eadm" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="系统管理员" vertex="1">
+          <mxGeometry height="40" width="100" x="400" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Esup" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="安全主管" vertex="1">
+          <mxGeometry height="40" width="100" x="405" y="457" as="geometry" />
+        </mxCell>
+        <mxCell id="Eop" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="安全操作员" vertex="1">
+          <mxGeometry height="40" width="100" x="400" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="Eusr" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="用户信息" vertex="1">
+          <mxGeometry height="40" width="100" x="800" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Ecfg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="系统参数" vertex="1">
+          <mxGeometry height="40" width="100" x="800" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Esop" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="SOP公告" vertex="1">
+          <mxGeometry height="40" width="100" x="800" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="Eshf" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="交接班日志" vertex="1">
+          <mxGeometry height="40" width="100" x="810" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="Ecam" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="监控设备" vertex="1">
+          <mxGeometry height="40" width="100" x="800" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="Ealt" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="告警事件" vertex="1">
+          <mxGeometry height="40" width="100" x="800" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="Ecap" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="抓拍配置" vertex="1">
+          <mxGeometry height="40" width="100" x="1200" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="Eclg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=14;labelBackgroundColor=none;" value="设备日志" vertex="1">
+          <mxGeometry height="40" width="100" x="1200" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="Rlog" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=13;fontStyle=1;labelBackgroundColor=none;" value="产生" vertex="1">
+          <mxGeometry height="40" width="80" x="250" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="Rusr" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=13;fontStyle=1;labelBackgroundColor=none;" value="管理" vertex="1">
+          <mxGeometry height="40" width="80" x="600" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Rcfg" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=13;fontStyle=1;labelBackgroundColor=none;" value="配置" vertex="1">
+          <mxGeometry height="40" width="80" x="600" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Rpub" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=13;fontStyle=1;labelBackgroundColor=none;" value="发布" vertex="1">
+          <mxGeometry height="40" width="80" x="600" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="Rshf" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=13;fontStyle=1;labelBackgroundColor=none;" value="填写" vertex="1">
+          <mxGeometry height="40" width="80" x="607" y="412" as="geometry" />
+        </mxCell>
+        <mxCell id="Rmgr" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=13;fontStyle=1;labelBackgroundColor=none;" value="管理" vertex="1">
+          <mxGeometry height="40" width="80" x="600" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="Rhdl" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=13;fontStyle=1;labelBackgroundColor=none;" value="处置" vertex="1">
+          <mxGeometry height="40" width="80" x="600" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="Rtrg" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=13;fontStyle=1;labelBackgroundColor=none;" value="触发" vertex="1">
+          <mxGeometry height="40" width="80" x="810" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="Rmnt" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=13;fontStyle=1;labelBackgroundColor=none;" value="配置" vertex="1">
+          <mxGeometry height="40" width="80" x="1000" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="Rrec" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=2;fontSize=13;fontStyle=1;labelBackgroundColor=none;" value="记录" vertex="1">
+          <mxGeometry height="40" width="80" x="1000" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="c1" edge="1" parent="1" source="Eadm" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rlog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c1l" connectable="0" parent="c1" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint x="-21" y="-3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c2" edge="1" parent="1" source="Esup" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rlog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c2l" connectable="0" parent="c2" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint x="-13" y="-9" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c3" edge="1" parent="1" source="Eop" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rlog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c3l" connectable="0" parent="c3" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c4" edge="1" parent="1" source="Rlog" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Elog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c4l" connectable="0" parent="c4" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.4" y="-15" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c5" edge="1" parent="1" source="Eadm" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;entryX=0.25;entryY=0.775;entryDx=0;entryDy=0;entryPerimeter=0;" target="Rusr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c5l" connectable="0" parent="c5" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c6" edge="1" parent="1" source="Rusr" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Eusr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c6l" connectable="0" parent="c6" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.4" y="-15" as="geometry">
+            <mxPoint y="-55" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c7" edge="1" parent="1" source="Eadm" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rcfg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c7l" connectable="0" parent="c7" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c8" edge="1" parent="1" source="Rcfg" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Ecfg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c8l" connectable="0" parent="c8" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.4" y="-15" as="geometry">
+            <mxPoint x="3" y="-46" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c9" edge="1" parent="1" source="Eadm" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="613" y="309" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c9l" connectable="0" parent="c9" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c10" edge="1" parent="1" source="Rpub" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Esop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c10l" connectable="0" parent="c10" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.4" y="-15" as="geometry">
+            <mxPoint x="1" y="-41" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c11" edge="1" parent="1" source="Esup" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;entryX=0.113;entryY=0.7;entryDx=0;entryDy=0;entryPerimeter=0;" target="Rshf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c11l" connectable="0" parent="c11" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint x="4" y="-45" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c12" edge="1" parent="1" source="Rshf" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Eshf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c12l" connectable="0" parent="c12" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.4" y="-15" as="geometry">
+            <mxPoint x="-2" y="-51" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c13" edge="1" parent="1" source="Esup" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;entryX=0.238;entryY=0.175;entryDx=0;entryDy=0;entryPerimeter=0;" target="Rmgr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c13l" connectable="0" parent="c13" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint x="29" y="-36" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c14" edge="1" parent="1" source="Rmgr" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Ecam">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c14l" connectable="0" parent="c14" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.4" y="-15" as="geometry">
+            <mxPoint x="3" y="-45" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c15" edge="1" parent="1" source="Eop" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rhdl">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c15l" connectable="0" parent="c15" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint x="-2" y="-47" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c16" edge="1" parent="1" source="Rhdl" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Ealt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c16l" connectable="0" parent="c16" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.4" y="-15" as="geometry">
+            <mxPoint y="-43" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c17" edge="1" parent="1" source="Ecam" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rtrg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c17l" connectable="0" parent="c17" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c18" edge="1" parent="1" source="Rtrg" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Ealt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c18l" connectable="0" parent="c18" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.4" y="-15" as="geometry">
+            <mxPoint x="-3" y="-20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c19" edge="1" parent="1" source="Ecam" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;entryX=0.138;entryY=0.7;entryDx=0;entryDy=0;entryPerimeter=0;" target="Rmnt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c19l" connectable="0" parent="c19" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint x="1" y="-55" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c20" edge="1" parent="1" source="Rmnt" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Ecap">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c20l" connectable="0" parent="c20" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.4" y="-15" as="geometry">
+            <mxPoint x="-3" y="-50" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c21" edge="1" parent="1" source="Ecam" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;entryX=0.138;entryY=0.425;entryDx=0;entryDy=0;entryPerimeter=0;" target="Rrec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c21l" connectable="0" parent="c21" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.4" y="-15" as="geometry">
+            <mxPoint x="7" y="-49" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c22" edge="1" parent="1" source="Rrec" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Eclg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c22l" connectable="0" parent="c22" style="edgeLabel;html=1;fontSize=14;fontStyle=1;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.4" y="-15" as="geometry">
+            <mxPoint x="-4" y="-47" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

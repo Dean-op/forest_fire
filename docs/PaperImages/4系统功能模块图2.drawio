@@ -1,0 +1,154 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram id="forest-fire-module-v3" name="Page-1">
+    <mxGraphModel dx="1426" dy="849" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="0" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=20;labelBackgroundColor=none;" value="森林火灾预警系统" vertex="1">
+          <mxGeometry height="60" width="320" x="430" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="m1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=18;arcSize=14;labelBackgroundColor=none;" value="系统管理员模块" vertex="1">
+          <mxGeometry height="50" width="220" x="127" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="m2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=18;arcSize=14;labelBackgroundColor=none;" value="安全主管模块" vertex="1">
+          <mxGeometry height="50" width="220" x="480" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="m3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;fontStyle=1;fontSize=18;arcSize=14;labelBackgroundColor=none;" value="安全操作员模块" vertex="1">
+          <mxGeometry height="50" width="220" x="808" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="title" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=none;labelBackgroundColor=none;" target="m1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="title" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=none;labelBackgroundColor=none;" target="m2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="title" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=none;labelBackgroundColor=none;" target="m3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="用&lt;br&gt;户&lt;br&gt;登&lt;br&gt;录" vertex="1">
+          <mxGeometry height="230" width="32" x="115" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="用&lt;br&gt;户&lt;br&gt;与&lt;br&gt;角&lt;br&gt;色&lt;br&gt;权&lt;br&gt;限&lt;br&gt;管&lt;br&gt;理" vertex="1">
+          <mxGeometry height="230" width="32" x="153" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="系&lt;br&gt;统&lt;br&gt;参&lt;br&gt;数&lt;br&gt;配&lt;br&gt;置" vertex="1">
+          <mxGeometry height="230" width="32" x="191" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="AI&lt;br&gt;接&lt;br&gt;口&lt;br&gt;配&lt;br&gt;置" vertex="1">
+          <mxGeometry height="230" width="32" x="229" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="公&lt;br&gt;告&lt;br&gt;与&lt;br&gt;SOP&lt;br&gt;管&lt;br&gt;理" vertex="1">
+          <mxGeometry height="230" width="32" x="267" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="系&lt;br&gt;统&lt;br&gt;日&lt;br&gt;志&lt;br&gt;查&lt;br&gt;看" vertex="1">
+          <mxGeometry height="230" width="32" x="305" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="a7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="数&lt;br&gt;据&lt;br&gt;备&lt;br&gt;份" vertex="1">
+          <mxGeometry height="230" width="32" x="343" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="b1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="用&lt;br&gt;户&lt;br&gt;登&lt;br&gt;录" vertex="1">
+          <mxGeometry height="230" width="32" x="465" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="统&lt;br&gt;计&lt;br&gt;分&lt;br&gt;析" vertex="1">
+          <mxGeometry height="230" width="32" x="503" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="设&lt;br&gt;备&lt;br&gt;信&lt;br&gt;息&lt;br&gt;管&lt;br&gt;理" vertex="1">
+          <mxGeometry height="230" width="32" x="541" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="设&lt;br&gt;备&lt;br&gt;日&lt;br&gt;志&lt;br&gt;查&lt;br&gt;看" vertex="1">
+          <mxGeometry height="230" width="32" x="579" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="b5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="历&lt;br&gt;史&lt;br&gt;告&lt;br&gt;警&lt;br&gt;与&lt;br&gt;结&lt;br&gt;果&lt;br&gt;查&lt;br&gt;看" vertex="1">
+          <mxGeometry height="230" width="32" x="617" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="b6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="业&lt;br&gt;务&lt;br&gt;数&lt;br&gt;据&lt;br&gt;导&lt;br&gt;出" vertex="1">
+          <mxGeometry height="230" width="32" x="655" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="b7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="交&lt;br&gt;接&lt;br&gt;班&lt;br&gt;日&lt;br&gt;志&lt;br&gt;管&lt;br&gt;理" vertex="1">
+          <mxGeometry height="230" width="32" x="693" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="c1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="用&lt;br&gt;户&lt;br&gt;注&lt;br&gt;册&lt;br&gt;登&lt;br&gt;录" vertex="1">
+          <mxGeometry height="230" width="32" x="800" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="监&lt;br&gt;控&lt;br&gt;大&lt;br&gt;屏&lt;br&gt;与&lt;br&gt;实&lt;br&gt;时&lt;br&gt;告&lt;br&gt;警" vertex="1">
+          <mxGeometry height="230" width="32" x="839" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="待&lt;br&gt;处&lt;br&gt;理&lt;br&gt;任&lt;br&gt;务&lt;br&gt;与&lt;br&gt;SOP&lt;br&gt;处&lt;br&gt;置" vertex="1">
+          <mxGeometry height="230" width="32" x="879" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="历&lt;br&gt;史&lt;br&gt;告&lt;br&gt;警&lt;br&gt;查&lt;br&gt;询" vertex="1">
+          <mxGeometry height="230" width="32" x="921" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="公&lt;br&gt;告&lt;br&gt;与&lt;br&gt;SOP&lt;br&gt;查&lt;br&gt;看" vertex="1">
+          <mxGeometry height="230" width="32" x="959" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=15;arcSize=10;verticalAlign=middle;labelBackgroundColor=none;" value="个&lt;br&gt;人&lt;br&gt;中&lt;br&gt;心&lt;br&gt;管&lt;br&gt;理" vertex="1">
+          <mxGeometry height="230" width="32" x="1000" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="ea1" edge="1" parent="1" source="m1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="a1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea2" edge="1" parent="1" source="m1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="a2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea3" edge="1" parent="1" source="m1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="a3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea4" edge="1" parent="1" source="m1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="a4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea5" edge="1" parent="1" source="m1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="a5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea6" edge="1" parent="1" source="m1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="a6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ea7" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="321" y="340" as="sourcePoint" />
+            <mxPoint x="359" y="359" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eb1" edge="1" parent="1" source="m2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="b1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb2" edge="1" parent="1" source="m2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="b2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb3" edge="1" parent="1" source="m2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="b3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb4" edge="1" parent="1" source="m2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="b4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb5" edge="1" parent="1" source="m2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="b5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb6" edge="1" parent="1" source="m2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="b6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb7" edge="1" parent="1" source="m2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="b7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec1" edge="1" parent="1" source="m3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="c1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec2" edge="1" parent="1" source="m3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="c2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec3" edge="1" parent="1" source="m3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="c3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec4" edge="1" parent="1" source="m3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="c4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec5" edge="1" parent="1" source="m3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="c5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec6" edge="1" parent="1" source="m3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;html=1;strokeWidth=1.5;endArrow=none;labelBackgroundColor=none;" target="c6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
