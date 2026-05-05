@@ -74,7 +74,7 @@ const routes = [
                 path: 'admin/announcements',
                 name: 'Announcements',
                 component: () => import('../views/Announcements.vue'),
-                meta: { roles: ['admin'] }
+                meta: { roles: ['supervisor', 'admin'] }
             },
             {
                 path: 'admin/logs',

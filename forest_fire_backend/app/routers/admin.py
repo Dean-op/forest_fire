@@ -307,7 +307,7 @@ def list_announcements(
     query = select(Announcement).order_by(Announcement.id)
     if category:
         query = query.where(Announcement.category == category)
-    if current_user.role != "admin":
+    if current_user.role not in {"admin", "supervisor"}:
         query = query.where(Announcement.is_published.is_(True))
     return session.exec(query).all()
 
@@ -316,7 +316,7 @@ def list_announcements(
 def create_announcement(
     data: AnnouncementCreate,
     session: Session = Depends(get_session),
-    current_user: User = Depends(require_roles("admin")),
+    current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
     ann = Announcement(**data.dict())
     session.add(ann)
@@ -330,7 +330,7 @@ def update_announcement(
     ann_id: int,
     data: AnnouncementUpdate,
     session: Session = Depends(get_session),
-    current_user: User = Depends(require_roles("admin")),
+    current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
     ann = session.get(Announcement, ann_id)
     if not ann:
@@ -349,7 +349,7 @@ def update_announcement(
 def delete_announcement(
     ann_id: int,
     session: Session = Depends(get_session),
-    current_user: User = Depends(require_roles("admin")),
+    current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
     ann = session.get(Announcement, ann_id)
     if not ann:

@@ -38,7 +38,7 @@
           <el-icon><Notebook /></el-icon>
           <template #title>交接班日志</template>
         </el-menu-item>
-        <el-menu-item index="/notices">
+        <el-menu-item :index="noticeMenuPath">
           <el-icon><ChatDotSquare /></el-icon>
           <template #title>公告 / SOP</template>
         </el-menu-item>
@@ -129,7 +129,13 @@ const DEFAULT_SYSTEM_NAME = '防火预警系统'
 
 const isCollapse = ref(false)
 const systemName = ref(localStorage.getItem(SYSTEM_NAME_STORAGE_KEY) || DEFAULT_SYSTEM_NAME)
-const activeMenu = computed(() => route.path)
+const noticeMenuPath = computed(() => hasRole(['supervisor', 'admin']) ? '/admin/announcements' : '/notices')
+const activeMenu = computed(() => {
+  if (route.path === '/notices' || route.path === '/admin/announcements') {
+    return noticeMenuPath.value
+  }
+  return route.path
+})
 
 const roleMap = {
   'operator': '操作员',
