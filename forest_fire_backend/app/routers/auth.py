@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 from jose import JWTError, jwt
@@ -8,6 +8,7 @@ from typing import Optional
 from app.database import get_session
 from app.models.user import User
 from app.utils.security import verify_password, create_access_token, get_password_hash
+from app.utils.system_log import log_user_action
 from app.config import SECRET_KEY, ALGORITHM
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -70,7 +71,11 @@ def validate_password(password: str) -> str:
 
 
 @router.post("/login", response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+def login(
+    request: Request,
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    session: Session = Depends(get_session),
+):
     user = session.exec(select(User).where(User.username == form_data.username)).first()
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
@@ -82,12 +87,21 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = D
     if not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
 
+    log_user_action(
+        session,
+        current_user=user,
+        action="登录系统",
+        detail=f"{user.role} 用户登录成功",
+        request=request,
+    )
+    session.commit()
+
     access_token = create_access_token(data={"sub": user.username, "role": user.role})
     return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def register(data: RegisterRequest, session: Session = Depends(get_session)):
+def register(data: RegisterRequest, request: Request, session: Session = Depends(get_session)):
     username = validate_username(data.username)
     password = validate_password(data.password)
 
@@ -106,6 +120,14 @@ def register(data: RegisterRequest, session: Session = Depends(get_session)):
     session.add(user)
     session.commit()
     session.refresh(user)
+    log_user_action(
+        session,
+        current_user=user,
+        action="注册账号",
+        detail=f"注册操作员账号 {user.username}",
+        request=request,
+    )
+    session.commit()
     return UserResponse(id=user.id, username=user.username, role=user.role)
 
 
@@ -126,11 +148,23 @@ def require_roles(*allowed_roles: str):
 
 
 @router.put("/password")
-def update_password(pw_data: PasswordUpdate, current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+def update_password(
+    pw_data: PasswordUpdate,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session),
+):
     if not verify_password(pw_data.old_password, current_user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect old password")
 
     current_user.hashed_password = get_password_hash(validate_password(pw_data.new_password))
     session.add(current_user)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="修改密码",
+        detail="用户修改了自己的登录密码",
+        request=request,
+    )
     session.commit()
     return {"msg": "Password updated successfully"}

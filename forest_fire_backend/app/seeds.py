@@ -122,22 +122,5 @@ def create_seed_data():
                 session.add(Announcement(title=title, content=content, category=cat))
             session.commit()
             print("公告/SOP 种子数据生成成功！")
-
-        # 6. 系统日志
-        existing_logs = session.exec(select(SystemLog)).all()
-        if not existing_logs:
-            log_data = [
-                ("admin", "登录系统", "管理员登录", "127.0.0.1"),
-                ("admin", "创建用户", "新增用户 operator", "127.0.0.1"),
-                ("operator", "处理告警", "告警ID #3 标记为误报", "192.168.1.50"),
-                ("manager", "查看统计", "访问统计看板", "192.168.1.60"),
-                ("admin", "修改配置", "YOLO 置信度阈值调整为 0.7", "127.0.0.1"),
-                ("operator", "登录系统", "操作员登录", "192.168.1.50"),
-            ]
-            for user, action, detail, ip in log_data:
-                session.add(SystemLog(user=user, action=action, detail=detail, ip=ip, timestamp=datetime.utcnow() - timedelta(hours=random.randint(1, 48))))
-            session.commit()
-            print("系统日志种子数据生成成功！")
-
 if __name__ == "__main__":
     create_seed_data()

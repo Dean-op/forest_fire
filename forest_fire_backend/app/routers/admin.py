@@ -2,7 +2,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sqlalchemy import inspect, text
@@ -13,6 +13,7 @@ from app.models.admin import Announcement, SystemConfig, SystemLog
 from app.models.user import User
 from app.routers.auth import get_current_user, require_roles
 from app.utils.security import get_password_hash
+from app.utils.system_log import log_user_action
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -234,6 +235,7 @@ def list_users(session: Session = Depends(get_session), current_user: User = Dep
 @router.post("/users")
 def create_user(
     data: UserCreate,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("admin")),
 ):
@@ -247,6 +249,13 @@ def create_user(
         role=data.role,
     )
     session.add(user)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="创建用户",
+        detail=f"创建用户 {user.username}，角色 {user.role}",
+        request=request,
+    )
     session.commit()
     session.refresh(user)
     return {"id": user.id, "username": user.username, "role": user.role}
@@ -256,6 +265,7 @@ def create_user(
 def update_user(
     user_id: int,
     data: UserUpdate,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("admin")),
 ):
@@ -263,10 +273,20 @@ def update_user(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    for k, v in data.dict(exclude_unset=True).items():
+    changes = data.dict(exclude_unset=True)
+    for k, v in changes.items():
         setattr(user, k, v)
 
     session.add(user)
+    if changes:
+        detail = "，".join([f"{key}={value}" for key, value in changes.items()])
+        log_user_action(
+            session,
+            current_user=current_user,
+            action="更新用户",
+            detail=f"更新用户 {user.username}：{detail}",
+            request=request,
+        )
     session.commit()
     return {"msg": "Updated"}
 
@@ -281,6 +301,7 @@ def list_configs(session: Session = Depends(get_session), current_user: User = D
 def update_config(
     key: str,
     data: ConfigUpdate,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("admin")),
 ):
@@ -290,9 +311,17 @@ def update_config(
     if not config:
         raise HTTPException(status_code=404, detail="Config not found")
 
+    old_value = config.value
     config.value = data.value
     config.updated_at = datetime.utcnow()
     session.add(config)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="修改系统配置",
+        detail=f"配置项 {key} 从 {old_value} 修改为 {data.value}",
+        request=request,
+    )
     session.commit()
     session.refresh(config)
     return config
@@ -315,11 +344,19 @@ def list_announcements(
 @router.post("/announcements")
 def create_announcement(
     data: AnnouncementCreate,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
     ann = Announcement(**data.dict())
     session.add(ann)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="发布公告SOP",
+        detail=f"新增{ann.category}：{ann.title}",
+        request=request,
+    )
     session.commit()
     session.refresh(ann)
     return ann
@@ -329,6 +366,7 @@ def create_announcement(
 def update_announcement(
     ann_id: int,
     data: AnnouncementUpdate,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
@@ -336,10 +374,23 @@ def update_announcement(
     if not ann:
         raise HTTPException(status_code=404, detail="Not found")
 
-    for k, v in data.dict(exclude_unset=True).items():
+    changes = data.dict(exclude_unset=True)
+    for k, v in changes.items():
         setattr(ann, k, v)
 
     session.add(ann)
+    if changes:
+        action = "编辑公告SOP"
+        if list(changes.keys()) == ["is_published"]:
+            action = "撤回公告SOP" if not ann.is_published else "发布公告SOP"
+        detail = "，".join([f"{key}={value}" for key, value in changes.items()])
+        log_user_action(
+            session,
+            current_user=current_user,
+            action=action,
+            detail=f"更新 {ann.title}：{detail}",
+            request=request,
+        )
     session.commit()
     session.refresh(ann)
     return ann
@@ -348,6 +399,7 @@ def update_announcement(
 @router.delete("/announcements/{ann_id}")
 def delete_announcement(
     ann_id: int,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
@@ -355,7 +407,16 @@ def delete_announcement(
     if not ann:
         raise HTTPException(status_code=404, detail="Not found")
 
+    title = ann.title
+    category = ann.category
     session.delete(ann)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="删除公告SOP",
+        detail=f"删除{category}：{title}",
+        request=request,
+    )
     session.commit()
     return {"msg": "Deleted"}
 
@@ -367,7 +428,7 @@ def list_system_logs(
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("admin")),
 ):
-    query = select(SystemLog).order_by(SystemLog.id)
+    query = select(SystemLog).order_by(SystemLog.timestamp.desc(), SystemLog.id.desc())
     total = len(session.exec(select(SystemLog)).all())
     logs = session.exec(query.offset((page - 1) * size).limit(size)).all()
     return {"total": total, "items": logs}

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 from sqlmodel import Session, desc, select
 
@@ -10,6 +10,7 @@ from app.models.alert import Alert
 from app.models.supervisor import Camera, CameraLog, CaptureConfig, ShiftLog
 from app.models.user import User
 from app.routers.auth import get_current_user, require_roles
+from app.utils.system_log import log_user_action
 
 router = APIRouter(prefix="/api/supervisor", tags=["supervisor"])
 
@@ -125,11 +126,19 @@ def list_cameras(session: Session = Depends(get_session), current_user: User = D
 @router.post("/cameras")
 def create_camera(
     data: CameraCreate,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
     camera = Camera(**data.dict())
     session.add(camera)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="新增设备",
+        detail=f"新增摄像头 {camera.name}，位置 {camera.location}",
+        request=request,
+    )
     session.commit()
     session.refresh(camera)
     return camera
@@ -139,6 +148,7 @@ def create_camera(
 def update_camera(
     camera_id: int,
     data: CameraUpdate,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
@@ -146,10 +156,20 @@ def update_camera(
     if not camera:
         raise HTTPException(status_code=404, detail="Camera not found")
 
-    for k, v in data.dict(exclude_unset=True).items():
+    changes = data.dict(exclude_unset=True)
+    for k, v in changes.items():
         setattr(camera, k, v)
 
     session.add(camera)
+    if changes:
+        detail = "，".join([f"{key}={value}" for key, value in changes.items()])
+        log_user_action(
+            session,
+            current_user=current_user,
+            action="更新设备",
+            detail=f"更新摄像头 {camera.name}：{detail}",
+            request=request,
+        )
     session.commit()
     session.refresh(camera)
     return camera
@@ -158,6 +178,7 @@ def update_camera(
 @router.delete("/cameras/{camera_id}")
 def delete_camera(
     camera_id: int,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
@@ -165,7 +186,15 @@ def delete_camera(
     if not camera:
         raise HTTPException(status_code=404, detail="Camera not found")
 
+    camera_name = camera.name
     session.delete(camera)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="删除设备",
+        detail=f"删除摄像头 {camera_name}",
+        request=request,
+    )
     session.commit()
     return {"msg": "Deleted"}
 
@@ -197,6 +226,7 @@ def get_capture_config(
 def update_capture_config(
     config_id: int,
     data: CaptureConfigUpdate,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
@@ -204,11 +234,21 @@ def update_capture_config(
     if not config:
         raise HTTPException(status_code=404, detail="Config not found")
 
-    for k, v in data.dict(exclude_unset=True).items():
+    changes = data.dict(exclude_unset=True)
+    for k, v in changes.items():
         setattr(config, k, v)
     config.updated_at = datetime.utcnow()
 
     session.add(config)
+    if changes:
+        detail = "，".join([f"{key}={value}" for key, value in changes.items()])
+        log_user_action(
+            session,
+            current_user=current_user,
+            action="修改抓拍配置",
+            detail=f"配置ID {config.id}：{detail}",
+            request=request,
+        )
     session.commit()
     session.refresh(config)
     return config
@@ -231,11 +271,19 @@ def list_shift_logs(
 @router.post("/shift-logs")
 def create_shift_log(
     data: ShiftLogCreate,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
     log = ShiftLog(**data.dict())
     session.add(log)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="新增交接班日志",
+        detail=f"新增交接班记录，值班人 {log.operator}，班次 {log.shift_time}",
+        request=request,
+    )
     session.commit()
     session.refresh(log)
     return log
@@ -244,6 +292,7 @@ def create_shift_log(
 @router.delete("/shift-logs/{log_id}")
 def delete_shift_log(
     log_id: int,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("supervisor", "admin")),
 ):
@@ -251,6 +300,15 @@ def delete_shift_log(
     if not log:
         raise HTTPException(status_code=404, detail="Shift log not found")
 
+    operator = log.operator
+    shift_time = log.shift_time
     session.delete(log)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="删除交接班日志",
+        detail=f"删除交接班记录，值班人 {operator}，班次 {shift_time}",
+        request=request,
+    )
     session.commit()
     return {"msg": "Deleted"}

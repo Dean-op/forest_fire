@@ -5,7 +5,7 @@ import io
 import os
 import re
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlmodel import Session, desc, select
@@ -16,6 +16,7 @@ from app.models.admin import SystemConfig
 from app.models.alert import Alert
 from app.models.user import User
 from app.routers.auth import get_current_user, require_roles
+from app.utils.system_log import log_user_action
 
 router = APIRouter(prefix="/api/alerts", tags=["alerts"])
 
@@ -219,6 +220,7 @@ def list_alerts(
 def process_alert(
     alert_id: int,
     data: AlertProcess,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("operator", "admin")),
 ):
@@ -239,6 +241,13 @@ def process_alert(
     alert.remark = append_remark(alert.remark, result_note)
     alert.remark = append_remark(alert.remark, data.remark)
     session.add(alert)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="处理告警",
+        detail=f"告警 #{alert.id} 处理为 {alert.status}",
+        request=request,
+    )
     session.commit()
     session.refresh(alert)
     return alert
@@ -248,6 +257,7 @@ def process_alert(
 def execute_sop(
     alert_id: int,
     data: AlertSOPExecute,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("operator", "admin")),
 ):
@@ -284,6 +294,13 @@ def execute_sop(
     alert.remark = append_remark(alert.remark, data.note)
 
     session.add(alert)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="执行SOP",
+        detail=f"告警 #{alert.id} 执行 {data.sop_type}，状态更新为 {alert.status}",
+        request=request,
+    )
     session.commit()
     session.refresh(alert)
     return alert
@@ -293,6 +310,7 @@ def execute_sop(
 def dispatch_fire_alert(
     alert_id: int,
     data: AlertDispatch,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("operator", "admin")),
 ):
@@ -324,6 +342,13 @@ def dispatch_fire_alert(
     alert.remark = append_remark(alert.remark, data.note)
 
     session.add(alert)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="联动消防",
+        detail=f"告警 #{alert.id} 已联动消防，联系电话 {contact}",
+        request=request,
+    )
     session.commit()
     session.refresh(alert)
     return alert
@@ -333,6 +358,7 @@ def dispatch_fire_alert(
 def resolve_fire_alert(
     alert_id: int,
     data: AlertResolve,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("operator", "admin")),
 ):
@@ -348,6 +374,13 @@ def resolve_fire_alert(
     alert.remark = append_remark(alert.remark, data.remark)
 
     session.add(alert)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="告警闭环",
+        detail=f"告警 #{alert.id} 已闭环，状态更新为 resolved",
+        request=request,
+    )
     session.commit()
     session.refresh(alert)
     return alert
@@ -357,6 +390,7 @@ def resolve_fire_alert(
 def cancel_alert(
     alert_id: int,
     data: AlertCancel,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("admin")),
 ):
@@ -376,6 +410,13 @@ def cancel_alert(
     alert.remark = append_remark(alert.remark, f"【任务撤销】{now_str} {current_user.username}：{reason}")
 
     session.add(alert)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="撤销告警",
+        detail=f"撤销告警 #{alert.id}，原因：{reason}",
+        request=request,
+    )
     session.commit()
     session.refresh(alert)
     return alert
@@ -438,6 +479,7 @@ def get_alert(
 @router.delete("/{alert_id}")
 def delete_alert(
     alert_id: int,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("admin")),
 ):
@@ -448,7 +490,15 @@ def delete_alert(
     if not can_delete_alert(alert.status):
         raise HTTPException(status_code=400, detail="Only closed/archived alerts can be deleted")
 
+    status_before_delete = alert.status
     session.delete(alert)
+    log_user_action(
+        session,
+        current_user=current_user,
+        action="删除告警",
+        detail=f"删除告警 #{alert_id}，原状态 {status_before_delete}",
+        request=request,
+    )
     session.commit()
     return {"msg": "Deleted", "id": alert_id}
 
@@ -456,6 +506,7 @@ def delete_alert(
 @router.post("/batch-delete")
 def batch_delete_alerts(
     data: BatchDeleteRequest,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("admin")),
 ):
@@ -476,6 +527,14 @@ def batch_delete_alerts(
         session.delete(alert)
         deleted += 1
 
+    if deleted:
+        log_user_action(
+            session,
+            current_user=current_user,
+            action="批量删除告警",
+            detail=f"成功删除 {deleted} 条告警",
+            request=request,
+        )
     session.commit()
     return {
         "msg": f"Deleted {deleted} alerts",
@@ -488,6 +547,7 @@ def batch_delete_alerts(
 @router.post("/batch-cancel")
 def batch_cancel_alerts(
     data: BatchCancelRequest,
+    request: Request,
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles("admin")),
 ):
@@ -518,6 +578,14 @@ def batch_cancel_alerts(
         session.add(alert)
         cancelled += 1
 
+    if cancelled:
+        log_user_action(
+            session,
+            current_user=current_user,
+            action="批量撤销告警",
+            detail=f"成功撤销 {cancelled} 条告警，原因：{reason}",
+            request=request,
+        )
     session.commit()
     return {
         "msg": f"Cancelled {cancelled} alerts",
