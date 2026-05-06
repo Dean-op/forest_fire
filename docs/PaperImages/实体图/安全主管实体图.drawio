@@ -1,0 +1,55 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram id="fig4-6-safe-supervisor" name="图4.6 安全主管实体图">
+    <mxGraphModel dx="1426" dy="849" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="entity_supervisor" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="安全主管" vertex="1">
+          <mxGeometry height="60" width="180" x="460" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_attr1" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="&lt;u&gt;主管编号&lt;/u&gt;" vertex="1">
+          <mxGeometry height="50" width="120" x="206" y="289" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_attr2" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="用户名" vertex="1">
+          <mxGeometry height="50" width="110" x="286" y="213" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_attr3" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="密码" vertex="1">
+          <mxGeometry height="50" width="100" x="409" y="169" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_attr4" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="姓名" vertex="1">
+          <mxGeometry height="50" width="100" x="534" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_attr5" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="联系电话" vertex="1">
+          <mxGeometry height="50" width="120" x="652" y="191" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_attr6" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="账号状态" vertex="1">
+          <mxGeometry height="50" width="120" x="738" y="266" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_attr7" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="创建时间" vertex="1">
+          <mxGeometry height="50" width="120" x="764" y="348" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_edge1" edge="1" parent="1" source="entity_supervisor" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;entryX=0.85;entryY=0.88;entryDx=0;entryDy=0;entryPerimeter=0;" target="sup_attr1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_edge2" edge="1" parent="1" source="entity_supervisor" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="sup_attr2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_edge3" edge="1" parent="1" source="entity_supervisor" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="sup_attr3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_edge4" edge="1" parent="1" source="entity_supervisor" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="sup_attr4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_edge5" edge="1" parent="1" source="entity_supervisor" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="sup_attr5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_edge6" edge="1" parent="1" source="entity_supervisor" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="sup_attr6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sup_edge7" edge="1" parent="1" source="entity_supervisor" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="sup_attr7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

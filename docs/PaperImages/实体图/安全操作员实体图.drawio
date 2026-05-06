@@ -1,0 +1,55 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram id="fig4-5-safe-operator" name="图4.5 安全操作员实体图">
+    <mxGraphModel dx="1426" dy="849" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="entity_operator" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="安全操作员" vertex="1">
+          <mxGeometry height="60" width="180" x="472" y="467" as="geometry" />
+        </mxCell>
+        <mxCell id="op_attr1" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="&lt;u&gt;操作员编号&lt;/u&gt;" vertex="1">
+          <mxGeometry height="50" width="120" x="237" y="353" as="geometry" />
+        </mxCell>
+        <mxCell id="op_attr2" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="用户名" vertex="1">
+          <mxGeometry height="50" width="110" x="313" y="276" as="geometry" />
+        </mxCell>
+        <mxCell id="op_attr3" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="密码" vertex="1">
+          <mxGeometry height="50" width="100" x="419" y="217" as="geometry" />
+        </mxCell>
+        <mxCell id="op_attr4" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="姓名" vertex="1">
+          <mxGeometry height="50" width="100" x="540" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="op_attr5" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="联系电话" vertex="1">
+          <mxGeometry height="50" width="120" x="652" y="237" as="geometry" />
+        </mxCell>
+        <mxCell id="op_attr6" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="账号状态" vertex="1">
+          <mxGeometry height="50" width="120" x="746" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="op_attr7" parent="1" style="shape=ellipse;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="创建时间" vertex="1">
+          <mxGeometry height="52" width="120" x="755" y="398" as="geometry" />
+        </mxCell>
+        <mxCell id="op_edge1" edge="1" parent="1" source="entity_operator" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;entryX=0.85;entryY=0.92;entryDx=0;entryDy=0;entryPerimeter=0;" target="op_attr1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="op_edge2" edge="1" parent="1" source="entity_operator" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="op_attr2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="op_edge3" edge="1" parent="1" source="entity_operator" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="op_attr3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="op_edge4" edge="1" parent="1" source="entity_operator" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="op_attr4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="op_edge5" edge="1" parent="1" source="entity_operator" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="op_attr5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="op_edge6" edge="1" parent="1" source="entity_operator" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="op_attr6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="op_edge7" edge="1" parent="1" source="entity_operator" style="endArrow=none;rounded=0;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;entryX=0.05;entryY=0.808;entryDx=0;entryDy=0;entryPerimeter=0;" target="op_attr7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

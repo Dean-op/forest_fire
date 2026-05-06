@@ -1,185 +1,324 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
-  <diagram id="forest-fire-er" name="ER Diagram">
-    <mxGraphModel dx="2295" dy="768" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="0" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="800" background="#FFFFFF" math="0" shadow="0">
+  <diagram id="er-diagram-refactored" name="ER Diagram Refactored">
+    <mxGraphModel dx="1783" dy="1061" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1600" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="Eusr" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=14;labelBackgroundColor=none;" value="用户" vertex="1">
-          <mxGeometry height="38" width="100" x="-87" y="357" as="geometry" />
+        <mxCell id="E_Admin" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="系统管理员" vertex="1">
+          <mxGeometry height="40" width="120" x="640" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="Ecfg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=14;labelBackgroundColor=none;" value="系统参数" vertex="1">
-          <mxGeometry height="38" width="100" x="324" y="169" as="geometry" />
+        <mxCell id="E_Op" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="安全操作员" vertex="1">
+          <mxGeometry height="40" width="120" x="140" y="1080" as="geometry" />
         </mxCell>
-        <mxCell id="Esop" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=14;labelBackgroundColor=none;" value="SOP公告" vertex="1">
-          <mxGeometry height="38" width="100" x="319" y="277" as="geometry" />
+        <mxCell id="E_Sup" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="安全主管" vertex="1">
+          <mxGeometry height="40" width="120" x="1140" y="1080" as="geometry" />
         </mxCell>
-        <mxCell id="Eshf" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=14;labelBackgroundColor=none;" value="交接班日志" vertex="1">
-          <mxGeometry height="38" width="110" x="314" y="368" as="geometry" />
+        <mxCell id="E_SysParam" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="系统参数" vertex="1">
+          <mxGeometry height="40" width="120" x="640" y="80" as="geometry" />
         </mxCell>
-        <mxCell id="Elog" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=14;labelBackgroundColor=none;" value="系统日志" vertex="1">
-          <mxGeometry height="38" width="100" x="308" y="573" as="geometry" />
+        <mxCell id="E_SysLog" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="系统日志" vertex="1">
+          <mxGeometry height="40" width="120" x="240" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="Ealt" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=14;labelBackgroundColor=none;" value="告警事件" vertex="1">
-          <mxGeometry height="38" width="100" x="308" y="481" as="geometry" />
+        <mxCell id="E_Backup" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="数据备份" vertex="1">
+          <mxGeometry height="40" width="120" x="1040" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="Ecam" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=14;labelBackgroundColor=none;" value="监控设备" vertex="1">
-          <mxGeometry height="38" width="100" x="557" y="482" as="geometry" />
+        <mxCell id="E_SOP" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="SOP与公告" vertex="1">
+          <mxGeometry height="40" width="120" x="40" y="680" as="geometry" />
         </mxCell>
-        <mxCell id="Ecap" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=14;labelBackgroundColor=none;" value="抓拍配置" vertex="1">
-          <mxGeometry height="38" width="100" x="847" y="541" as="geometry" />
+        <mxCell id="E_Cam" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="监控设备" vertex="1">
+          <mxGeometry height="40" width="120" x="596" y="685" as="geometry" />
         </mxCell>
-        <mxCell id="Eclg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=14;labelBackgroundColor=none;" value="设备日志" vertex="1">
-          <mxGeometry height="38" width="100" x="836" y="437" as="geometry" />
+        <mxCell id="E_DevLog" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="设备日志" vertex="1">
+          <mxGeometry height="40" width="120" x="840" y="740" as="geometry" />
         </mxCell>
-        <mxCell id="Rcfg" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="配置" vertex="1">
-          <mxGeometry height="36" width="72" x="133" y="222" as="geometry" />
+        <mxCell id="E_Alert" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="告警事件" vertex="1">
+          <mxGeometry height="40" width="120" x="640" y="1480" as="geometry" />
         </mxCell>
-        <mxCell id="Rpub" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="发布" vertex="1">
-          <mxGeometry height="36" width="72" x="183" y="284" as="geometry" />
+        <mxCell id="E_ShiftLog" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=16;fontStyle=1;labelBackgroundColor=none;" value="交接班日志" vertex="1">
+          <mxGeometry height="40" width="120" x="1340" y="1080" as="geometry" />
         </mxCell>
-        <mxCell id="Rshf" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="填写" vertex="1">
-          <mxGeometry height="36" width="72" x="166" y="357" as="geometry" />
+        <mxCell id="R_AdminParam" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="配置" vertex="1">
+          <mxGeometry height="40" width="80" x="660" y="180" as="geometry" />
         </mxCell>
-        <mxCell id="Rlog" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="产生" vertex="1">
-          <mxGeometry height="36" width="72" x="76" y="499" as="geometry" />
+        <mxCell id="R_AdminLog" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="查看" vertex="1">
+          <mxGeometry height="40" width="80" x="460" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="Rhdl" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="处置" vertex="1">
-          <mxGeometry height="36" width="72" x="135" y="432" as="geometry" />
+        <mxCell id="R_AdminBackup" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="执行" vertex="1">
+          <mxGeometry height="40" width="80" x="860" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="Rtrg" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="触发" vertex="1">
-          <mxGeometry height="36" width="72" x="452" y="482" as="geometry" />
+        <mxCell id="R_AdminSOP" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="发布" vertex="1">
+          <mxGeometry height="40" width="80" x="360" y="480" as="geometry" />
         </mxCell>
-        <mxCell id="Rmnt" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="挂载" vertex="1">
-          <mxGeometry height="36" width="72" x="716" y="543" as="geometry" />
+        <mxCell id="R_AdminOp" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="管理" vertex="1">
+          <mxGeometry height="40" width="80" x="410" y="680" as="geometry" />
         </mxCell>
-        <mxCell id="Rrec" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=13;labelBackgroundColor=none;" value="记录" vertex="1">
-          <mxGeometry height="36" width="72" x="716" y="438" as="geometry" />
+        <mxCell id="R_AdminSup" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="管理" vertex="1">
+          <mxGeometry height="40" width="80" x="984" y="610" as="geometry" />
         </mxCell>
-        <mxCell id="c1a" edge="1" parent="1" source="Eusr" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rcfg">
+        <mxCell id="R_OpSOP" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="查看" vertex="1">
+          <mxGeometry height="40" width="80" x="110" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="R_OpCam" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="监控" vertex="1">
+          <mxGeometry height="40" width="80" x="410" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="R_OpAlert" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="处置" vertex="1">
+          <mxGeometry height="40" width="80" x="410" y="1280" as="geometry" />
+        </mxCell>
+        <mxCell id="R_SupCam" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="管理" vertex="1">
+          <mxGeometry height="40" width="80" x="910" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="R_SupAlert" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="分析" vertex="1">
+          <mxGeometry height="40" width="80" x="910" y="1280" as="geometry" />
+        </mxCell>
+        <mxCell id="R_SupDevLog" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="查看" vertex="1">
+          <mxGeometry height="40" width="80" x="1010" y="910" as="geometry" />
+        </mxCell>
+        <mxCell id="R_SupShiftLog" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="管理" vertex="1">
+          <mxGeometry height="40" width="80" x="1260" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="R_CamDevLog" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="产生" vertex="1">
+          <mxGeometry height="40" width="80" x="760" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="R_CamAlert" parent="1" style="shape=rhombus;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=14;labelBackgroundColor=none;" value="触发" vertex="1">
+          <mxGeometry height="40" width="80" x="660" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="L_Admin_Param1" edge="1" parent="1" source="E_Admin" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_AdminParam">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c1a_l" connectable="0" parent="c1a" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-0.3" y="-10" as="geometry">
+        <mxCell id="C_Admin_Param1" connectable="0" parent="L_Admin_Param1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c1b" edge="1" parent="1" source="Rcfg" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Ecfg">
+        <mxCell id="L_Admin_Param2" edge="1" parent="1" source="R_AdminParam" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_SysParam">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c1b_l" connectable="0" parent="c1b" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="n" vertex="1">
-          <mxGeometry relative="1" x="0.3" y="-10" as="geometry">
+        <mxCell id="C_Admin_Param2" connectable="0" parent="L_Admin_Param2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c2a" edge="1" parent="1" source="Eusr" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rpub">
+        <mxCell id="L_Admin_Log1" edge="1" parent="1" source="E_Admin" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_AdminLog">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c2a_l" connectable="0" parent="c2a" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-0.3" y="-10" as="geometry">
+        <mxCell id="C_Admin_Log1" connectable="0" parent="L_Admin_Log1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c2b" edge="1" parent="1" source="Rpub" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Esop">
+        <mxCell id="L_Admin_Log2" edge="1" parent="1" source="R_AdminLog" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_SysLog">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c2b_l" connectable="0" parent="c2b" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="n" vertex="1">
-          <mxGeometry relative="1" x="0.3" y="-10" as="geometry">
+        <mxCell id="C_Admin_Log2" connectable="0" parent="L_Admin_Log2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c3a" edge="1" parent="1" source="Eusr" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rshf">
+        <mxCell id="L_Admin_Backup1" edge="1" parent="1" source="E_Admin" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_AdminBackup">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c3a_l" connectable="0" parent="c3a" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-0.3" y="-10" as="geometry">
+        <mxCell id="C_Admin_Backup1" connectable="0" parent="L_Admin_Backup1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c3b" edge="1" parent="1" source="Rshf" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Eshf">
+        <mxCell id="L_Admin_Backup2" edge="1" parent="1" source="R_AdminBackup" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_Backup">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c3b_l" connectable="0" parent="c3b" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="n" vertex="1">
-          <mxGeometry relative="1" x="0.3" y="-10" as="geometry">
+        <mxCell id="C_Admin_Backup2" connectable="0" parent="L_Admin_Backup2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c4a" edge="1" parent="1" source="Eusr" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rlog">
+        <mxCell id="L_Admin_SOP1" edge="1" parent="1" source="E_Admin" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_AdminSOP">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c4a_l" connectable="0" parent="c4a" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-0.3" y="-10" as="geometry">
+        <mxCell id="C_Admin_SOP1" connectable="0" parent="L_Admin_SOP1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c4b" edge="1" parent="1" source="Rlog" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Elog">
+        <mxCell id="L_Admin_SOP2" edge="1" parent="1" source="R_AdminSOP" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_SOP">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c4b_l" connectable="0" parent="c4b" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="n" vertex="1">
-          <mxGeometry relative="1" x="0.3" y="-10" as="geometry">
+        <mxCell id="C_Admin_SOP2" connectable="0" parent="L_Admin_SOP2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c5a" edge="1" parent="1" source="Eusr" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rhdl">
+        <mxCell id="L_Admin_Op1" edge="1" parent="1" source="E_Admin" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_AdminOp">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c5a_l" connectable="0" parent="c5a" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-0.3" y="12" as="geometry">
+        <mxCell id="C_Admin_Op1" connectable="0" parent="L_Admin_Op1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c5b" edge="1" parent="1" source="Rhdl" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Ealt">
+        <mxCell id="L_Admin_Op2" edge="1" parent="1" source="R_AdminOp" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_Op">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c5b_l" connectable="0" parent="c5b" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="n" vertex="1">
-          <mxGeometry relative="1" x="0.3" y="12" as="geometry">
+        <mxCell id="C_Admin_Op2" connectable="0" parent="L_Admin_Op2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c6a" edge="1" parent="1" source="Ecam" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rtrg">
+        <mxCell id="L_Admin_Sup1" edge="1" parent="1" source="E_Admin" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_AdminSup">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c6a_l" connectable="0" parent="c6a" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-0.3" y="-10" as="geometry">
+        <mxCell id="C_Admin_Sup1" connectable="0" parent="L_Admin_Sup1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c6b" edge="1" parent="1" source="Rtrg" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Ealt">
+        <mxCell id="L_Admin_Sup2" edge="1" parent="1" source="R_AdminSup" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_Sup">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c6b_l" connectable="0" parent="c6b" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="n" vertex="1">
-          <mxGeometry relative="1" x="0.3" y="-10" as="geometry">
+        <mxCell id="C_Admin_Sup2" connectable="0" parent="L_Admin_Sup2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c7a" edge="1" parent="1" source="Ecam" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rmnt">
+        <mxCell id="L_Op_SOP1" edge="1" parent="1" source="E_Op" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_OpSOP">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c7a_l" connectable="0" parent="c7a" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-0.3" y="12" as="geometry">
+        <mxCell id="C_Op_SOP1" connectable="0" parent="L_Op_SOP1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="M" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c7b" edge="1" parent="1" source="Rmnt" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Ecap">
+        <mxCell id="L_Op_SOP2" edge="1" parent="1" source="R_OpSOP" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_SOP">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c7b_l" connectable="0" parent="c7b" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="1" vertex="1">
-          <mxGeometry relative="1" x="0.3" y="12" as="geometry">
+        <mxCell id="C_Op_SOP2" connectable="0" parent="L_Op_SOP2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c8a" edge="1" parent="1" source="Ecam" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Rrec">
+        <mxCell id="L_Op_Cam1" edge="1" parent="1" source="E_Op" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_OpCam">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c8a_l" connectable="0" parent="c8a" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="1" vertex="1">
-          <mxGeometry relative="1" x="-0.3" y="-10" as="geometry">
+        <mxCell id="C_Op_Cam1" connectable="0" parent="L_Op_Cam1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="M" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="c8b" edge="1" parent="1" source="Rrec" style="endArrow=none;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="Eclg">
+        <mxCell id="L_Op_Cam2" edge="1" parent="1" source="R_OpCam" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_Cam">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="c8b_l" connectable="0" parent="c8b" style="edgeLabel;html=1;fontSize=13;labelBackgroundColor=none;" value="n" vertex="1">
-          <mxGeometry relative="1" x="0.3" y="-10" as="geometry">
+        <mxCell id="C_Op_Cam2" connectable="0" parent="L_Op_Cam2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Op_Alert1" edge="1" parent="1" source="E_Op" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_OpAlert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Op_Alert1" connectable="0" parent="L_Op_Alert1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Op_Alert2" edge="1" parent="1" source="R_OpAlert" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_Alert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Op_Alert2" connectable="0" parent="L_Op_Alert2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Sup_Cam1" edge="1" parent="1" source="E_Sup" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_SupCam">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Sup_Cam1" connectable="0" parent="L_Sup_Cam1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Sup_Cam2" edge="1" parent="1" source="R_SupCam" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_Cam">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Sup_Cam2" connectable="0" parent="L_Sup_Cam2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Sup_Alert1" edge="1" parent="1" source="E_Sup" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_SupAlert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Sup_Alert1" connectable="0" parent="L_Sup_Alert1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Sup_Alert2" edge="1" parent="1" source="R_SupAlert" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_Alert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Sup_Alert2" connectable="0" parent="L_Sup_Alert2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Sup_DevLog1" edge="1" parent="1" source="E_Sup" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_SupDevLog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Sup_DevLog1" connectable="0" parent="L_Sup_DevLog1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Sup_DevLog2" edge="1" parent="1" source="R_SupDevLog" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_DevLog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Sup_DevLog2" connectable="0" parent="L_Sup_DevLog2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Sup_ShiftLog1" edge="1" parent="1" source="E_Sup" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_SupShiftLog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Sup_ShiftLog1" connectable="0" parent="L_Sup_ShiftLog1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Sup_ShiftLog2" edge="1" parent="1" source="R_SupShiftLog" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_ShiftLog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Sup_ShiftLog2" connectable="0" parent="L_Sup_ShiftLog2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Cam_Alert1" edge="1" parent="1" source="E_Cam" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_CamAlert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Cam_Alert1" connectable="0" parent="L_Cam_Alert1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Cam_Alert2" edge="1" parent="1" source="R_CamAlert" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_Alert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Cam_Alert2" connectable="0" parent="L_Cam_Alert2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Cam_DevLog1" edge="1" parent="1" source="E_Cam" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="R_CamDevLog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Cam_DevLog1" connectable="0" parent="L_Cam_DevLog1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="L_Cam_DevLog2" edge="1" parent="1" source="R_CamDevLog" style="edgeStyle=none;rounded=0;html=1;endArrow=none;strokeWidth=1.5;labelBackgroundColor=none;fontColor=default;" target="E_DevLog">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="C_Cam_DevLog2" connectable="0" parent="L_Cam_DevLog2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;" value="N" vertex="1">
+          <mxGeometry relative="1" x="0.6" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
