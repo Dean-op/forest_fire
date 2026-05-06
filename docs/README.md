@@ -5,6 +5,14 @@ This folder stores non-runtime project documentation.
 ## Structure
 
 - `prompts/`: planning notes, requirements, environment setup, and architecture context.
+- `PaperImages/`: thesis diagrams and exported images, including draw.io source files and PNG exports.
+- `*.docx`: local thesis drafts and backups. These files are ignored by Git because Word drafts are large and change often.
+
+## Thesis Notes
+
+- Keep editable diagram sources (`.drawio`) together with their exported images (`.png`).
+- Draw.io temporary backup files (`*.bkp`) and Word lock files (`~$*.docx`) should not be committed.
+- During thesis formatting, temporary automation scripts can be placed under `tmp/`; this directory is ignored by Git.
 
 ## Runtime Entry (for demo/defense)
 
