@@ -2,10 +2,19 @@
 param(
     [switch]$BackendOnly,
     [switch]$FrontendOnly,
+    [ValidateRange(0, 300)]
+    [int]$FrontendDelaySeconds = 5,
     [switch]$DryRun
 )
 
 $ErrorActionPreference = "Stop"
+
+# Keep PowerShell 5.1 and VS Code's integrated terminal on UTF-8 so
+# Write-Host output and child process text render consistently.
+$utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+[Console]::InputEncoding = $utf8NoBom
+[Console]::OutputEncoding = $utf8NoBom
+$OutputEncoding = $utf8NoBom
 
 if ($BackendOnly -and $FrontendOnly) {
     throw "Cannot use -BackendOnly and -FrontendOnly together."
@@ -82,6 +91,17 @@ if (-not $FrontendOnly) {
     Start-ProjectProcess -Name "Backend" -LaunchCommand $backendCommand
 }
 
+if (-not $FrontendOnly -and -not $BackendOnly -and $FrontendDelaySeconds -gt 0) {
+    if ($DryRun) {
+        Write-Host ""
+        Write-Host "[Delay]"
+        Write-Host "Wait $FrontendDelaySeconds second(s) before starting Frontend."
+    } else {
+        Write-Host "Waiting $FrontendDelaySeconds second(s) before starting frontend..."
+        Start-Sleep -Seconds $FrontendDelaySeconds
+    }
+}
+
 if (-not $BackendOnly) {
     Start-ProjectProcess -Name "Frontend" -LaunchCommand $frontendCommand
 }
@@ -92,8 +112,11 @@ if ($DryRun) {
 
 Write-Host "Launch commands sent."
 if (-not $FrontendOnly) {
-    Write-Host "- 后端: http://127.0.0.1:8010"
+    Write-Host "- backend: http://127.0.0.1:8010"
 }
 if (-not $BackendOnly) {
-    Write-Host "- 前端: http://127.0.0.1:5173"
+    Write-Host "- frontend: http://127.0.0.1:5173"
+}
+if (-not $FrontendOnly -and -not $BackendOnly -and $FrontendDelaySeconds -gt 0) {
+    Write-Host "- frontend delay: $FrontendDelaySeconds second(s)"
 }
