@@ -28,7 +28,7 @@
         </el-menu-item>
         <el-menu-item index="/history" v-if="hasRole(['operator', 'supervisor', 'admin'])">
           <el-icon><List /></el-icon>
-          <template #title>历史回溯</template>
+          <template #title>历史回顾</template>
         </el-menu-item>
         <el-menu-item index="/cameras" v-if="hasRole(['supervisor', 'admin'])">
           <el-icon><Camera /></el-icon>

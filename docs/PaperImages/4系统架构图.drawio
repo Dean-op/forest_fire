@@ -19,7 +19,7 @@
         <mxCell id="P3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=11;labelBackgroundColor=none;" value="&lt;b&gt;统计看板&lt;/b&gt;&lt;br&gt;Stats · ECharts" vertex="1">
           <mxGeometry height="65" width="138" x="400" y="35" as="geometry" />
         </mxCell>
-        <mxCell id="P4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=11;labelBackgroundColor=none;" value="&lt;b&gt;历史回溯&lt;/b&gt;&lt;br&gt;History" vertex="1">
+        <mxCell id="P4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=11;labelBackgroundColor=none;" value="&lt;b&gt;历史回顾&lt;/b&gt;&lt;br&gt;History" vertex="1">
           <mxGeometry height="65" width="115" x="548" y="35" as="geometry" />
         </mxCell>
         <mxCell id="P5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;fontSize=11;labelBackgroundColor=none;" value="&lt;b&gt;系统管理&lt;/b&gt;&lt;br&gt;Admin · 参数 · 用户 · 公告" vertex="1">
