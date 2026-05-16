@@ -128,7 +128,7 @@ const kpiList = computed(() => [
   { icon: '✅', value: stats.value.false_alarm, label: '误报次数', bg: 'linear-gradient(135deg, #164e63 0%, #0c4a6e 100%)' },
   { icon: '⏳', value: stats.value.pending, label: '待核实/处置', bg: 'linear-gradient(135deg, #78350f 0%, #a16207 100%)' },
   { icon: '🎯', value: stats.value.avg_confidence, label: '平均置信度', bg: 'linear-gradient(135deg, #4c1d95 0%, #5b21b6 100%)' },
-  { icon: '📊', value: stats.value.accuracy, unit: '%', label: '检测精准率', bg: 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)' },
+  { icon: '📊', value: stats.value.accuracy, unit: '%', label: '真实火灾占比', bg: 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)' },
 ])
 
 const statusTagLabel = (status) => ({

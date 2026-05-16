@@ -35,7 +35,10 @@ WORKFLOW_STATUS_LABELS = {
     "cancelled_pending": "已撤销待处置",
 }
 
-HIDDEN_FOR_OPERATOR = {"archived_low", "reviewing_llm"}
+# Operators should not see alerts that are still inside the hidden LLM review stage.
+# Low-risk archived alerts remain part of the historical record and should stay visible
+# in the history/export flows.
+HIDDEN_FOR_OPERATOR = {"reviewing_llm"}
 DELETABLE_STATUSES = {"verified_false", "false_alarm", "resolved", "archived_low", "cancelled_pending"}
 CANCELLABLE_STATUSES = {"pending", "pending_verify"}
 
