@@ -3,7 +3,7 @@
 
 规则（全部可在系统参数配置）：
 1) YOLO置信度 > yolo_high_threshold: 直接高风险，进入 operator 任务队列。
-2) YOLO置信度 < yolo_low_threshold: 直接低风险，静默归档（不推送 operator）。
+2) YOLO置信度 < yolo_low_threshold: 直接低风险，静默归档。
 3) 其余区间: 进入 LLM 二次复核，LLM 给出高/中/低风险。
    - 高/中: 进入 operator 任务队列
    - 低: 静默归档

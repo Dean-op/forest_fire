@@ -125,7 +125,7 @@ const groupHints = {
 const configMeta = {
   yolo_interval: { type: 'number', min: 0.5, max: 10, step: 0.5, desc: '越大越省资源，但响应越慢。' },
   yolo_infer_scale: { type: 'range', min: 0.2, max: 1.0, step: 0.05, desc: '越小越省算力，但识别细节会下降。' },
-  yolo_low_threshold: { type: 'range', min: 0.1, max: 0.8, step: 0.01, desc: '低于该值直接低风险静默归档（Operator不可见）。' },
+  yolo_low_threshold: { type: 'range', min: 0.1, max: 0.8, step: 0.01, desc: '低于该值直接低风险静默归档。' },
   yolo_high_threshold: { type: 'range', min: 0.5, max: 0.99, step: 0.01, desc: '高于该值直接高风险进入Operator队列。' },
   alert_cooldown: { type: 'number', min: 3, max: 120, step: 1, desc: '同一路告警触发后冷却时长。' },
   alert_sound: { type: 'boolean', desc: '监控大屏收到新告警时播放警报音。' },
