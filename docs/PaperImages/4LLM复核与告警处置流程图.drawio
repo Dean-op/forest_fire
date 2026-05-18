@@ -98,11 +98,11 @@
             <mxPoint x="429" y="907" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="IPVGHLFOhboQ2lRJ9GQj-1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;strokeWidth=1.5;" value="开始" vertex="1">
-          <mxGeometry height="44" width="114" x="372" y="112" as="geometry" />
+        <mxCell id="9T0ImuRmRTaGItNy5Z9c-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=16;labelBackgroundColor=none;" value="开始" vertex="1">
+          <mxGeometry height="40" width="160" x="353" y="116" as="geometry" />
         </mxCell>
-        <mxCell id="IPVGHLFOhboQ2lRJ9GQj-2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;strokeWidth=1.5;" value="结束" vertex="1">
-          <mxGeometry height="44" width="114" x="372" y="905" as="geometry" />
+        <mxCell id="9T0ImuRmRTaGItNy5Z9c-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=16;labelBackgroundColor=none;" value="结束" vertex="1">
+          <mxGeometry height="40" width="160" x="347" y="909" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

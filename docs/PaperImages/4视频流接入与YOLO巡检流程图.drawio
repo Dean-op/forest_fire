@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
   <diagram id="yolo-flow-layout-v2" name="视频流接入与YOLO巡检流程图">
-    <mxGraphModel dx="1783" dy="1061" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="1120" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="2593" dy="1544" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="1120" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -67,13 +67,14 @@
             <mxPoint x="8" y="-8" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e5" edge="1" parent="1" source="offline" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;rounded=0;labelBackgroundColor=none;fontSize=16;">
+        <mxCell id="e5" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;rounded=0;labelBackgroundColor=none;fontSize=16;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="850" y="210" />
-              <mxPoint x="850" y="1062" />
+              <mxPoint x="836" y="223" />
+              <mxPoint x="836" y="1062" />
             </Array>
-            <mxPoint x="500" y="1062" as="targetPoint" />
+            <mxPoint x="796" y="223" as="sourcePoint" />
+            <mxPoint x="515" y="1062" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="e6" edge="1" parent="1" source="capture" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontSize=16;" target="yolo">
@@ -141,20 +142,22 @@
             <mxPoint x="-8" y="-8" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e16" edge="1" parent="1" source="alert" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;rounded=0;labelBackgroundColor=none;fontSize=16;">
+        <mxCell id="e16" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;rounded=0;labelBackgroundColor=none;fontSize=16;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="145" y="1050" />
+              <mxPoint x="153" y="1053" />
             </Array>
-            <mxPoint x="380" y="1050" as="targetPoint" />
+            <mxPoint x="153" y="720.0000000000001" as="sourcePoint" />
+            <mxPoint x="365" y="1053" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e17" edge="1" parent="1" source="archive" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;rounded=0;labelBackgroundColor=none;fontSize=16;">
+        <mxCell id="e17" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;rounded=0;labelBackgroundColor=none;fontSize=16;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="725" y="1045" />
+              <mxPoint x="738" y="1042" />
             </Array>
-            <mxPoint x="500" y="1045" as="targetPoint" />
+            <mxPoint x="738.0000000000002" y="860" as="sourcePoint" />
+            <mxPoint x="515" y="1042" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="e18" edge="1" parent="1" source="llm" style="endArrow=block;endFill=1;html=1;strokeWidth=1.5;labelBackgroundColor=none;fontSize=16;">
@@ -162,11 +165,11 @@
             <mxPoint x="440" y="1030" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="mSoyHd9EA2R7D5_RN4Ag-1" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;strokeWidth=1.5;" value="开始" vertex="1">
-          <mxGeometry height="46" width="124" x="374" y="12" as="geometry" />
+        <mxCell id="UUtpGwZm2rjSPVwFFtT--1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=16;labelBackgroundColor=none;" value="开始" vertex="1">
+          <mxGeometry height="40" width="150" x="368" y="18" as="geometry" />
         </mxCell>
-        <mxCell id="mSoyHd9EA2R7D5_RN4Ag-2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;strokeWidth=1.5;" value="本轮结束" vertex="1">
-          <mxGeometry height="52" width="116" x="382" y="1029" as="geometry" />
+        <mxCell id="UUtpGwZm2rjSPVwFFtT--2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;fontSize=16;labelBackgroundColor=none;" value="结束" vertex="1">
+          <mxGeometry height="40" width="150" x="365" y="1028" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
