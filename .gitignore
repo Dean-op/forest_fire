@@ -16,3 +16,14 @@ tmp/
 *.pptx
 *.dtmp
 *.pdf
+
+# model training artifacts
+model_info/.virtual_documents/
+model_info/__results___files/
+model_info/results.zip
+model_info/runs/detect/
+model_info/runs/val_best_regen/
+model_info/runs/smoke_fire_yolo11n/labels.jpg
+model_info/runs/smoke_fire_yolo11n/train_batch*.jpg
+model_info/runs/smoke_fire_yolo11n/weights/last.pt
+model_info/runs/smoke_fire_yolo11n/weights/best.pt
