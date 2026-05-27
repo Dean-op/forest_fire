@@ -19,6 +19,7 @@ backups/*.sql
 app/models/best.pt
 *.db
 *.sqlite3
+!storage/forest_fire_archive.db
 forest_fire.db
 *.log
 .uv/
